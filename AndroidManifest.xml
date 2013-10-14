@@ -22,6 +22,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.banlinea.control.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:parentActivityName="com.banlinea.control.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.banlinea.control.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.banlinea.control.ReminderSetup"
+            android:label="@string/title_activity_reminder_setup" >
+        </activity>
     </application>
 
 </manifest>

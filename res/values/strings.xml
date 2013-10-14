@@ -4,5 +4,21 @@
     <string name="app_name">Banlinea Control</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="sign_in">Ingreso</string>
+    <string name="username">Nombre de Usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="sign_in_button">Ingresar</string>
+    <string name="register_button">Registrarse</string>
+    <string name="password_forget_button">Olvidé mi contraseña</string>
+    <string name="title_activity_register">Register New User</string>
+    <string name="first_name">Nombres</string>
+    <string name="last_name">Apellidos</string>
+    <string name="email">Correo Electrónico</string>
+    <string name="password_verification">Verificar Contraseña</string>
+    <string name="register_instructions">Complete los siguientes datos y luego seleccione \&quot;Registrar\&quot; para crear su nueva cuenta.</string>
+    <string name="title_activity_reminder_setup">Ajustar Recordatorios</string>
+    <string name="turn_on_reminders">Habilitar recoratorios diarios</string>
+    <string name="reminders_enabled">Recordatorios habilitados</string>
+    <string name="continue_text">Continuar</string>
 
 </resources>
