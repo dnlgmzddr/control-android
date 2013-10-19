@@ -40,7 +40,7 @@ public class RegisterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(null, ReminderSetup.class);
+				Intent intent = new Intent(RegisterActivity.this, ReminderSetupActivity.class);
 				startActivity(intent);
 			}
 		});

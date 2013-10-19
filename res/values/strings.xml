@@ -20,5 +20,25 @@
     <string name="turn_on_reminders">Habilitar recoratorios diarios</string>
     <string name="reminders_enabled">Recordatorios habilitados</string>
     <string name="continue_text">Continuar</string>
+    <string name="title_activity_initial_setup">Configuracion Inicial</string>
+    <string name="title_section1">Ingresos</string>
+    <string name="title_section2">Egresos</string>
+    <string name="title_section3">Servicios</string>
+    <string name="cancel">Cancelar</string>
+    <string name="amount">Monto</string>
+    <string name="amount_hint">$10.000</string>
+    <string name="expenses">Egresos</string>
+    <string name="live_alone_question">¿Vives sólo?</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="incomes">Ingresos</string>
+    <string name="incomes_question">¿Cuánto suman tus ingresos?</string>
+    <string name="public_services">Servicios Públicos</string>
+    <string name="public_services_question">Ingresa tus consumos a continuación.</string>
+    <string name="light_service">Luz</string>
+    <string name="water_service">Agua</string>
+    <string name="gas_service">Gas</string>
+    <string name="other_services">Otros</string>
+    <string name="finish">Finalizar</string>
 
 </resources>

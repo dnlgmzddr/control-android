@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="18" />
 
     <application
@@ -31,8 +31,12 @@
                 android:value="com.banlinea.control.HomeActivity" />
         </activity>
         <activity
-            android:name="com.banlinea.control.ReminderSetup"
+            android:name="com.banlinea.control.ReminderSetupActivity"
             android:label="@string/title_activity_reminder_setup" >
+        </activity>
+        <activity
+            android:name="com.banlinea.control.InitialSetupActivity"
+            android:label="@string/title_activity_initial_setup" >
         </activity>
     </application>
 
