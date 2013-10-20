@@ -1,5 +1,10 @@
 package com.banlinea.control;
 
+import java.sql.SQLException;
+
+import com.banlinea.control.bussiness.AuthenticationService;
+import com.banlinea.control.entities.UserProfile;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -19,7 +24,7 @@ public class RegisterActivity extends Activity {
 	private EditText eMailTextView;
 	private EditText passwordTextView;
 	private EditText passwordConfirmTextView;
-	
+	private AuthenticationService authService;
 	private Button registerButton;
 
     @Override
@@ -28,6 +33,8 @@ public class RegisterActivity extends Activity {
         setContentView(R.layout.activity_register);
         // Show the Up button in the action bar.
         setupActionBar();
+        
+        authService = new AuthenticationService(this);
         
         firstNameTextView = (EditText) findViewById(R.id.first_name_edittext);
         lastNameTextView = (EditText) findViewById(R.id.last_name_edittext);
@@ -38,8 +45,20 @@ public class RegisterActivity extends Activity {
         registerButton = (Button) findViewById(R.id.register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
 			
+			@SuppressWarnings("serial")
 			@Override
 			public void onClick(View v) {
+				
+				try {
+					authService.Register(new UserProfile(){{
+						this.setMail(eMailTextView.getText().toString());
+						this.setName(firstNameTextView.getText().toString());
+						this.setPassword(passwordTextView.getText().toString());
+					}});
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Intent intent = new Intent(RegisterActivity.this, ReminderSetupActivity.class);
 				startActivity(intent);
 				finish();

@@ -1,8 +1,6 @@
 package com.banlinea.control.remote;
 
-import java.io.IOException;
-
-import org.apache.http.client.ClientProtocolException;
+import java.util.concurrent.ExecutionException;
 
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.util.CreateUserProfileResult;
@@ -13,11 +11,13 @@ public class RemoteAuthenticationService {
 		CreateUserProfileResult result = null;
 		
 		try {
-			result = ControlApiHandler.doRequest(ApiMethod.AUTH_CREATE_USER, userProfile, CreateUserProfileResult.class);
-		} catch (ClientProtocolException e) {
+			
+			result = new ControlApiHandler<CreateUserProfileResult, UserProfile>(userProfile, ApiMethod.AUTH_CREATE_USER, CreateUserProfileResult.class).execute().get();
+		
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
