@@ -27,20 +27,23 @@ public class ReminderSetupActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(ReminderSetupActivity.this);
-				builder.setTitle(R.string.hello_world).setMessage(R.string.app_name);
+				builder.setTitle(R.string.initial_setup_prompt_title).setMessage(R.string.initial_setup_prompt);
 				builder.setPositiveButton(R.string.continue_text, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						Intent intent = new Intent(ReminderSetupActivity.this, InitialSetupActivity.class);
 						startActivity(intent);
+						finish();
 					}
 				});
 				builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						//this.finalize();
+						Intent intent = new Intent(ReminderSetupActivity.this, BalanceActivity.class);
+						startActivity(intent);
+						finish();
 					}
 				});
 				AlertDialog dialog = builder.create();

@@ -7,28 +7,31 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class HomeActivity extends Activity {
+public class LoginActivity extends Activity {
 	
-	private EditText eMailTextView;
-	private EditText passwordTextView;
+	private EditText eMailEditText;
+	private EditText passwordEditText;
 	private Button registerButton;
 	private Button signInButton;
+	private TextView passwordForgottenTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_login);
         
-        eMailTextView = (EditText) findViewById(R.id.email_edittext);
-        passwordTextView = (EditText) findViewById(R.id.password_edittext);
+        eMailEditText = (EditText) findViewById(R.id.email_edittext);
+        passwordEditText = (EditText) findViewById(R.id.password_edittext);
         
         registerButton = (Button) findViewById(R.id.register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(HomeActivity.this, RegisterActivity.class);
+				Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
 				startActivity(intent);
 			}
 		});
@@ -38,8 +41,18 @@ public class HomeActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
+				Intent intent = new Intent(LoginActivity.this, BalanceActivity.class);
+				startActivity(intent);
+				finish();
+			}
+		});
+        
+        passwordForgottenTextView = (TextView) findViewById(R.id.password_forgotten_textview);
+        passwordForgottenTextView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getApplicationContext(), "redirect to website", Toast.LENGTH_SHORT).show();
 			}
 		});
     }

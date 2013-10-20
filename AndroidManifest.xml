@@ -14,29 +14,47 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.banlinea.control.HomeActivity"
+            android:name="com.banlinea.control.LoginActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            </activity>
         <activity
             android:name="com.banlinea.control.RegisterActivity"
-            android:label="@string/title_activity_register"
-            android:parentActivityName="com.banlinea.control.HomeActivity" >
+            android:label="@string/app_name"
+            android:parentActivityName="com.banlinea.control.LoginActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.banlinea.control.HomeActivity" />
         </activity>
         <activity
             android:name="com.banlinea.control.ReminderSetupActivity"
-            android:label="@string/title_activity_reminder_setup" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.banlinea.control.InitialSetupActivity"
-            android:label="@string/title_activity_initial_setup" >
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.banlinea.control.BalanceActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.banlinea.control.RegisterTransactionActivity"
+            android:label="@string/title_activity_register_transaction"
+            android:parentActivityName="com.banlinea.control.BalanceActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.banlinea.control.BalanceActivity" />
+        </activity>
+        <activity
+            android:name="com.banlinea.control.SplashScreenActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -40,5 +40,30 @@
     <string name="gas_service">Gas</string>
     <string name="other_services">Otros</string>
     <string name="finish">Finalizar</string>
+    <string name="title_activity_balance">Balance Personal</string>
+    <string name="balance">Balance Personal</string>
+    <string name="title_activity_register_transaction">Registrar Transacción</string>
+    <string name="register_transaction">Registrar Transacción</string>
+    <string name="type">Tipo</string>
+    <string name="register_transaction_button">Registrar</string>
+    <string name="use_product_question">¿Utilizaste un producto financiero?</string>
+
+    <string-array name="transaction_type">
+        <item>Ahorro</item>
+        <item>Gasto</item>
+        <item>Ingreso</item>
+    </string-array>
+
+    <string name="transaction_type_prompt">Selecciona un tipo de transacción</string>
+    <string name="transaction_category_prompt">Selecciona una categoría</string>
+    <string name="transaction_product_prompt">Selecciona un producto financiero</string>
+    <string name="initial_setup_prompt_title">Configuración Inicial</string>
+    <string name="initial_setup_prompt">¿Deseas realizar una configuración inicial?</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="rent_question">¿Cuánto pagas de renta/hipoteca?</string>
+    <string name="manage_categories">Gestionar Categorias</string>
+    <string name="reminders_setup">Configurar recordatorios</string>
+    <string name="exit_prompt">¿Desea salir de la aplicación?</string>
+    <string name="logout">Cerrar Sesión</string>
 
 </resources>

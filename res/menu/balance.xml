@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_category_manager"
+        android:orderInCategory="1"
+        android:title="@string/manage_categories"/>
+    <item
+        android:id="@+id/menu_set_reminders"
+        android:orderInCategory="2"
+        android:title="@string/reminders_setup"/>
+    <item
+        android:id="@+id/menu_action_initial_setup"
+        android:orderInCategory="3"
+        android:title="@string/initial_setup_prompt_title"/>
+
+</menu>

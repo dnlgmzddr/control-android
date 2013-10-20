@@ -2,6 +2,12 @@ package com.banlinea.control;
 
 import java.util.Locale;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -19,6 +25,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -41,7 +48,7 @@ public class InitialSetupActivity extends FragmentActivity {
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	public static ViewPager mViewPager;
+	private ViewPager mViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,16 @@ public class InitialSetupActivity extends FragmentActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (mViewPager.getCurrentItem() > 0) {
+			mViewPager.setCurrentItem(mViewPager.getCurrentItem()-1, true);
+		}
+		else {
+			super.onBackPressed();
+		}
 	}
 
 	@Override
@@ -159,7 +176,7 @@ public class InitialSetupActivity extends FragmentActivity {
 	
 	public static class IncomesSectionFragment extends Fragment {
 		
-		private static ViewPager mViewPager = InitialSetupActivity.mViewPager;
+		private ViewPager mViewPager;
 		private EditText amountEditText;
 		private Button nextButton;
 		
@@ -172,6 +189,8 @@ public class InitialSetupActivity extends FragmentActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_incomes, container, false);
+			
+			mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
 			
 			amountEditText = (EditText) rootView.findViewById(R.id.amount_edittext);
 			nextButton = (Button) rootView.findViewById(R.id.continue_button);
@@ -189,9 +208,13 @@ public class InitialSetupActivity extends FragmentActivity {
 	
 	public static class ExpensesSectionFragment extends Fragment {
 		
-		private static ViewPager mViewPager = InitialSetupActivity.mViewPager;
+		private ViewPager mViewPager;
+		private LinearLayout liveAloneLayout;
 		private Button yesButton;
 		private Button noButton;
+		private LinearLayout rentLayout;
+		private long animationDuration = 1000;
+		private Button continueButton;
 		
 		public ExpensesSectionFragment() {
 			
@@ -202,7 +225,18 @@ public class InitialSetupActivity extends FragmentActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_expenses, container, false);
 			
+			mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+			
+			liveAloneLayout = (LinearLayout) rootView.findViewById(R.id.live_alone_question_layout);
+			
 			yesButton = (Button) rootView.findViewById(R.id.yes_button);
+			yesButton.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					crossfade();
+				}
+			});
 			
 			
 			noButton = (Button) rootView.findViewById(R.id.no_button);
@@ -215,13 +249,41 @@ public class InitialSetupActivity extends FragmentActivity {
 				}
 			});
 			
+			rentLayout = (LinearLayout) rootView.findViewById(R.id.rent_layout);
+			rentLayout.setVisibility(View.GONE);
+			
+			continueButton = (Button) rootView.findViewById(R.id.continue_button);
+			continueButton.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					mViewPager.setCurrentItem(mViewPager.getCurrentItem()+1, true);
+				}
+			});
+			
 			return rootView;
 		}
+		
+		@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+		private void crossfade() {
+			
+			liveAloneLayout.animate().alpha(0f).setDuration(animationDuration).setListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					liveAloneLayout.setVisibility(View.GONE);
+					rentLayout.setAlpha(0f);
+					rentLayout.setVisibility(View.VISIBLE);
+					rentLayout.animate().alpha(1f).setDuration(animationDuration).setListener(null);
+				}
+			});
+			
+			
+		}
 	}
-	
+
 	public static class PublicServicesSectionFragment extends Fragment {
 		
-		private static ViewPager mViewPager = InitialSetupActivity.mViewPager;
+		private ViewPager mViewPager;
 		private Button finishButton;
 		
 		public PublicServicesSectionFragment() {
@@ -233,8 +295,18 @@ public class InitialSetupActivity extends FragmentActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_public_services, container, false);
 			
-			finishButton = (Button) rootView.findViewById(R.id.finish_button);
+			mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
 			
+			finishButton = (Button) rootView.findViewById(R.id.finish_button);
+			finishButton.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent =  new Intent(getActivity(), BalanceActivity.class);
+					startActivity(intent);
+					getActivity().finish();
+				}
+			});
 			return rootView;
 		}
 	}
