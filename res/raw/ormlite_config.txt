@@ -1,45 +1,22 @@
 #
-# generated on 2012/02/28 03:23:38
+# generated on 2013/10/20 03:32:17
 #
 # --table-start--
-dataClass=com.kagii.clickcounter.data.ClickCount
-tableName=clickcount
+dataClass=com.banlinea.control.entities.UserProfile
+tableName=userprofile
 # --table-fields-start--
 # --field-start--
-fieldName=id
-generatedId=true
+fieldName=Id
+id=true
 # --field-end--
 # --field-start--
-fieldName=lastClickDate
-columnName=lastClickDate
+fieldName=Name
 # --field-end--
 # --field-start--
-fieldName=name
-indexName=clickcount_name_idx
+fieldName=Password
 # --field-end--
 # --field-start--
-fieldName=description
-# --field-end--
-# --field-start--
-fieldName=value
-# --field-end--
-# --field-start--
-fieldName=group
-foreign=true
-# --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
-# --table-start--
-dataClass=com.kagii.clickcounter.data.ClickGroup
-tableName=clickgroup
-# --table-fields-start--
-# --field-start--
-fieldName=id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=name
+fieldName=Mail
 # --field-end--
 # --table-fields-end--
 # --table-end--

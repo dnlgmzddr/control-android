@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.banlinea.control.remote.entities.BaseEntity;
+import com.banlinea.control.entities.BaseEntity;
 import com.google.gson.Gson;
 
 public class ControlApiHandler {

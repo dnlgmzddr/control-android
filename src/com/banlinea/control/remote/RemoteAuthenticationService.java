@@ -4,9 +4,10 @@ import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
 
-import com.banlinea.control.remote.entities.UserProfile;
+import com.banlinea.control.entities.UserProfile;
+import com.banlinea.control.entities.util.CreateUserProfileResult;
 
-public class Authentication {
+public class RemoteAuthenticationService {
 
 	public CreateUserProfileResult Register(UserProfile userProfile){
 		CreateUserProfileResult result = null;
@@ -25,18 +26,6 @@ public class Authentication {
 	}
 	
 	
-	class CreateUserProfileResult extends CallResult{
-		private UserProfile Body;
-
-		public UserProfile getBody() {
-			return Body;
-		}
-
-		public void setBody(UserProfile body) {
-			Body = body;
-		}
-		
-		
-	}
+	
 	
 }

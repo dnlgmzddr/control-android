@@ -1,8 +1,20 @@
-package com.banlinea.control.remote.entities;
+package com.banlinea.control.entities;
 
-public  class UserProfile extends BaseEntity
+import java.io.Serializable;
+
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable
+public  class UserProfile extends BaseEntity implements Serializable
 {
-    public UserProfile()
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4407453165072554782L;
+	
+	public UserProfile()
     {
     }
 
@@ -37,8 +49,12 @@ public  class UserProfile extends BaseEntity
 		Mail = mail;
 	}
 
+	@DatabaseField(id=true)
 	private String Id;
+	@DatabaseField
     private String Name;
+	@DatabaseField
     private String Password; 
+	@DatabaseField
     private String Mail; 
 }
