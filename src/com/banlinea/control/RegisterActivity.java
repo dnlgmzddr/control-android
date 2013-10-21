@@ -24,7 +24,12 @@ public class RegisterActivity extends Activity {
 	private EditText eMailTextView;
 	private EditText passwordTextView;
 	private EditText passwordConfirmTextView;
+	
+	
+	
 	private AuthenticationService authService;
+	
+	
 	private Button registerButton;
 
     @Override

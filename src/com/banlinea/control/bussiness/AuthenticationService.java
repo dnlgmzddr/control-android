@@ -6,35 +6,33 @@ import android.content.Context;
 
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.util.CreateUserProfileResult;
+import com.banlinea.control.local.DatabaseHelper;
 import com.banlinea.control.remote.RemoteAuthenticationService;
+import com.j256.ormlite.dao.Dao;
 
-public class AuthenticationService implements Disposable {
+public class AuthenticationService extends BaseService {
 
-	private LocalConnectionManager localConnectionManeger;
 	private RemoteAuthenticationService remoteAuthSerice;
 
-	private Context activityContext;
 
 	public AuthenticationService(Context context) {
 
-		localConnectionManeger = new LocalConnectionManager();
+		super(context);
 		remoteAuthSerice = new RemoteAuthenticationService();
-		activityContext = context;
 	}
 
 	public void Register(UserProfile userProfile) throws SQLException {
 		CreateUserProfileResult result = remoteAuthSerice.Register(userProfile);
 		if (result != null && result.isSuccessfullOperation()) {
-			localConnectionManeger.getHelper(activityContext).getUserProfiles()
-					.create(result.getBody());
+			
+			DatabaseHelper helper = this.getHelper();
+			Dao<UserProfile, String> dao = helper.getUserProfiles();
+			UserProfile profileToSave = result.getBody();
+			dao.create(profileToSave);
 		}
 
 	}
 
-	@Override
-	public void onDestroy() {
-		localConnectionManeger.onDestroy();
 
-	}
 
 }
