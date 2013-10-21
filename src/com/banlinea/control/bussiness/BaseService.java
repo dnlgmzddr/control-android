@@ -14,6 +14,10 @@ public class BaseService {
 		this.context = context;
 	}
 	
+	protected BaseService(){
+		
+	}
+	
 	protected DatabaseHelper getHelper() {
 		if (databaseHelper == null) {
 			databaseHelper = OpenHelperManager.getHelper(this.context,

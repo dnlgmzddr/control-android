@@ -30,15 +30,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		try {
 			TableUtils.createTable(connectionSource, UserProfile.class);
 			
-			
-			UserProfile profile = new UserProfile();
-			
-			profile.setId("00000");
-			profile.setName("Daniel");
-			profile.setMail("dngmz");
-			profile.setPassword("***");
-			
-			getDao(UserProfile.class).create(profile);
+//			
+//			UserProfile profile = new UserProfile();
+//			
+//			profile.setId("00000");
+//			profile.setName("Daniel");
+//			profile.setMail("dngmz");
+//			profile.setPassword("***");
+//			
+//			getDao(UserProfile.class).create(profile);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
 		}
