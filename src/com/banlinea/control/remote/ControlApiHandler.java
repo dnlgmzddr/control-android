@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.banlinea.control.entities.BaseEntity;
 import com.google.gson.Gson;
@@ -100,7 +101,9 @@ public class ControlApiHandler<T, V extends BaseEntity> extends AsyncTask<Void, 
 		HttpPost request = new HttpPost(method.buildUrl());
 		request.addHeader("Content-Type", "application/json");
 		Gson gson = new Gson();
-		request.setEntity(new StringEntity(gson.toJson(request)));
+		String rawBody = gson.toJson(requestObject);
+		Log.d("REMOTE", rawBody);
+		request.setEntity(new StringEntity(rawBody));
 		return innerApiCall(request);
 	}
 

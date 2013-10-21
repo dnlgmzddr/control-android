@@ -50,11 +50,11 @@ public class RegisterActivity extends Activity {
 			public void onClick(View v) {
 				
 				try {
-					authService.Register(new UserProfile(){{
-						this.setMail(eMailTextView.getText().toString());
-						this.setName(firstNameTextView.getText().toString());
-						this.setPassword(passwordTextView.getText().toString());
-					}});
+					UserProfile userProfile = new UserProfile();
+					userProfile.setMail(eMailTextView.getText().toString());
+					userProfile.setName(firstNameTextView.getText().toString());
+					userProfile.setPassword(passwordTextView.getText().toString());
+					authService.Register(userProfile);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
