@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/category_name_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/category_name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/parent_category_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/category_name_textview"
+        android:layout_below="@+id/category_name_textview"
+        android:text="@string/parent_category"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/gray" />
+
+    <ImageButton
+        android:id="@+id/edit_imagebutton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignTop="@+id/delete_imagebutton"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/delete_imagebutton"
+        android:contentDescription="@string/delete"
+        android:src="@drawable/ic_action_edit" />
+
+    <ImageButton
+        android:id="@+id/delete_imagebutton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/category_name_textview"
+        android:layout_marginRight="15dp"
+        android:contentDescription="@string/edit"
+        android:src="@drawable/ic_action_discard" />
+
+</RelativeLayout>

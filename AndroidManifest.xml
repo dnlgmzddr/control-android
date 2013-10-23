@@ -7,7 +7,8 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="18" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,7 @@
         <activity
             android:name="com.banlinea.control.LoginActivity"
             android:label="@string/app_name" >
-            </activity>
+        </activity>
         <activity
             android:name="com.banlinea.control.RegisterActivity"
             android:label="@string/app_name"
@@ -50,12 +51,19 @@
             android:name="com.banlinea.control.SplashScreenActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.banlinea.control.CategoryManagerActivity"
+            android:label="@string/title_activity_category_manager"
+            android:parentActivityName="com.banlinea.control.BalanceActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.banlinea.control.BalanceActivity" />
         </activity>
     </application>
 

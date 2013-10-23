@@ -65,5 +65,11 @@
     <string name="reminders_setup">Configurar recordatorios</string>
     <string name="exit_prompt">¿Desea salir de la aplicación?</string>
     <string name="logout">Cerrar Sesión</string>
+    <string name="title_activity_category_manager">CategoryManagerActivity</string>
+    <string name="category_name">Nombre de categoria</string>
+    <string name="parent_category">Categoria padre</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="add_category">Crear Categoría</string>
 
 </resources>
