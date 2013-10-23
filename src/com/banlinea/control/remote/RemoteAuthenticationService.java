@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.util.CreateUserProfileResult;
+import com.banlinea.control.remote.util.ApiMethod;
 
 public class RemoteAuthenticationService {
 
@@ -12,7 +13,11 @@ public class RemoteAuthenticationService {
 		
 		try {
 			
-			result = new ControlApiHandler<CreateUserProfileResult, UserProfile>(userProfile, ApiMethod.AUTH_CREATE_USER, CreateUserProfileResult.class).execute().get();
+			result = new ControlApiHandler<CreateUserProfileResult, UserProfile>(
+						userProfile,
+						ApiMethod.AUTH_CREATE_USER,
+						CreateUserProfileResult.class
+						).execute().get();
 		
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

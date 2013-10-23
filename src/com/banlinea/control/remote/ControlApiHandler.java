@@ -18,23 +18,24 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.banlinea.control.entities.BaseEntity;
+import com.banlinea.control.remote.util.ApiMethod;
 import com.google.gson.Gson;
 
-public class ControlApiHandler<T, V extends BaseEntity> extends AsyncTask<Void, Void, T>{
+public class ControlApiHandler<T, V extends BaseEntity> extends
+		AsyncTask<Void, Void, T> {
 
-	
 	private V requestObject;
 	private ApiMethod method;
-	
+
 	private Class<T> targetResponseClass;
-	
-	public ControlApiHandler(V requestObject,  ApiMethod method ,Class<T> targetResponseClass) {
+
+	public ControlApiHandler(V requestObject, ApiMethod method,
+			Class<T> targetResponseClass) {
 		this.requestObject = requestObject;
 		this.method = method;
 		this.targetResponseClass = targetResponseClass;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param method
@@ -44,16 +45,14 @@ public class ControlApiHandler<T, V extends BaseEntity> extends AsyncTask<Void, 
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	private T doRequest() throws ClientProtocolException,
-			IOException {
+	private T doRequest() throws ClientProtocolException, IOException {
 		String plainObject = innerDoRequest(method, requestObject);
 		Gson gson = new Gson();
 		return gson.fromJson(plainObject, targetResponseClass);
 	}
 
-	private  String innerDoRequest(
-			ApiMethod method, V parameter) throws IOException,
-			ClientProtocolException {
+	private String innerDoRequest(ApiMethod method, V parameter)
+			throws IOException, ClientProtocolException {
 		String plainObject = null;
 
 		switch (method.getHttpMethod()) {
@@ -68,21 +67,23 @@ public class ControlApiHandler<T, V extends BaseEntity> extends AsyncTask<Void, 
 		return plainObject;
 	}
 
-
 	private String doGetRequest() throws IOException, ClientProtocolException {
 
 		HttpGet request = new HttpGet(method.buildUrl());
 
 		BasicHttpParams httpParams = new BasicHttpParams();
-		for (Field field : requestObject.getClass().getDeclaredFields()) {
-			try {
-				httpParams.setParameter(field.getName(), field.get(requestObject));
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		if (requestObject != null) {
+			for (Field field : requestObject.getClass().getDeclaredFields()) {
+				try {
+					httpParams.setParameter(field.getName(),
+							field.get(requestObject));
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		request.setParams(httpParams);
@@ -90,8 +91,7 @@ public class ControlApiHandler<T, V extends BaseEntity> extends AsyncTask<Void, 
 		return innerApiCall(request);
 	}
 
-	private  String doPostRequest() throws IOException,
-			ClientProtocolException {
+	private String doPostRequest() throws IOException, ClientProtocolException {
 
 		HttpPost request = new HttpPost(method.buildUrl());
 		request.addHeader("Content-Type", "application/json");

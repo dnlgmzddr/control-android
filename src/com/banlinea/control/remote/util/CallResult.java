@@ -1,4 +1,4 @@
-package com.banlinea.control.remote;
+package com.banlinea.control.remote.util;
 
 public class CallResult{
 	protected boolean SuccessfullOperation;

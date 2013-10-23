@@ -1,4 +1,5 @@
-package com.banlinea.control.remote;
+package com.banlinea.control.remote.util;
+
 
 /**
  * Represent an API method.
@@ -8,7 +9,13 @@ public enum ApiMethod {
 	/**
 	 * Part of the authentication end point, this method create a new user.
 	 */
-	AUTH_CREATE_USER(HttpMethods.POST, "api/Auth/CreateUser");
+	AUTH_CREATE_USER(HttpMethods.POST, "api/Auth/CreateUser"),
+	
+	
+	/**
+	 * 
+	 */
+	CATS_GET_ALL(HttpMethods.GET, "api/Categories/GetBasics");
 
 	/**
 	 * The HTTP method used to do the request. 
