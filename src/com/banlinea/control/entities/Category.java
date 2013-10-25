@@ -6,6 +6,12 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "Categories")
 public class Category {
 
+	
+	public static int GROUP_EXPENSE = 0;
+	public static int GROUP_INCOME = 1;
+	public static int GROUP_SAVING = 2;
+
+	
 	@DatabaseField(id=true)
 	private String Id;
 	
@@ -17,6 +23,9 @@ public class Category {
 	
 	@DatabaseField
 	private String IdOwner;
+	
+	@DatabaseField
+	private int Group;
 	
 	public String getId() {
 		return Id;
@@ -41,5 +50,11 @@ public class Category {
 	}
 	public void setIdOwner(String idOwner) {
 		IdOwner = idOwner;
+	}
+	public int getGroup() {
+		return Group;
+	}
+	public void setGroup(int group) {
+		Group = group;
 	}
 }

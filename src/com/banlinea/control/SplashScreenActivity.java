@@ -1,34 +1,41 @@
 package com.banlinea.control;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.sql.SQLException;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
+
+import com.banlinea.control.bussiness.CategoryService;
 
 public class SplashScreenActivity extends Activity {
 	
-	private long splashDelay = 3000;
-
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash_screen);
-		
-		TimerTask task = new TimerTask() {
-			
+		final SplashScreenActivity activity = this;
+		Thread threadLoad =  new Thread(){
 			@Override
-			public void run() {
-				Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
-				startActivity(intent);
-				finish();
+			public void run(){
+				try{
+					new CategoryService(activity).ImportBaseCategories();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}finally{
+					Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+					startActivity(intent);
+					finish();
+				}
 			}
 		};
 		
-		Timer timer = new Timer();
-		timer.schedule(task, splashDelay);
+		threadLoad.start();
+		
 	}
 
 	@Override
