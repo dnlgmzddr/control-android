@@ -66,6 +66,8 @@ public class BalanceActivity extends Activity {
 		case R.id.menu_category_manager:
 			Toast.makeText(getApplicationContext(), "category manager",
 					Toast.LENGTH_SHORT).show();
+			Intent categoryManagerIntent = new Intent(getApplicationContext(), CategoryManagerActivity.class);
+			startActivity(categoryManagerIntent);
 			break;
 
 		case R.id.menu_set_reminders:
