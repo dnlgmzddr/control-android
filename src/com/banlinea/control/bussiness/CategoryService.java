@@ -90,9 +90,20 @@ public class CategoryService extends BaseService {
 		PreparedQuery<Category> preparedQuery = queryBuilder.prepare();
 		
 		List<Category> categories = dao.query(preparedQuery);
-		
-		
 		return categories;
+	}
+	
+	/**
+	 * Get a single category by ID
+	 * @param categoryId id of the category to find
+	 * @return Category that match, null if nothing is found.
+	 * @throws SQLException
+	 */
+	public Category GetCategory(String categoryId) throws SQLException{
+		DatabaseHelper helper = this.getHelper();
+		Dao<Category, String> dao = helper.getCategories();
+		Category category = dao.queryForId(categoryId);
+		return category;
 	}
 	
 	public boolean EditCategory(){
