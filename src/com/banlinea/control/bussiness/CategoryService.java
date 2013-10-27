@@ -6,9 +6,12 @@ import java.util.List;
 import android.content.Context;
 
 import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.UserProfile;
+import com.banlinea.control.entities.util.CategoryResult;
 import com.banlinea.control.entities.util.GetAllBasicCateoriesResult;
 import com.banlinea.control.local.DatabaseHelper;
 import com.banlinea.control.remote.RemoteCategoryService;
+import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -27,7 +30,6 @@ public class CategoryService extends BaseService {
 
 	/**
 	 * Import the defaults user categories.
-	 * 
 	 * @throws SQLException
 	 */
 	public void ImportBaseCategories() throws SQLException {
@@ -44,10 +46,45 @@ public class CategoryService extends BaseService {
 		}
 	}
 	
+	public CallResult AddCustomCategory(String name, int group, String idParent){
+		UserProfile current = new AuthenticationService(this.context).GetUser();
+		if(current == null){
+			return new CallResult(false, "No se encontro un usuario");
+		}
+		Category categoryToAdd = new Category();
+		categoryToAdd.setName(name);
+		categoryToAdd.setGroup(group);
+		categoryToAdd.setIdParent(idParent == null? Category.SYSTEM_EMPTY_ID: idParent);
+		categoryToAdd.setIdOwner(current.getId());
+		
+		CategoryResult result = remoteCategorySerice.addCustom(categoryToAdd);
+		if(!result.isSuccessfullOperation()){
+			return result;
+		}
+		
+		try {
+			super.getHelper().getCategories().createOrUpdate(result.getBody());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	/**
-	 * 
+	 * Add or update a custom user category.
+	 * @param name
 	 * @param group
 	 * @return
+	 */
+	public CallResult AddCustomCategory(String name, int group){
+		return this.AddCustomCategory(name, group, null);
+	}
+	/**
+	 * Get category per Group (Expenses, Savings, Incomes)
+	 * @param group Expenses, Savings, Incomes
+	 * @return the list of categories.
 	 * @throws SQLException
 	 */
 	public List<Category> GetParentCategoriesPerGroup(int group) throws SQLException{

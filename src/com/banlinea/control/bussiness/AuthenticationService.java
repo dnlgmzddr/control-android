@@ -35,21 +35,22 @@ public class AuthenticationService extends BaseService {
 
 	}
 
-	public CallResult Login(String userMail, String password) throws SQLException {
-		
+	public CallResult Login(String userMail, String password)
+			throws SQLException {
+
 		UserResult result = remoteAuthSerice.Auth(userMail, password);
-		
+
 		if (result != null && result.isSuccessfullOperation()) {
-			
+
 			DatabaseHelper helper = this.getHelper();
 			Dao<UserProfile, String> dao = helper.getUserProfiles();
-			UserProfile profileToSave = result.getBody()	;
+			UserProfile profileToSave = result.getBody();
 			dao.create(profileToSave);
 		}
-		
+
 		return result;
 	}
-	
+
 	public void Logout() throws SQLException {
 		DatabaseHelper helper = this.getHelper();
 		Dao<UserProfile, String> dao = helper.getUserProfiles();
@@ -61,17 +62,19 @@ public class AuthenticationService extends BaseService {
 		Dao<UserProfile, String> dao = helper.getUserProfiles();
 		return dao.countOf() > 0;
 	}
-	
-	public UserProfile GetUser() throws SQLException {
-		DatabaseHelper helper = this.getHelper();
-		Dao<UserProfile, String> dao = helper.getUserProfiles();
-		List<UserProfile> users = dao.queryForAll();
-		if (users.size() == 0) { 
+
+	public UserProfile GetUser() {
+		try {
+			DatabaseHelper helper = this.getHelper();
+			Dao<UserProfile, String> dao = helper.getUserProfiles();
+			List<UserProfile> users = dao.queryForAll();
+			if (users.size() == 0) {
+				return null;
+			} else {
+				return users.get(0);
+			}
+		} catch (SQLException e) {
 			return null;
 		}
-		else {
-			return users.get(0);
-		}
 	}
-
 }

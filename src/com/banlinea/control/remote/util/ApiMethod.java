@@ -27,6 +27,11 @@ public enum ApiMethod {
 	TRNSACTION_ADD(HttpMethods.POST, "api/Transaction/Add"),
 
 	/**
+	 * Part of the category management, allow the user to add a custom category.
+	 */
+	CATS_ADD(HttpMethods.POST, "api/Categories/AddCustom"),
+	
+	/**
 	 * Part of the category management service, this method get all the system
 	 * categories.
 	 */
