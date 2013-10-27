@@ -65,6 +65,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.banlinea.control.BalanceActivity" />
         </activity>
+        <activity
+            android:name="com.banlinea.control.CategoryManagementActivity"
+            android:label="@string/title_activity_category_management" >
+        </activity>
     </application>
 
 </manifest>

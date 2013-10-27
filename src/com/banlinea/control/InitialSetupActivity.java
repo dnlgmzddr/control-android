@@ -3,15 +3,8 @@ package com.banlinea.control;
 import java.sql.SQLException;
 import java.util.Locale;
 
-import com.banlinea.control.bussiness.AuthenticationService;
-import com.banlinea.control.bussiness.BudgetService;
-import com.banlinea.control.entities.UserBudget;
-import com.banlinea.control.entities.util.TimePeriod;
-import com.banlinea.control.remote.util.CallResult;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -20,21 +13,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.banlinea.control.bussiness.AuthenticationService;
+import com.banlinea.control.bussiness.BudgetService;
+import com.banlinea.control.entities.UserBudget;
+import com.banlinea.control.entities.util.TimePeriod;
+import com.banlinea.control.remote.util.CallResult;
 
 /**
  * @author Daniel
@@ -155,33 +149,6 @@ public class InitialSetupActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * A dummy fragment representing a section of the app, but that simply
-	 * displays dummy text.
-	 */
-	public static class DummySectionFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DummySectionFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(
-					R.layout.fragment_initial_setup_dummy, container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
-
 	public static class IncomesSectionFragment extends Fragment {
 
 		private ViewPager mViewPager;
@@ -218,8 +185,6 @@ public class InitialSetupActivity extends FragmentActivity {
 						ub.setPeriod(TimePeriod.MONTHLY);
 						ub.setBudget(Float.parseFloat(amountEditText.getText()
 								.toString()));
-					} catch (SQLException e) {
-						e.printStackTrace();
 					} catch (NumberFormatException e) {
 						Toast.makeText(getActivity(),
 								R.string.number_format_error_message,
@@ -310,8 +275,6 @@ public class InitialSetupActivity extends FragmentActivity {
 						ub.setPeriod(TimePeriod.MONTHLY);
 						ub.setBudget(Float.parseFloat(rentEditText.getText()
 								.toString()));
-					} catch (SQLException e) {
-						e.printStackTrace();
 					} catch (NumberFormatException e) {
 						Toast.makeText(getActivity(),
 								R.string.number_format_error_message,
@@ -398,8 +361,6 @@ public class InitialSetupActivity extends FragmentActivity {
 						ubEnergy.setPeriod(TimePeriod.MONTHLY);
 						ubEnergy.setBudget(Float.parseFloat(energyEditText.getText()
 								.toString()));
-					} catch (SQLException e) {
-						e.printStackTrace();
 					} catch (NumberFormatException e) {
 						Toast.makeText(getActivity(),
 								R.string.number_format_error_message,
@@ -419,8 +380,6 @@ public class InitialSetupActivity extends FragmentActivity {
 							ubWater.setPeriod(TimePeriod.MONTHLY);
 							ubWater.setBudget(Float.parseFloat(waterEditText.getText()
 									.toString()));
-						} catch (SQLException e) {
-							e.printStackTrace();
 						} catch (NumberFormatException e) {
 							Toast.makeText(getActivity(),
 									R.string.number_format_error_message,
@@ -440,8 +399,6 @@ public class InitialSetupActivity extends FragmentActivity {
 								ubGas.setPeriod(TimePeriod.MONTHLY);
 								ubGas.setBudget(Float.parseFloat(gasEditText.getText()
 										.toString()));
-							} catch (SQLException e) {
-								e.printStackTrace();
 							} catch (NumberFormatException e) {
 								Toast.makeText(getActivity(),
 										R.string.number_format_error_message,
@@ -461,8 +418,6 @@ public class InitialSetupActivity extends FragmentActivity {
 									ubOther.setPeriod(TimePeriod.MONTHLY);
 									ubOther.setBudget(Float.parseFloat(otherEditText.getText()
 											.toString()));
-								} catch (SQLException e) {
-									e.printStackTrace();
 								} catch (NumberFormatException e) {
 									Toast.makeText(getActivity(),
 											R.string.number_format_error_message,

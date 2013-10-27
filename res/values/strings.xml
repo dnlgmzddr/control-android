@@ -78,10 +78,14 @@
     <string name="confirm">Confirmar</string>
     <string name="expense">Gasto</string>
     <string name="income">Ingreso</string>
-    <string name="savings">Ahorro</string>
+    <string name="saving">Ahorro</string>
     <string name="login_error_message">E-mail o contraseña incorrecta.\nInténtalo de nuevo.</string>
     <string name="connection_error_message">Error de conexión con el servidor.\nIntenta de nuevo más tarde.</string>
     <string name="password_error_message">Las contraseñas no coinciden. Por favor revisalas.</string>
     <string name="number_format_error_message">Formato de número errado.</string>
+    <string name="title_activity_category_management">CategoryManagementActivity</string>
+    <string name="expenses_title">Gastos</string>
+    <string name="incomes_title">Ingresos</string>
+    <string name="savings_title">Ahorros</string>
 
 </resources>

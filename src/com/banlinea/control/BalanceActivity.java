@@ -70,7 +70,7 @@ public class BalanceActivity extends Activity {
 		case R.id.menu_category_manager:
 			Toast.makeText(getApplicationContext(), "category manager",
 					Toast.LENGTH_SHORT).show();
-			Intent categoryManagerIntent = new Intent(getApplicationContext(), CategoryManagerActivity.class);
+			Intent categoryManagerIntent = new Intent(getApplicationContext(), CategoryManagementActivity.class);
 			startActivity(categoryManagerIntent);
 			break;
 

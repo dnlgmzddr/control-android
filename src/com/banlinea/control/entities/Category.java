@@ -14,9 +14,9 @@ public class Category extends BaseEntity implements Serializable{
 	 */
 	private static final long serialVersionUID = -2272440612325874578L;
 	
-	public static int GROUP_EXPENSE = 0;
-	public static int GROUP_INCOME = 1;
-	public static int GROUP_SAVING = 2;
+	public static final int GROUP_EXPENSE = 0;
+	public static final int GROUP_INCOME = 1;
+	public static final int GROUP_SAVING = 2;
 
 	public static String SYSTEM_OWNER_ID = "bd487de8-3614-11e3-98fd-ce3f5508acd9";
 	public static String SYSTEM_EMPTY_ID = "00000000-0000-0000-0000-000000000000";
