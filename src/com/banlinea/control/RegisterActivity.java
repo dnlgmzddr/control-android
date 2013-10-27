@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
 	
@@ -53,20 +54,24 @@ public class RegisterActivity extends Activity {
 			@SuppressWarnings("serial")
 			@Override
 			public void onClick(View v) {
-				
-				try {
-					UserProfile userProfile = new UserProfile();
-					userProfile.setMail(eMailTextView.getText().toString());
-					userProfile.setName(firstNameTextView.getText().toString());
-					userProfile.setPassword(passwordTextView.getText().toString());
-					authService.Register(userProfile);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if (passwordTextView.getText().toString().equals(passwordConfirmTextView.getText().toString())) {
+					try {
+						UserProfile userProfile = new UserProfile();
+						userProfile.setMail(eMailTextView.getText().toString());
+						userProfile.setName(firstNameTextView.getText().toString() + " " + lastNameTextView.getText().toString());
+						userProfile.setPassword(passwordTextView.getText().toString());
+						authService.Register(userProfile);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Intent intent = new Intent(RegisterActivity.this, ReminderSetupActivity.class);
+					startActivity(intent);
+					finish();
 				}
-				Intent intent = new Intent(RegisterActivity.this, ReminderSetupActivity.class);
-				startActivity(intent);
-				finish();
+				else {
+					Toast.makeText(RegisterActivity.this, R.string.password_error_message, Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
     }

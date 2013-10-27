@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.banlinea.control.bussiness.AuthenticationService;
 import com.banlinea.control.bussiness.CategoryService;
 
 public class SplashScreenActivity extends Activity {
@@ -23,13 +24,13 @@ public class SplashScreenActivity extends Activity {
 			public void run(){
 				try{
 					new CategoryService(activity).ImportBaseCategories();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}finally{
+					
 					Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
 					startActivity(intent);
 					finish();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
 				}
 			}
 		};

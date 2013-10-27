@@ -1,6 +1,9 @@
 package com.banlinea.control;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
+
+import com.banlinea.control.bussiness.AuthenticationService;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -108,8 +111,12 @@ public class BalanceActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				Toast.makeText(getApplicationContext(), "logout", Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent(BalanceActivity.this, LoginActivity.class);
-				startActivity(intent);
+				try {
+					new AuthenticationService(BalanceActivity.this).Logout();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				finish();
 			}
 		});
 		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
