@@ -8,6 +8,7 @@ import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.util.UserResult;
 import com.banlinea.control.local.DatabaseHelper;
 import com.banlinea.control.remote.RemoteAuthenticationService;
+import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
 
 public class AuthenticationService extends BaseService {
@@ -20,7 +21,7 @@ public class AuthenticationService extends BaseService {
 		remoteAuthSerice = new RemoteAuthenticationService();
 	}
 
-	public void Register(UserProfile userProfile) throws SQLException {
+	public CallResult Register(UserProfile userProfile) throws SQLException {
 		UserResult result = remoteAuthSerice.Register(userProfile);
 		if (result != null && result.isSuccessfullOperation()) {
 
@@ -29,22 +30,23 @@ public class AuthenticationService extends BaseService {
 			UserProfile profileToSave = result.getBody();
 			dao.create(profileToSave);
 		}
+		return result;
 
 	}
 
-	public boolean Login(String userMail, String password) throws SQLException {
-		boolean sucess = false;
+	public CallResult Login(String userMail, String password) throws SQLException {
+		
 		UserResult result = remoteAuthSerice.Auth(userMail, password);
 		
 		if (result != null && result.isSuccessfullOperation()) {
-			sucess = true;
+			
 			DatabaseHelper helper = this.getHelper();
 			Dao<UserProfile, String> dao = helper.getUserProfiles();
 			UserProfile profileToSave = result.getBody()	;
 			dao.create(profileToSave);
 		}
 		
-		return sucess;
+		return result;
 	}
 	
 	public void Logout() throws SQLException {

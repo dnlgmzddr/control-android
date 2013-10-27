@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.remote.RemoteBudgetService;
+import com.banlinea.control.remote.util.CallResult;
 
 public class BudgetService extends BaseService {
 	
@@ -16,8 +17,8 @@ public class BudgetService extends BaseService {
 		remoteBudgetService = new RemoteBudgetService();
 	}
 	
-	public boolean AddBudget(UserBudget userBudget){
-		
-		return false;
+	public CallResult AddBudget(UserBudget userBudget){
+		CallResult callResult = remoteBudgetService.AddUserBudget(userBudget);
+		return callResult;
 	}
 }

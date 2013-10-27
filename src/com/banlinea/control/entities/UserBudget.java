@@ -1,10 +1,18 @@
 package com.banlinea.control.entities;
 
+import java.io.Serializable;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable
-public class UserBudget extends BaseEntity {
+public class UserBudget extends BaseEntity implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3638660564955995096L;
+	
 	
 	@DatabaseField(id = true)
 	private String IdCategory;
