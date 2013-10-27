@@ -46,5 +46,17 @@ public class AuthenticationService extends BaseService {
 		
 		return sucess;
 	}
+	
+	public void Logout() throws SQLException {
+		DatabaseHelper helper = this.getHelper();
+		Dao<UserProfile, String> dao = helper.getUserProfiles();
+		dao.delete(dao.queryForAll());
+	}
+
+	public boolean isLoggedIn() throws SQLException {
+		DatabaseHelper helper = this.getHelper();
+		Dao<UserProfile, String> dao = helper.getUserProfiles();
+		return dao.countOf() > 0;
+	}
 
 }

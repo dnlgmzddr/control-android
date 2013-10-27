@@ -1,5 +1,9 @@
 package com.banlinea.control;
 
+import java.sql.SQLException;
+
+import com.banlinea.control.bussiness.AuthenticationService;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,9 +45,24 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(LoginActivity.this, BalanceActivity.class);
-				startActivity(intent);
-				finish();
+				
+				AuthenticationService authService = new AuthenticationService(LoginActivity.this);
+				try {
+					String username = eMailEditText.getText().toString();
+					String password = passwordEditText.getText().toString();
+					if (authService.Login(username, password)) {
+						Intent intent = new Intent(LoginActivity.this, BalanceActivity.class);
+						startActivity(intent);
+					}
+					else {
+						Toast.makeText(LoginActivity.this, R.string.login_error_message, Toast.LENGTH_SHORT).show();
+					}
+						
+				} catch (SQLException e) {
+					Toast.makeText(LoginActivity.this, R.string.connection_error_message, Toast.LENGTH_SHORT).show();
+				}
+				
+				
 			}
 		});
         
@@ -55,6 +74,16 @@ public class LoginActivity extends Activity {
 				Toast.makeText(getApplicationContext(), "redirect to website", Toast.LENGTH_SHORT).show();
 			}
 		});
+        
+        try {
+			if (new AuthenticationService(LoginActivity.this).isLoggedIn()) {
+				Intent intent = new Intent(LoginActivity.this, BalanceActivity.class);
+				startActivity(intent);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        
     }
 
 
