@@ -3,9 +3,13 @@ package com.banlinea.control;
 import java.sql.SQLException;
 
 import com.banlinea.control.bussiness.AuthenticationService;
+import com.banlinea.control.remote.util.CallResult;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -21,11 +25,26 @@ public class LoginActivity extends Activity {
 	private Button registerButton;
 	private Button signInButton;
 	private TextView passwordForgottenTextView;
+	
+	private BroadcastReceiver closeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.banlinea.control.closeapp");
+        
+        closeReceiver = new BroadcastReceiver() {
+			
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				closeActivity();
+			}
+		};
+        
+        registerReceiver(closeReceiver, filter);
         
         eMailEditText = (EditText) findViewById(R.id.email_edittext);
         passwordEditText = (EditText) findViewById(R.id.password_edittext);
@@ -50,7 +69,7 @@ public class LoginActivity extends Activity {
 				try {
 					String username = eMailEditText.getText().toString();
 					String password = passwordEditText.getText().toString();
-					if (authService.Login(username, password)) {
+					if (authService.Login(username, password).isSuccessfullOperation()) {
 						Intent intent = new Intent(LoginActivity.this, BalanceActivity.class);
 						startActivity(intent);
 					}
@@ -94,4 +113,8 @@ public class LoginActivity extends Activity {
         return true;
     }
     
+    private void closeActivity() {
+    	unregisterReceiver(closeReceiver);
+    	finish();
+    }
 }

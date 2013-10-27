@@ -8,6 +8,7 @@ import com.banlinea.control.bussiness.AuthenticationService;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -102,8 +103,9 @@ public class BalanceActivity extends Activity {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				System.runFinalizersOnExit(true);
-				System.exit(0);
+				Intent closeApp = new Intent("com.banlinea.control.closeapp");
+				sendBroadcast(closeApp);
+				finish();
 			}
 		});
 		builder.setNeutralButton(R.string.logout, new DialogInterface.OnClickListener() {

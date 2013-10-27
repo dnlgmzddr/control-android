@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import com.banlinea.control.bussiness.AuthenticationService;
 import com.banlinea.control.entities.UserProfile;
+import com.banlinea.control.remote.util.CallResult;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -60,14 +61,19 @@ public class RegisterActivity extends Activity {
 						userProfile.setMail(eMailTextView.getText().toString());
 						userProfile.setName(firstNameTextView.getText().toString() + " " + lastNameTextView.getText().toString());
 						userProfile.setPassword(passwordTextView.getText().toString());
-						authService.Register(userProfile);
+						CallResult result = authService.Register(userProfile);
+						if(result.isSuccessfullOperation()) {
+							Intent intent = new Intent(RegisterActivity.this, ReminderSetupActivity.class);
+							startActivity(intent);
+							finish();
+						}
+						else {
+							Toast.makeText(RegisterActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
+						}
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					Intent intent = new Intent(RegisterActivity.this, ReminderSetupActivity.class);
-					startActivity(intent);
-					finish();
 				}
 				else {
 					Toast.makeText(RegisterActivity.this, R.string.password_error_message, Toast.LENGTH_SHORT).show();

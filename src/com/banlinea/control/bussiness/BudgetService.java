@@ -1,5 +1,7 @@
 package com.banlinea.control.bussiness;
 
+import java.util.concurrent.ExecutionException;
+
 import android.content.Context;
 
 import com.banlinea.control.entities.UserBudget;
@@ -17,7 +19,7 @@ public class BudgetService extends BaseService {
 		remoteBudgetService = new RemoteBudgetService();
 	}
 	
-	public CallResult AddBudget(UserBudget userBudget){
+	public CallResult AddBudget(UserBudget userBudget) throws InterruptedException, ExecutionException{
 		CallResult callResult = remoteBudgetService.AddUserBudget(userBudget);
 		return callResult;
 	}
