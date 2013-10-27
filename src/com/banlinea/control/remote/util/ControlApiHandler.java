@@ -105,6 +105,7 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 		
 		HttpClient client = new DefaultHttpClient();
 		request.addHeader("Accept", "application/json");
+		
 		HttpResponse response = client.execute(request);
 		String plainObject = EntityUtils.toString(response.getEntity());
 		return plainObject;
