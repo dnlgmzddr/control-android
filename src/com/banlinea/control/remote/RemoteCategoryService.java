@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import com.banlinea.control.entities.BaseEntity;
 import com.banlinea.control.entities.util.GetAllBasicCateoriesResult;
 import com.banlinea.control.remote.util.ApiMethod;
+import com.banlinea.control.remote.util.ControlApiHandler;
 
 public class RemoteCategoryService {
 

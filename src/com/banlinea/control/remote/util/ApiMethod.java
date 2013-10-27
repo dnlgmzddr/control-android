@@ -11,6 +11,7 @@ public enum ApiMethod {
 	 */
 	AUTH_CREATE_USER(HttpMethods.POST, "api/Auth/CreateUser"),
 	
+	AUTH_LOGIN_USER(HttpMethods.GET, "api/Auth/Login"),
 	
 	/**
 	 * 

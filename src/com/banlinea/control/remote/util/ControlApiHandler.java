@@ -1,4 +1,4 @@
-package com.banlinea.control.remote;
+package com.banlinea.control.remote.util;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -18,7 +18,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.banlinea.control.entities.BaseEntity;
-import com.banlinea.control.remote.util.ApiMethod;
 import com.google.gson.Gson;
 
 public class ControlApiHandler<T, V extends BaseEntity> extends
@@ -75,13 +74,13 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 		if (requestObject != null) {
 			for (Field field : requestObject.getClass().getDeclaredFields()) {
 				try {
-					httpParams.setParameter(field.getName(),
+					httpParams.setParameter(
+							field.getName(),
 							field.get(requestObject));
+					
 				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -92,7 +91,6 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 	}
 
 	private String doPostRequest() throws IOException, ClientProtocolException {
-
 		HttpPost request = new HttpPost(method.buildUrl());
 		request.addHeader("Content-Type", "application/json");
 		Gson gson = new Gson();
@@ -104,6 +102,7 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 
 	private static String innerApiCall(HttpUriRequest request)
 			throws IOException, ClientProtocolException {
+		
 		HttpClient client = new DefaultHttpClient();
 		request.addHeader("Accept", "application/json");
 		HttpResponse response = client.execute(request);
@@ -113,14 +112,11 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 
 	@Override
 	protected T doInBackground(Void... params) {
-		// TODO Auto-generated method stub
 		try {
 			return this.doRequest();
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
