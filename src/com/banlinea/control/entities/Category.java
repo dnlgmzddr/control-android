@@ -59,4 +59,10 @@ public class Category {
 	public void setGroup(int group) {
 		Group = group;
 	}
+	
+	@Override
+	public String toString() {
+		return this.Name;
+	}
+
 }

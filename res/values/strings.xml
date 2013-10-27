@@ -76,5 +76,8 @@
     <string name="select_parent_category">Selecciona la categoría padre</string>
     <string name="edit_category_title">Editar Categoría</string>
     <string name="confirm">Confirmar</string>
+    <string name="expense">Gasto</string>
+    <string name="income">Ingreso</string>
+    <string name="savings">Ahorro</string>
 
 </resources>

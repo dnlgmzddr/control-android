@@ -1,5 +1,6 @@
 package com.banlinea.control;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.banlinea.control.bussiness.CategoryService;
 import com.banlinea.control.entities.Category;
 
 @SuppressLint("NewApi")
@@ -45,10 +48,21 @@ public class CategoryManagerActivity extends Activity {
 		categoryListView = (ListView) findViewById(R.id.listview);
 		
 		List<Category> categories = new ArrayList<Category>();
-		Category sample = new Category();
-		sample.setName("Cat 2");
-		sample.setIdParent("Cat 1");
-		categories.add(sample);
+		
+		CategoryService catService = new CategoryService(getApplicationContext());
+		try {
+			List<Category> parents = catService.GetParentCategoriesPerGroup(Category.GROUP_EXPENSE);
+			for (Category category : parents) {
+				categories.add(category);
+				List<Category> children = catService.GetChilds(category.getId());
+				for (Category category2 : children) {
+					categories.add(category2);
+				}
+			}
+			
+		} catch (SQLException e) {
+			Log.d(CategoryManagerActivity.class.getName(), e.getMessage());
+		}
 		
 		final CategoryArrayAdapter adapter = new CategoryArrayAdapter(this.getApplicationContext(), categories);
 		
@@ -112,76 +126,100 @@ public class CategoryManagerActivity extends Activity {
 			TextView categoryNameTextView = (TextView) rowView.findViewById(R.id.category_name_textview);
 			categoryNameTextView.setText(categories.get(position).getName());
 			
-			TextView categoryParentTextView = (TextView) rowView.findViewById(R.id.parent_category_textview);
-			categoryParentTextView.setText(categories.get(position).getIdParent());
+			CategoryService catService = new CategoryService(getApplicationContext());
+			Category parentCategory;
+			try {
+				parentCategory = catService.GetCategory(categories.get(position).getIdParent());
+				TextView categoryParentTextView = (TextView) rowView.findViewById(R.id.parent_category_textview);
+				if (parentCategory != null) {
+					categoryParentTextView.setText(parentCategory.getName());
+				}
+				else {
+					categoryParentTextView.setText("");
+				}
+			} catch (SQLException e) {
+				Log.d(CategoryManagerActivity.class.getName(), e.getMessage());
+			}
+			
+			
 			
 			ImageButton editButton = (ImageButton) rowView.findViewById(R.id.edit_imagebutton);
-			editButton.setOnClickListener(new View.OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					
-					AlertDialog.Builder builder = new AlertDialog.Builder(CategoryManagerActivity.this);
-					
-					LayoutInflater inflater = CategoryManagerActivity.this.getLayoutInflater();
-					View layout = inflater.inflate(R.layout.alert_edit_category, null);
-					builder.setTitle(R.string.edit_category_title);
-					builder.setView(layout);
-					final EditText categoryName = (EditText) layout.findViewById(R.id.category_name_textedit);
-					final Spinner parentCategory = (Spinner) layout.findViewById(R.id.parent_spinner);
-					
-					ArrayAdapter<String> adapter = new ArrayAdapter<String>(CategoryManagerActivity.this, R.layout.simple_spinner_item);
-					adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-					adapter.add("Selecciona una categoría padre");
-					parentCategory.setAdapter(adapter);
-					
-					builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Toast.makeText(getApplicationContext(), "Edited: " + categoryName.getText().toString(), Toast.LENGTH_SHORT).show();
-						}
-					});
-					builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-						}
-					});
-					AlertDialog dialog = builder.create();
-					dialog.show();
-					
-					Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
-				}
-			});
-			
 			ImageButton deleteButton = (ImageButton) rowView.findViewById(R.id.delete_imagebutton);
-			deleteButton.setOnClickListener(new View.OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
+			
+			if (categories.get(position).getIdOwner() == Category.SYSTEM_OWNER_ID) {
+			
+				editButton.setOnClickListener(new View.OnClickListener() {
 					
-					AlertDialog.Builder builder = new AlertDialog.Builder(CategoryManagerActivity.this);
-					builder.setTitle(R.string.delete_category_title).setMessage(R.string.delete_category_message);
-					builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(View v) {
 						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-						}
-					});
-					builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CategoryManagerActivity.this);
 						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-						}
-					});
-					AlertDialog dialog = builder.create();
-					dialog.show();
-				}
-			});
+						LayoutInflater inflater = CategoryManagerActivity.this.getLayoutInflater();
+						View layout = inflater.inflate(R.layout.alert_edit_category, null);
+						builder.setTitle(R.string.edit_category_title);
+						builder.setView(layout);
+						final EditText categoryName = (EditText) layout.findViewById(R.id.category_name_textedit);
+						final Spinner parentCategory = (Spinner) layout.findViewById(R.id.parent_spinner);
+						
+						ArrayAdapter<String> adapter = new ArrayAdapter<String>(CategoryManagerActivity.this, R.layout.simple_spinner_item);
+						adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+						adapter.add("Selecciona una categoría padre");
+						parentCategory.setAdapter(adapter);
+						
+						builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Toast.makeText(getApplicationContext(), "Edited: " + categoryName.getText().toString(), Toast.LENGTH_SHORT).show();
+							}
+						});
+						builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.cancel();
+							}
+						});
+						AlertDialog dialog = builder.create();
+						dialog.show();
+						
+						Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
+					}
+				});
+				
+				
+				deleteButton.setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						
+						AlertDialog.Builder builder = new AlertDialog.Builder(CategoryManagerActivity.this);
+						builder.setTitle(R.string.delete_category_title).setMessage(R.string.delete_category_message);
+						builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+							}
+						});
+						builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.cancel();
+							}
+						});
+						AlertDialog dialog = builder.create();
+						dialog.show();
+					}
+				});
+			}
+			else {
+				editButton.setVisibility(View.INVISIBLE);
+				deleteButton.setVisibility(View.INVISIBLE);
+			}
+			
 			return rowView;
 		}
 		

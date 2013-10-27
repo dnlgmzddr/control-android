@@ -41,15 +41,38 @@
 
     </LinearLayout>
 
-    <Spinner
-        android:id="@+id/typeSpinner"
+    <RadioGroup 
+        android:id="@+id/typeRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/transaction_type_prompt"
-        android:entries="@array/transaction_type" />
+        android:orientation="horizontal">
+        
+        <RadioButton 
+            android:id="@+id/radioExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/expense"/>
+        
+        <RadioButton 
+            android:id="@+id/radioIncome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/income"/>
+        
+        <RadioButton 
+            android:id="@+id/radioSavings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/savings"/>
+        
+    </RadioGroup>
 
     <Spinner
-        android:id="@+id/categorySpinner"
+        android:id="@+id/parentCategorySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Spinner
+        android:id="@+id/childrenCategorySpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

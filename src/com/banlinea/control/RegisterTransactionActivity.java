@@ -1,22 +1,32 @@
 package com.banlinea.control;
 
-import android.os.Bundle;
+import java.sql.SQLException;
+import java.util.List;
+
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.support.v4.app.NavUtils;
+import android.widget.Toast;
+
+import com.banlinea.control.bussiness.CategoryService;
+import com.banlinea.control.entities.Category;
 
 public class RegisterTransactionActivity extends Activity {
 
-	Spinner typeSpinner;
-	Spinner categorySpinner;
-	CheckBox useProductChackBox;
+	RadioGroup typeRadioGroup;
+	Spinner parentCategorySpinner;
+	Spinner childrenCategorySpinner;
+	CheckBox useProductCheckBox;
 	Spinner productSpinner;
 	Button registerTransactionButton;
 	
@@ -25,16 +35,124 @@ public class RegisterTransactionActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register_transaction);
 		
-		typeSpinner = (Spinner) findViewById(R.id.typeSpinner);
+		typeRadioGroup = (RadioGroup) findViewById(R.id.typeRadioGroup);
+		parentCategorySpinner = (Spinner) findViewById(R.id.parentCategorySpinner);
+		childrenCategorySpinner = (Spinner) findViewById(R.id.childrenCategorySpinner);
 		
-		categorySpinner = (Spinner) findViewById(R.id.categorySpinner);
+		typeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				try {
+					CategoryService catService = new CategoryService(getApplicationContext());
+					List<Category> parentCategories = null;
+					switch (checkedId) {
+					case R.id.radioExpense:
+						parentCategories =  catService.GetParentCategoriesPerGroup(Category.GROUP_EXPENSE);
+						break;
+					case R.id.radioIncome:
+						parentCategories =  catService.GetParentCategoriesPerGroup(Category.GROUP_INCOME);
+						break;
+					case R.id.radioSavings:
+						parentCategories =  catService.GetParentCategoriesPerGroup(Category.GROUP_SAVING);
+						break;
+					}
+					ArrayAdapter<Category> parentCategoryAdapter = new ArrayAdapter<Category> (
+							RegisterTransactionActivity.this, 
+							R.layout.simple_spinner_item,
+							parentCategories);
+					parentCategoryAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+					parentCategorySpinner.setAdapter(parentCategoryAdapter);
+					
+					if (parentCategories.size() == 0) {
+						ArrayAdapter<Category> childrenCategoryAdapter = new ArrayAdapter<Category>(
+								RegisterTransactionActivity.this,
+								R.layout.simple_spinner_item,
+								parentCategories);
+						childrenCategoryAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+						childrenCategorySpinner.setAdapter(childrenCategoryAdapter);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		
-		useProductChackBox = (CheckBox) findViewById(R.id.productCheckBox);
-		useProductChackBox.setOnClickListener( new View.OnClickListener() {
+		typeRadioGroup.check(R.id.radioExpense);
+		
+		List<Category> parentCategories = null;
+		try {
+			CategoryService catService = new CategoryService(getApplicationContext());
+			parentCategories = catService.GetParentCategoriesPerGroup(Category.GROUP_EXPENSE);
+			
+			ArrayAdapter<Category> parentCategoryAdapter = new ArrayAdapter<Category> (
+					RegisterTransactionActivity.this, 
+					R.layout.simple_spinner_item,
+					parentCategories);
+			parentCategoryAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+			parentCategorySpinner.setAdapter(parentCategoryAdapter);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		parentCategorySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				Toast.makeText(RegisterTransactionActivity.this, 
+		                "On Parent Category Select : \n" + parent.getItemAtPosition(pos).toString(),
+		                Toast.LENGTH_LONG).show();
+				
+				try {
+					CategoryService catService = new CategoryService(getApplicationContext());
+					List<Category> childrenCategories = catService.GetChilds(((Category)parent.getItemAtPosition(pos)).getId());
+					
+					ArrayAdapter<Category> childrenCategoryAdapter = new ArrayAdapter<Category> (
+							RegisterTransactionActivity.this, 
+							R.layout.simple_spinner_item,
+							childrenCategories);
+					childrenCategoryAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+					childrenCategorySpinner.setAdapter(childrenCategoryAdapter);
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+			
+		});
+		
+		
+		
+		childrenCategorySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				Toast.makeText(RegisterTransactionActivity.this, 
+		                "On Child Category Select : \n" + parent.getItemAtPosition(pos).toString(),
+		                Toast.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+			
+		});		
+		
+		useProductCheckBox = (CheckBox) findViewById(R.id.productCheckBox);
+		useProductCheckBox.setOnClickListener( new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				if (useProductChackBox.isChecked()) {
+				if (useProductCheckBox.isChecked()) {
 					productSpinner.setVisibility(View.VISIBLE);
 				}
 				else {
