@@ -28,6 +28,12 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 
 	private Class<T> targetResponseClass;
 
+	/**
+	 * Handler for remote API calls.
+	 * @param requestObject the request object to be used.
+	 * @param method The API method to be invoked
+	 * @param targetResponseClass identify the object who will fit the server response.
+	 */
 	public ControlApiHandler(V requestObject, ApiMethod method,
 			Class<T> targetResponseClass) {
 		this.requestObject = requestObject;

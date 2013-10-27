@@ -11,13 +11,22 @@ public enum ApiMethod {
 	 */
 	AUTH_CREATE_USER(HttpMethods.POST, "api/Auth/CreateUser"),
 	
+	/**
+	 * Part of the authentication end point, this method authenticate a user
+	 * with the given credentials.
+	 */
 	AUTH_LOGIN_USER(HttpMethods.POST, "api/Auth/Login"),
 	
+	BUDGET_ADD(HttpMethods.POST,""),
+	
+	
 	/**
-	 * 
+	 * Part of the category management service, this method get all the system
+	 * categories.
 	 */
 	CATS_GET_ALL(HttpMethods.GET, "api/Categories/GetBasics");
 
+	
 	/**
 	 * The HTTP method used to do the request. 
 	 * GET or POST
