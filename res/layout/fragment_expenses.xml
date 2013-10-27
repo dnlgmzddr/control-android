@@ -66,6 +66,7 @@
             android:text="@string/rent_question" />
 
         <EditText
+            android:id="@+id/rent_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/amount_hint"

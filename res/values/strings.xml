@@ -82,5 +82,6 @@
     <string name="login_error_message">E-mail o contraseña incorrecta.\nInténtalo de nuevo.</string>
     <string name="connection_error_message">Error de conexión con el servidor.\nIntenta de nuevo más tarde.</string>
     <string name="password_error_message">Las contraseñas no coinciden. Por favor revisalas.</string>
+    <string name="number_format_error_message">Formato de número errado.</string>
 
 </resources>
