@@ -1,6 +1,7 @@
 package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import android.content.Context;
 
@@ -59,6 +60,18 @@ public class AuthenticationService extends BaseService {
 		DatabaseHelper helper = this.getHelper();
 		Dao<UserProfile, String> dao = helper.getUserProfiles();
 		return dao.countOf() > 0;
+	}
+	
+	public UserProfile GetUser() throws SQLException {
+		DatabaseHelper helper = this.getHelper();
+		Dao<UserProfile, String> dao = helper.getUserProfiles();
+		List<UserProfile> users = dao.queryForAll();
+		if (users.size() == 0) { 
+			return null;
+		}
+		else {
+			return users.get(0);
+		}
 	}
 
 }

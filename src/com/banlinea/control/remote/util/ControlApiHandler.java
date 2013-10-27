@@ -52,6 +52,7 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 	 */
 	private T doRequest() throws ClientProtocolException, IOException {
 		String plainObject = innerDoRequest(method, requestObject);
+		Log.d("REMOTE", plainObject);
 		Gson gson = new Gson();
 		return gson.fromJson(plainObject, targetResponseClass);
 	}
