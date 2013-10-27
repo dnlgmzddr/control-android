@@ -69,6 +69,7 @@ public class CategoryService extends BaseService {
 		
 		return categories;
 	}
+	
 	/**
 	 * Look up for the child categories of the desired category.
 	 * @param idParentCategory , Id of the parent category.
