@@ -8,7 +8,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 public class BaseService {
 	private DatabaseHelper databaseHelper = null;
 
-	private Context context;
+	protected Context context;
 	
 	public BaseService(Context context){
 		this.context = context;
