@@ -3,12 +3,14 @@ package com.banlinea.control;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.string;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
@@ -17,9 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -115,6 +120,38 @@ public class CategoryManagerActivity extends Activity {
 				
 				@Override
 				public void onClick(View v) {
+					
+					AlertDialog.Builder builder = new AlertDialog.Builder(CategoryManagerActivity.this);
+					
+					LayoutInflater inflater = CategoryManagerActivity.this.getLayoutInflater();
+					View layout = inflater.inflate(R.layout.alert_edit_category, null);
+					builder.setTitle(R.string.edit_category_title);
+					builder.setView(layout);
+					final EditText categoryName = (EditText) layout.findViewById(R.id.category_name_textedit);
+					final Spinner parentCategory = (Spinner) layout.findViewById(R.id.parent_spinner);
+					
+					ArrayAdapter<String> adapter = new ArrayAdapter<String>(CategoryManagerActivity.this, R.layout.simple_spinner_item);
+					adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+					adapter.add("Selecciona una categoría padre");
+					parentCategory.setAdapter(adapter);
+					
+					builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Toast.makeText(getApplicationContext(), "Edited: " + categoryName.getText().toString(), Toast.LENGTH_SHORT).show();
+						}
+					});
+					builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
+					AlertDialog dialog = builder.create();
+					dialog.show();
+					
 					Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
 				}
 			});
@@ -124,7 +161,25 @@ public class CategoryManagerActivity extends Activity {
 				
 				@Override
 				public void onClick(View v) {
-					Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_SHORT).show();
+					
+					AlertDialog.Builder builder = new AlertDialog.Builder(CategoryManagerActivity.this);
+					builder.setTitle(R.string.delete_category_title).setMessage(R.string.delete_category_message);
+					builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+						}
+					});
+					builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
+					AlertDialog dialog = builder.create();
+					dialog.show();
 				}
 			});
 			return rowView;

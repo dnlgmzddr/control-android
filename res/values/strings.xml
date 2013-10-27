@@ -71,5 +71,10 @@
     <string name="edit">Editar</string>
     <string name="delete">Eliminar</string>
     <string name="add_category">Crear Categoría</string>
+    <string name="delete_category_title">Eliminar Categoría</string>
+    <string name="delete_category_message">¿Estás seguro de eliminar esta categoría?</string>
+    <string name="select_parent_category">Selecciona la categoría padre</string>
+    <string name="edit_category_title">Editar Categoría</string>
+    <string name="confirm">Confirmar</string>
 
 </resources>
