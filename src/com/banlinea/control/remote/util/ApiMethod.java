@@ -17,7 +17,7 @@ public enum ApiMethod {
 	 */
 	AUTH_LOGIN_USER(HttpMethods.POST, "api/Auth/Login"),
 	
-	BUDGET_ADD(HttpMethods.POST,""),
+	BUDGET_ADD(HttpMethods.POST,"api/Budget/AddBudget"),
 	
 	
 	/**

@@ -20,6 +20,11 @@ public class BudgetService extends BaseService {
 		remoteBudgetService = new RemoteBudgetService();
 	}
 	
+	/**
+	 * Add or update a budget for a user.
+	 * @param userBudget
+	 * @return
+	 */
 	public CallResult AddBudget(UserBudget userBudget){
 		CallResult callResult = null;
 		try {
