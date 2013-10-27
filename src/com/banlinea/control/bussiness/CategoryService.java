@@ -58,7 +58,7 @@ public class CategoryService extends BaseService {
 		QueryBuilder<Category, String> queryBuilder =
 				dao.queryBuilder();
 		
-		queryBuilder.where().isNull("IdParent")
+		queryBuilder.where().eq("IdParent", Category.SYSTEM_EMPTY_ID)
 		.and().eq("Group",group);
 		
 		
@@ -69,7 +69,12 @@ public class CategoryService extends BaseService {
 		
 		return categories;
 	}
-	
+	/**
+	 * Look up for the child categories of the desired category.
+	 * @param idParentCategory , Id of the parent category.
+	 * @return The list of categories that have the parent passed as argument.
+	 * @throws SQLException
+	 */
 	public List<Category> GetChilds(String idParentCategory) throws SQLException{
 		DatabaseHelper helper = this.getHelper();
 		Dao<Category, String> dao = helper.getCategories();
@@ -88,5 +93,9 @@ public class CategoryService extends BaseService {
 		
 		
 		return categories;
+	}
+	
+	public boolean EditCategory(){
+		return false;
 	}
 }

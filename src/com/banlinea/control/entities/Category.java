@@ -11,6 +11,8 @@ public class Category {
 	public static int GROUP_INCOME = 1;
 	public static int GROUP_SAVING = 2;
 
+	public static String SYSTEM_OWNER_ID = "bd487de8-3614-11e3-98fd-ce3f5508acd9";
+	public static String SYSTEM_EMPTY_ID = "00000000-0000-0000-0000-000000000000";
 	
 	@DatabaseField(id=true)
 	private String Id;
