@@ -8,6 +8,7 @@ import java.util.Locale;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -62,10 +63,21 @@ public class CategoryManagementActivity extends FragmentActivity {
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
+		mSectionsPagerAdapter.registerDataSetObserver(new DataSetObserver() {
 
+			@Override
+			public void onChanged() {
+				int currPage = mViewPager.getCurrentItem();
+				mViewPager.setAdapter(mSectionsPagerAdapter);
+				mViewPager.setCurrentItem(currPage);
+			}
+			
+		});
+		
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		
 
 	}
 
@@ -261,7 +273,10 @@ public class CategoryManagementActivity extends FragmentActivity {
 			}
 			return null;
 		}
+		
 	}
+	
+	
 
 	/**
 	 * A list fragment representing a section of the app, but that simply
@@ -343,7 +358,11 @@ public class CategoryManagementActivity extends FragmentActivity {
 		private class CategoryArrayAdapter extends BaseAdapter {
 
 			private final Context context;
-			private final List<Category> categories;
+			private List<Category> categories;
+			
+			public void setCategories(List<Category> categories) {
+				this.categories = categories;
+			}
 
 			public CategoryArrayAdapter(Context context,
 					List<Category> categories) {
@@ -511,6 +530,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 																			.getText()
 																			.toString(),
 															Toast.LENGTH_SHORT).show();
+													((CategoryManagementActivity)getActivity()).mViewPager.getAdapter().notifyDataSetChanged();
 												}
 												else {
 													Toast.makeText(
@@ -556,7 +576,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 						public void onClick(View v) {
 
 							AlertDialog.Builder builder = new AlertDialog.Builder(
-									getActivity().getApplicationContext());
+									v.getContext());
 							builder.setTitle(R.string.delete_category_title)
 									.setMessage(
 											R.string.delete_category_message);
