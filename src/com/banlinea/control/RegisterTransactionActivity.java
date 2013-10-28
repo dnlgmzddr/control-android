@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.banlinea.control.bussiness.CategoryService;
 import com.banlinea.control.bussiness.TransactionService;
 import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.UserFinancialProduct;
 
 public class RegisterTransactionActivity extends Activity {
 
@@ -174,7 +175,7 @@ public class RegisterTransactionActivity extends Activity {
 			public void onClick(View v) {
 				String selectedCategory = ((Category)childrenCategorySpinner.getSelectedItem()).getId();
 				float amount = Float.parseFloat(amountEditText.getText().toString());
-				new TransactionService(RegisterTransactionActivity.this).AddTransaction(selectedCategory, amount);
+				new TransactionService(RegisterTransactionActivity.this).AddTransaction(selectedCategory, amount, UserFinancialProduct.DEFAULT_PRODUCT);
 				RegisterTransactionActivity.this.finish();	
 			}
 		});

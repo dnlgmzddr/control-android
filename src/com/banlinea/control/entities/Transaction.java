@@ -58,14 +58,14 @@ public class Transaction extends BaseEntity implements Serializable{
 	}
 
 	@DatabaseField
-	private String idAccount;
+	private String idProduct;
 
-	public final String getIdAccount() {
-		return idAccount;
+	public final String getIdProduct() {
+		return idProduct;
 	}
 
-	public final void setIdAccount(String value) {
-		idAccount = value;
+	public final void setIdProduct(String value) {
+		idProduct = value;
 	}
 
 	@DatabaseField(index = true)

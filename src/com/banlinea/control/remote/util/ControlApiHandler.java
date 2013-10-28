@@ -3,6 +3,7 @@ package com.banlinea.control.remote.util;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -30,9 +31,13 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 
 	/**
 	 * Handler for remote API calls.
-	 * @param requestObject the request object to be used.
-	 * @param method The API method to be invoked
-	 * @param targetResponseClass identify the object who will fit the server response.
+	 * 
+	 * @param requestObject
+	 *            the request object to be used.
+	 * @param method
+	 *            The API method to be invoked
+	 * @param targetResponseClass
+	 *            identify the object who will fit the server response.
 	 */
 	public ControlApiHandler(V requestObject, ApiMethod method,
 			Class<T> targetResponseClass) {
@@ -81,10 +86,9 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 		if (requestObject != null) {
 			for (Field field : requestObject.getClass().getDeclaredFields()) {
 				try {
-					httpParams.setParameter(
-							field.getName(),
+					httpParams.setParameter(field.getName(),
 							field.get(requestObject));
-					
+
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -92,6 +96,7 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 				}
 			}
 		}
+		request.addHeader("Accept", "application/json");
 		request.setParams(httpParams);
 
 		return innerApiCall(request);
@@ -100,19 +105,30 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 	private String doPostRequest() throws IOException, ClientProtocolException {
 		HttpPost request = new HttpPost(method.buildUrl());
 		request.addHeader("Content-Type", "application/json");
+		request.addHeader("Accept", "application/json");
 		Gson gson = new Gson();
 		String rawBody = gson.toJson(requestObject);
 		Log.d("REMOTE", rawBody);
 		request.setEntity(new StringEntity(rawBody));
+
+		StringBuilder sb = new StringBuilder();
+
+		Header[] headers = request.getAllHeaders();
+		for (Header header : headers) {
+			sb.append(header.getName() + ":: " + header.getValue() + "::");
+		}
+		sb.append("::BODY::");
+		sb.append(rawBody);
+
+		Log.d("REMOTE", sb.toString());
 		return innerApiCall(request);
 	}
 
 	private static String innerApiCall(HttpUriRequest request)
 			throws IOException, ClientProtocolException {
-		
+
 		HttpClient client = new DefaultHttpClient();
-		request.addHeader("Accept", "application/json");
-		
+
 		HttpResponse response = client.execute(request);
 		String plainObject = EntityUtils.toString(response.getEntity());
 		return plainObject;

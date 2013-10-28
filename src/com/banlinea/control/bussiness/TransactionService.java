@@ -30,19 +30,18 @@ public class TransactionService extends BaseService {
 			Category currentCategory = new CategoryService(this.context)
 					.GetCategory(categoryId);
 			
-			UserFinancialProduct financialProduct = null;
-			if(pruductId.equals(UserFinancialProduct.DEFAULT_PRODUCT)){
-				
-			}
+			UserFinancialProduct financialProduct = new FinancialProductService(this.context).getProductById(pruductId);
 			
-			if (currentUser == null || currentCategory == null) {
-				return new CallResult(false, "No se encontro un usuario");
+			
+			if (currentUser == null || currentCategory == null || financialProduct == null) {
+				return new CallResult(false, "No es posible realizar la operación.");
 			}
 			Transaction transaction = new Transaction();
 			transaction.setAmount(amount);
 			transaction.setComment("");
 			transaction.setIdUser(currentUser.getId());
 			transaction.setIdCategory(currentCategory.getId());
+			transaction.setIdProduct(financialProduct.getIdProduct());
 			result = remoteTransactionService.AddTransaction(transaction);
 			
 			if(result.isSuccessfullOperation()){
