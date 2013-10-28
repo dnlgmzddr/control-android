@@ -9,11 +9,11 @@ import com.banlinea.control.entities.util.TransactionResult;
 import com.banlinea.control.remote.RemoteTransactionService;
 import com.banlinea.control.remote.util.CallResult;
 
-public class TrasactionService extends BaseService {
+public class TransactionService extends BaseService {
 
 	private RemoteTransactionService remoteTransactionService;
 
-	public TrasactionService(Context context) {
+	public TransactionService(Context context) {
 
 		super(context);
 		remoteTransactionService = new RemoteTransactionService();

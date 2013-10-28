@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,11 +15,13 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.banlinea.control.bussiness.CategoryService;
+import com.banlinea.control.bussiness.TransactionService;
 import com.banlinea.control.entities.Category;
 
 public class RegisterTransactionActivity extends Activity {
@@ -29,7 +32,7 @@ public class RegisterTransactionActivity extends Activity {
 	CheckBox useProductCheckBox;
 	Spinner productSpinner;
 	Button registerTransactionButton;
-	
+	EditText amountEditText;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,7 +41,7 @@ public class RegisterTransactionActivity extends Activity {
 		typeRadioGroup = (RadioGroup) findViewById(R.id.typeRadioGroup);
 		parentCategorySpinner = (Spinner) findViewById(R.id.parentCategorySpinner);
 		childrenCategorySpinner = (Spinner) findViewById(R.id.childrenCategorySpinner);
-		
+		amountEditText = (EditText) findViewById(R.id.amountEditText);
 		typeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			
 			@Override
@@ -93,7 +96,7 @@ public class RegisterTransactionActivity extends Activity {
 			parentCategorySpinner.setAdapter(parentCategoryAdapter);
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Log.d("RedisterTransaction", e.getMessage());
 		}
 		
 		parentCategorySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -169,6 +172,9 @@ public class RegisterTransactionActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				String selectedCategory = ((Category)childrenCategorySpinner.getSelectedItem()).getId();
+				float amount = Float.parseFloat(amountEditText.getText().toString());
+				new TransactionService(RegisterTransactionActivity.this).AddTransaction(selectedCategory, amount);
 				RegisterTransactionActivity.this.finish();	
 			}
 		});

@@ -10,6 +10,7 @@ import com.banlinea.control.R;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserBudget;
+import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -25,6 +26,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<Category, String> categories;
 	private Dao<UserBudget, String> budgets;
 	private Dao<Transaction, String> transactions;
+	private Dao<UserFinancialProduct, String> userFinantialProducts;
 	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION,
@@ -39,6 +41,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, Category.class);
 			TableUtils.createTable(connectionSource, UserBudget.class);
 			TableUtils.createTable(connectionSource, Transaction.class);
+			TableUtils.createTable(connectionSource, UserFinancialProduct.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
 		}
@@ -52,6 +55,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Category.class, true);
 			TableUtils.dropTable(connectionSource, UserBudget.class, true);
 			TableUtils.dropTable(connectionSource, Transaction.class, true);
+			TableUtils.dropTable(connectionSource, UserFinancialProduct.class, true);
 			onCreate(sqliteDatabase, connectionSource);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(),
@@ -86,6 +90,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			transactions = getDao(UserBudget.class);
 		}
 		return transactions;
+	}
+	public Dao<UserFinancialProduct, String> getUserFinantialProducts() throws SQLException {
+		if (userFinantialProducts == null) {
+			userFinantialProducts = getDao(UserFinancialProduct.class);
+		}
+		return userFinantialProducts;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.banlinea.control.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -50,6 +51,14 @@ public  class UserProfile extends BaseEntity implements Serializable
 		Mail = mail;
 	}
 
+	public List<UserFinancialProduct> getUserFinancialProducts() {
+		return UserFinancialProducts;
+	}
+
+	public void setUserFinancialProducts(List<UserFinancialProduct> userFinancialProducts) {
+		UserFinancialProducts = userFinancialProducts;
+	}
+
 	@DatabaseField(id=true)
 	private String Id;
 	@DatabaseField
@@ -58,4 +67,5 @@ public  class UserProfile extends BaseEntity implements Serializable
     private String Password; 
 	@DatabaseField
     private String Mail; 
+	private List<UserFinancialProduct> UserFinancialProducts;
 }

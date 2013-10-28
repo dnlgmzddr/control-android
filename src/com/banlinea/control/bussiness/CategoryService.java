@@ -18,8 +18,6 @@ import com.j256.ormlite.stmt.QueryBuilder;
 
 public class CategoryService extends BaseService {
 
-
-	
 	private RemoteCategoryService remoteCategorySerice;
 
 	public CategoryService(Context context) {
@@ -30,6 +28,7 @@ public class CategoryService extends BaseService {
 
 	/**
 	 * Import the defaults user categories.
+	 * 
 	 * @throws SQLException
 	 */
 	public void ImportBaseCategories() throws SQLException {
@@ -45,106 +44,109 @@ public class CategoryService extends BaseService {
 			}
 		}
 	}
-	
-	public CallResult AddCustomCategory(String name, int group, String idParent){
+
+	public CallResult AddCustomCategory(String name, int group, String idParent) {
 		UserProfile current = new AuthenticationService(this.context).GetUser();
-		if(current == null){
+		if (current == null) {
 			return new CallResult(false, "No se encontro un usuario");
 		}
 		Category categoryToAdd = new Category();
 		categoryToAdd.setName(name);
 		categoryToAdd.setGroup(group);
-		categoryToAdd.setIdParent(idParent == null? Category.SYSTEM_EMPTY_ID: idParent);
+		categoryToAdd.setIdParent(idParent == null ? Category.SYSTEM_EMPTY_ID
+				: idParent);
 		categoryToAdd.setIdOwner(current.getId());
-		
+
 		CategoryResult result = remoteCategorySerice.addCustom(categoryToAdd);
-		if(!result.isSuccessfullOperation()){
+		if (!result.isSuccessfullOperation()) {
 			return result;
 		}
-		
+
 		try {
 			super.getHelper().getCategories().createOrUpdate(result.getBody());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Add or update a custom user category.
+	 * 
 	 * @param name
 	 * @param group
 	 * @return
 	 */
-	public CallResult AddCustomCategory(String name, int group){
+	public CallResult AddCustomCategory(String name, int group) {
 		return this.AddCustomCategory(name, group, null);
 	}
+
 	/**
 	 * Get category per Group (Expenses, Savings, Incomes)
-	 * @param group Expenses, Savings, Incomes
+	 * 
+	 * @param group
+	 *            Expenses, Savings, Incomes
 	 * @return the list of categories.
 	 * @throws SQLException
 	 */
-	public List<Category> GetParentCategoriesPerGroup(int group) throws SQLException{
+	public List<Category> GetParentCategoriesPerGroup(int group)
+			throws SQLException {
 		DatabaseHelper helper = this.getHelper();
 		Dao<Category, String> dao = helper.getCategories();
-		
-		
-		QueryBuilder<Category, String> queryBuilder =
-				dao.queryBuilder();
-		
-		queryBuilder.where().eq("IdParent", Category.SYSTEM_EMPTY_ID)
-		.and().eq("Group",group);
-		
-		
+
+		QueryBuilder<Category, String> queryBuilder = dao.queryBuilder();
+
+		queryBuilder.where().eq("IdParent", Category.SYSTEM_EMPTY_ID).and()
+				.eq("Group", group);
+
 		PreparedQuery<Category> preparedQuery = queryBuilder.prepare();
-		
+
 		List<Category> categories = dao.query(preparedQuery);
-		
-		
+
 		return categories;
 	}
-	
+
 	/**
 	 * Look up for the child categories of the desired category.
-	 * @param idParentCategory , Id of the parent category.
+	 * 
+	 * @param idParentCategory
+	 *            , Id of the parent category.
 	 * @return The list of categories that have the parent passed as argument.
 	 * @throws SQLException
 	 */
-	public List<Category> GetChilds(String idParentCategory) throws SQLException{
+	public List<Category> GetChilds(String idParentCategory)
+			throws SQLException {
 		DatabaseHelper helper = this.getHelper();
 		Dao<Category, String> dao = helper.getCategories();
-		
-		
-		QueryBuilder<Category, String> queryBuilder =
-				dao.queryBuilder();
-		
+
+		QueryBuilder<Category, String> queryBuilder = dao.queryBuilder();
+
 		queryBuilder.where().eq("IdParent", idParentCategory);
-		
-		
-		
+
 		PreparedQuery<Category> preparedQuery = queryBuilder.prepare();
-		
+
 		List<Category> categories = dao.query(preparedQuery);
 		return categories;
 	}
-	
+
 	/**
 	 * Get a single category by ID
-	 * @param categoryId id of the category to find
+	 * 
+	 * @param categoryId
+	 *            id of the category to find
 	 * @return Category that match, null if nothing is found.
 	 * @throws SQLException
 	 */
-	public Category GetCategory(String categoryId) throws SQLException{
+	public Category GetCategory(String categoryId) throws SQLException {
 		DatabaseHelper helper = this.getHelper();
 		Dao<Category, String> dao = helper.getCategories();
 		Category category = dao.queryForId(categoryId);
 		return category;
 	}
-	
-	public boolean EditCategory(){
+
+	public boolean EditCategory() {
 		return false;
 	}
 }
