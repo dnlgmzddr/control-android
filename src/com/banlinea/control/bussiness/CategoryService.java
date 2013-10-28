@@ -7,8 +7,8 @@ import android.content.Context;
 
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.UserProfile;
-import com.banlinea.control.entities.util.CategoryResult;
-import com.banlinea.control.entities.util.GetAllBasicCateoriesResult;
+import com.banlinea.control.entities.result.CategoryResult;
+import com.banlinea.control.entities.result.GetAllBasicCateoriesResult;
 import com.banlinea.control.local.DatabaseHelper;
 import com.banlinea.control.remote.RemoteCategoryService;
 import com.banlinea.control.remote.util.CallResult;
@@ -45,7 +45,7 @@ public class CategoryService extends BaseService {
 		}
 	}
 
-	public CallResult AddCustomCategory(String name, int group, String idParent) {
+	public CallResult AddCustomCategory(String idCategory,String name, int group, String idParent) {
 		UserProfile current = new AuthenticationService(this.context).GetUser();
 		if (current == null) {
 			return new CallResult(false, "No se encontro un usuario");
@@ -55,6 +55,9 @@ public class CategoryService extends BaseService {
 		categoryToAdd.setGroup(group);
 		categoryToAdd.setIdParent(idParent == null ? Category.SYSTEM_EMPTY_ID
 				: idParent);
+		
+		categoryToAdd.setId(idCategory == null ? Category.SYSTEM_EMPTY_ID
+				: idCategory);
 		categoryToAdd.setIdOwner(current.getId());
 
 		CategoryResult result = remoteCategorySerice.addCustom(categoryToAdd);
@@ -70,8 +73,12 @@ public class CategoryService extends BaseService {
 		}
 
 		return result;
-	}
+		}
 
+	public CallResult AddCustomCategory(String name, int group, String idParent) {
+		return this.AddCustomCategory(null,name, group, idParent);
+	}
+	
 	/**
 	 * Add or update a custom user category.
 	 * 
@@ -80,9 +87,13 @@ public class CategoryService extends BaseService {
 	 * @return
 	 */
 	public CallResult AddCustomCategory(String name, int group) {
-		return this.AddCustomCategory(name, group, null);
+		return this.AddCustomCategory(null,name, group, null);
 	}
 
+	public CallResult AddCustomCategory(String idCategory, String name, int group) {
+		return this.AddCustomCategory(idCategory,name, group, null);
+	}
+	
 	/**
 	 * Get category per Group (Expenses, Savings, Incomes)
 	 * 
@@ -146,7 +157,4 @@ public class CategoryService extends BaseService {
 		return category;
 	}
 
-	public boolean EditCategory() {
-		return false;
-	}
 }

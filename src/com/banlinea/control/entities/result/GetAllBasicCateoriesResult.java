@@ -1,4 +1,4 @@
-package com.banlinea.control.entities.util;
+package com.banlinea.control.entities.result;
 
 import java.util.ArrayList;
 

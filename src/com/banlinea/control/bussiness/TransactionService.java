@@ -4,8 +4,9 @@ import android.content.Context;
 
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
+import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
-import com.banlinea.control.entities.util.TransactionResult;
+import com.banlinea.control.entities.result.TransactionResult;
 import com.banlinea.control.remote.RemoteTransactionService;
 import com.banlinea.control.remote.util.CallResult;
 
@@ -19,7 +20,7 @@ public class TransactionService extends BaseService {
 		remoteTransactionService = new RemoteTransactionService();
 	}
 
-	public CallResult AddTransaction(String categoryId, float amount) {
+	public CallResult AddTransaction(String categoryId, float amount, String pruductId) {
 
 		TransactionResult result;
 
@@ -28,6 +29,12 @@ public class TransactionService extends BaseService {
 					.GetUser();
 			Category currentCategory = new CategoryService(this.context)
 					.GetCategory(categoryId);
+			
+			UserFinancialProduct financialProduct = null;
+			if(pruductId.equals(UserFinancialProduct.DEFAULT_PRODUCT)){
+				
+			}
+			
 			if (currentUser == null || currentCategory == null) {
 				return new CallResult(false, "No se encontro un usuario");
 			}

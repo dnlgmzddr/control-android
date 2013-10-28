@@ -4,8 +4,8 @@ import java.util.concurrent.ExecutionException;
 
 import com.banlinea.control.entities.BaseEntity;
 import com.banlinea.control.entities.Category;
-import com.banlinea.control.entities.util.CategoryResult;
-import com.banlinea.control.entities.util.GetAllBasicCateoriesResult;
+import com.banlinea.control.entities.result.CategoryResult;
+import com.banlinea.control.entities.result.GetAllBasicCateoriesResult;
 import com.banlinea.control.remote.util.ApiMethod;
 import com.banlinea.control.remote.util.ControlApiHandler;
 

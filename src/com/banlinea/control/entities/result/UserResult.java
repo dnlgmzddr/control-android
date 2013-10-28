@@ -1,4 +1,4 @@
-package com.banlinea.control.entities.util;
+package com.banlinea.control.entities.result;
 
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.remote.util.CallResult;

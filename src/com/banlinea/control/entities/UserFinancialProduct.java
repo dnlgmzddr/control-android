@@ -6,6 +6,11 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class UserFinancialProduct extends BaseEntity {
 
+	public static final String DEFAULT_PRODUCT = "DEFAULT";
+	public static final int TYPE_CASH = 0;
+	public static final int TYPE_CREDIT_CARD = 0;
+	public static final int TYPE_SAVING_ACCOUNT = 0;
+	
 	@DatabaseField
 	private String IdProduct;
 

@@ -8,7 +8,7 @@ import android.content.Context;
 
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
-import com.banlinea.control.entities.util.UserResult;
+import com.banlinea.control.entities.result.UserResult;
 import com.banlinea.control.local.DatabaseHelper;
 import com.banlinea.control.remote.RemoteAuthenticationService;
 import com.banlinea.control.remote.util.CallResult;
