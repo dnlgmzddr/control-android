@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 
-import com.banlinea.control.bussiness.AuthenticationService;
 import com.banlinea.control.bussiness.CategoryService;
 
 public class SplashScreenActivity extends Activity {

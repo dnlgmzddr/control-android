@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +32,7 @@ import android.widget.Toast;
 
 import com.banlinea.control.bussiness.CategoryService;
 import com.banlinea.control.entities.Category;
+import com.banlinea.control.remote.util.CallResult;
 
 public class CategoryManagementActivity extends FragmentActivity {
 
@@ -102,9 +102,100 @@ public class CategoryManagementActivity extends FragmentActivity {
 		case R.id.add_category:
 			Toast.makeText(this, "Create New Category", Toast.LENGTH_SHORT)
 					.show();
+			onCreateCategory();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	void onCreateCategory() {
+		int page = this.mViewPager.getCurrentItem();
+
+		final int groupId = (page == 0 ? Category.GROUP_EXPENSE
+				: (page == 1 ? Category.GROUP_INCOME : Category.GROUP_SAVING));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				CategoryManagementActivity.this);
+
+		LayoutInflater inflater = CategoryManagementActivity.this
+				.getLayoutInflater();
+		View layout = inflater.inflate(R.layout.alert_edit_category, null);
+		builder.setTitle(R.string.edit_category_title);
+
+		builder.setView(layout);
+		final EditText categoryName = (EditText) layout
+				.findViewById(R.id.category_name_textedit);
+		final Spinner parentCategory = (Spinner) layout
+				.findViewById(R.id.parent_spinner);
+		ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(
+				CategoryManagementActivity.this, R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+		// adapter.add();
+		CategoryService catService = new CategoryService(
+				CategoryManagementActivity.this);
+		List<Category> parentCategories = new ArrayList<Category>();
+		try {
+			parentCategories = catService.GetParentCategoriesPerGroup(groupId);
+		} catch (SQLException e) {
+			Log.d("CreateCategory", e.getMessage());
+		}
+		Category noCat = new Category();
+		noCat.setName("Ninguna");
+		noCat.setId("0");
+		adapter.add(noCat);
+		adapter.addAll(parentCategories);
+
+		parentCategory.setAdapter(adapter);
+
+		builder.setPositiveButton(R.string.confirm,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						CallResult creationResult;
+						if (!((Category)parentCategory.getSelectedItem()).getId().equals("0")) {
+							creationResult = new CategoryService(
+									CategoryManagementActivity.this)
+									.AddCustomCategory(categoryName.getText()
+											.toString(), groupId,
+											((Category) parentCategory
+													.getSelectedItem()).getId());
+						} else {
+							creationResult = new CategoryService(
+									CategoryManagementActivity.this)
+									.AddCustomCategory(categoryName.getText()
+											.toString(), groupId);
+						}
+
+						if (creationResult.isSuccessfullOperation()) {
+							Toast.makeText(
+									CategoryManagementActivity.this,
+									"Created: "
+											+ categoryName.getText().toString(),
+									Toast.LENGTH_SHORT).show();
+							mViewPager.getAdapter().notifyDataSetChanged();
+						} else {
+							Toast.makeText(
+									CategoryManagementActivity.this,
+									"Error creating "
+											+ categoryName.getText().toString()
+											+ ": "
+											+ creationResult.getMessage(),
+									Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
+		builder.setNegativeButton(R.string.cancel,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog dialog = builder.create();
+		dialog.show();
 	}
 
 	/**
@@ -282,7 +373,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View rowView = inflater.inflate(R.layout.row_category_manager,
 						parent, false);
-				
+
 				final int pos = position;
 				rowView.setOnClickListener(new View.OnClickListener() {
 
@@ -299,8 +390,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 				categoryNameTextView
 						.setText(categories.get(position).getName());
 
-				CategoryService catService = new CategoryService(
-						getActivity().getApplicationContext());
+				CategoryService catService = new CategoryService(getActivity()
+						.getApplicationContext());
 				Category parentCategory;
 				try {
 					parentCategory = catService.GetCategory(categories.get(
@@ -323,15 +414,22 @@ public class CategoryManagementActivity extends FragmentActivity {
 				ImageButton deleteButton = (ImageButton) rowView
 						.findViewById(R.id.delete_imagebutton);
 
-				if (categories.get(position).getIdOwner() == Category.SYSTEM_OWNER_ID) {
-
+				if (!categories.get(position).getIdOwner().equals(Category.SYSTEM_OWNER_ID)) {
+					
+					int page = ((CategoryManagementActivity)getActivity()).mViewPager.getCurrentItem();
+					
+					final Category currCategory = categories.get(position);
+					
+					final int groupId = (page == 0 ? Category.GROUP_EXPENSE
+							: (page == 1 ? Category.GROUP_INCOME : Category.GROUP_SAVING));
+					
 					editButton.setOnClickListener(new View.OnClickListener() {
 
 						@Override
 						public void onClick(View v) {
-
+							
 							AlertDialog.Builder builder = new AlertDialog.Builder(
-									getActivity().getApplicationContext());
+									v.getContext());
 
 							LayoutInflater inflater = getActivity().getLayoutInflater();
 							View layout = inflater.inflate(
@@ -340,16 +438,41 @@ public class CategoryManagementActivity extends FragmentActivity {
 							builder.setView(layout);
 							final EditText categoryName = (EditText) layout
 									.findViewById(R.id.category_name_textedit);
+							categoryName.setText(currCategory.getName());
 							final Spinner parentCategory = (Spinner) layout
 									.findViewById(R.id.parent_spinner);
-
-							ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-									getActivity(),
-									R.layout.simple_spinner_item);
+							
+							ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(
+									v.getContext(), R.layout.simple_spinner_item);
 							adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-							adapter.add("Selecciona una categoría padre");
+							
+							CategoryService catService = new CategoryService(getActivity().getApplicationContext());
+							List<Category> parentCategories = new ArrayList<Category>();
+							try {
+								parentCategories = catService.GetParentCategoriesPerGroup(groupId);
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							}
+							
+							Category noCat = new Category();
+							noCat.setName("Ninguna");
+							noCat.setId("0");
+							adapter.add(noCat);
+							
+							adapter.addAll(parentCategories);
 							parentCategory.setAdapter(adapter);
-
+							
+							
+							Log.d("Searching category", currCategory.getIdParent());
+							for (int i = 0; i < parentCategories.size(); i++) {
+								Log.d("Looking at", parentCategories.get(i).getId());
+								if(parentCategories.get(i).getId().equals(currCategory.getIdParent())) {
+									parentCategory.setSelection(i+1);
+									break;
+								}
+								
+							}
+							
 							builder.setPositiveButton(R.string.confirm,
 									new DialogInterface.OnClickListener() {
 
@@ -357,13 +480,55 @@ public class CategoryManagementActivity extends FragmentActivity {
 										public void onClick(
 												DialogInterface dialog,
 												int which) {
-											Toast.makeText(
-													getActivity().getApplicationContext(),
-													"Edited: "
-															+ categoryName
-																	.getText()
-																	.toString(),
-													Toast.LENGTH_SHORT).show();
+											CategoryService catService = new CategoryService(getActivity().getApplicationContext());
+											List<Category> childrenCats = new ArrayList<Category>();
+											try {
+												childrenCats = catService.GetChilds(currCategory.getId());
+											} catch (SQLException e) {
+												e.printStackTrace();
+											}
+											if(childrenCats.size() == 0){
+												CallResult editResult = null;
+												if (((Category)parentCategory.getSelectedItem()).getId().equals("0")) {
+													editResult = catService.AddCustomCategory(
+															currCategory.getId(), 
+															categoryName.getText().toString(),
+															groupId);
+												}
+												else {
+													editResult = catService.AddCustomCategory(
+															currCategory.getId(), 
+															categoryName.getText().toString(),
+															groupId,
+															((Category)parentCategory.getSelectedItem()).getId());
+												}
+												if (editResult.isSuccessfullOperation()) {
+													Toast.makeText(
+															getActivity()
+																	.getApplicationContext(),
+															"Edited: "
+																	+ categoryName
+																			.getText()
+																			.toString(),
+															Toast.LENGTH_SHORT).show();
+												}
+												else {
+													Toast.makeText(
+															getActivity()
+																	.getApplicationContext(),
+															"Error: "
+																	+ editResult.getMessage(),
+															Toast.LENGTH_SHORT).show();
+												}
+											}
+											else {
+												Toast.makeText(
+														getActivity()
+																.getApplicationContext(),
+														R.string.children_parent_category_error,
+														Toast.LENGTH_SHORT).show();
+											}
+											
 										}
 									});
 							builder.setNegativeButton(R.string.cancel,
@@ -379,8 +544,9 @@ public class CategoryManagementActivity extends FragmentActivity {
 							AlertDialog dialog = builder.create();
 							dialog.show();
 
-							Toast.makeText(getActivity().getApplicationContext(), "Edit",
-									Toast.LENGTH_SHORT).show();
+							Toast.makeText(
+									getActivity().getApplicationContext(),
+									"Edit", Toast.LENGTH_SHORT).show();
 						}
 					});
 
@@ -402,7 +568,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 												DialogInterface dialog,
 												int which) {
 											Toast.makeText(
-													getActivity().getApplicationContext(),
+													getActivity()
+															.getApplicationContext(),
 													"Deleted",
 													Toast.LENGTH_SHORT).show();
 										}

@@ -3,21 +3,19 @@ package com.banlinea.control;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 
-import com.banlinea.control.bussiness.AuthenticationService;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.banlinea.control.bussiness.AuthenticationService;
 
 public class BalanceActivity extends Activity {
 

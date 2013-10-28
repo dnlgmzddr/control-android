@@ -2,9 +2,6 @@ package com.banlinea.control;
 
 import java.sql.SQLException;
 
-import com.banlinea.control.bussiness.AuthenticationService;
-import com.banlinea.control.remote.util.CallResult;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.banlinea.control.bussiness.AuthenticationService;
 
 public class LoginActivity extends Activity {
 	
@@ -40,6 +39,7 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				unregisterReceiver(closeReceiver);
 				closeActivity();
 			}
 		};
@@ -114,7 +114,6 @@ public class LoginActivity extends Activity {
     }
     
     private void closeActivity() {
-    	unregisterReceiver(closeReceiver);
     	finish();
     }
 }
