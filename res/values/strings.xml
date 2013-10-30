@@ -87,5 +87,8 @@
     <string name="expenses_title">Gastos</string>
     <string name="incomes_title">Ingresos</string>
     <string name="savings_title">Ahorros</string>
+    <string name="children_parent_category_error">Una categoría no puede ser padre si ya tiene un padre. Intenta otra categoría</string>
+    <string name="category_budget_title">Presupuesto de categoría</string>
+    <string name="category_budget_message">El presupuesto para esta categoría es:</string>
 
 </resources>

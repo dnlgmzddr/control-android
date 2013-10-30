@@ -5,19 +5,13 @@
     android:orientation="vertical" >
 
     <EditText
-        android:id="@+id/category_name_textedit"
+        android:id="@+id/budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/category_name"
-        android:padding="15dp" >
+        android:inputType="number" >
 
         <requestFocus />
     </EditText>
-
-    <Spinner
-        android:id="@+id/parent_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+    
 </LinearLayout>

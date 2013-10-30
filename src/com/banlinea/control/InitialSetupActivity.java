@@ -1,6 +1,5 @@
 package com.banlinea.control;
 
-import java.sql.SQLException;
 import java.util.Locale;
 
 import android.animation.Animator;
@@ -120,7 +119,7 @@ public class InitialSetupActivity extends FragmentActivity {
 			}
 
 			// Fragment fragment = new DummySectionFragment();
-			Bundle args = new Bundle();
+			// args = new Bundle();
 			/*
 			 * args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position +
 			 * 1); fragment.setArguments(args);
@@ -317,7 +316,6 @@ public class InitialSetupActivity extends FragmentActivity {
 
 	public static class PublicServicesSectionFragment extends Fragment {
 
-		private ViewPager mViewPager;
 		private EditText energyEditText;
 		private EditText waterEditText;
 		private EditText gasEditText;
@@ -339,7 +337,6 @@ public class InitialSetupActivity extends FragmentActivity {
 			View rootView = inflater.inflate(R.layout.fragment_public_services,
 					container, false);
 
-			mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
 			
 			energyEditText = (EditText) rootView.findViewById(R.id.energy_edittext);
 			waterEditText = (EditText) rootView.findViewById(R.id.water_edittext);

@@ -52,7 +52,6 @@ public class RegisterActivity extends Activity {
         registerButton = (Button) findViewById(R.id.register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
 			
-			@SuppressWarnings("serial")
 			@Override
 			public void onClick(View v) {
 				if (passwordTextView.getText().toString().equals(passwordConfirmTextView.getText().toString())) {
