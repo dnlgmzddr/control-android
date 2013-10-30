@@ -39,8 +39,7 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				unregisterReceiver(closeReceiver);
-				closeActivity();
+				finish();
 			}
 		};
         
@@ -112,8 +111,17 @@ public class LoginActivity extends Activity {
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
+
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		try {
+			unregisterReceiver(closeReceiver);
+		}
+		catch (Exception e) {
+		}
+		super.finish();
+	}
     
-    private void closeActivity() {
-    	finish();
-    }
+    
 }
