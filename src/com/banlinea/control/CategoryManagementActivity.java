@@ -4,10 +4,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.zip.Inflater;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -344,7 +346,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 						@Override
-						public void onItemClick(AdapterView<?> arg0, View view,
+						public void onItemClick(AdapterView<?> adapter, View view,
 								int position, long id) {
 							Toast.makeText(getActivity(),
 									"1Click ListItem Number " + position,
@@ -401,6 +403,32 @@ public class CategoryManagementActivity extends FragmentActivity {
 						Toast.makeText(getActivity().getApplicationContext(),
 								"Click ListItem Number " + pos,
 								Toast.LENGTH_LONG).show();
+						
+						AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+						LayoutInflater inflater = getActivity().getLayoutInflater();
+						View v1 = inflater.inflate(R.layout.alert_edit_category_budget, null);
+						builder.setView(v1);
+						final EditText budgetEditText = (EditText) v1.findViewById(R.id.budget);
+						budgetEditText.setText("$10.000");
+						builder.setTitle(getString(R.string.category_budget_title)+" "+categories.get(pos).getName());
+						builder.setMessage(R.string.category_budget_message);
+						builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Toast.makeText(getActivity(), "budget set to: $" + budgetEditText.getText().toString(), Toast.LENGTH_SHORT).show();
+							}
+						});
+						builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								
+							}
+						});
+						AlertDialog dialog = builder.create();
+						dialog.show();
+						
 					}
 				});
 
