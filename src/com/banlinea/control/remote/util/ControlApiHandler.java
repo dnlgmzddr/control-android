@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.banlinea.control.entities.BaseEntity;
+import com.banlinea.control.entities.util.GsonProvider;
 import com.google.gson.Gson;
 
 public class ControlApiHandler<T, V extends BaseEntity> extends
@@ -57,8 +58,8 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 	 */
 	private T doRequest() throws ClientProtocolException, IOException {
 		String plainObject = innerDoRequest(method, requestObject);
-		Log.d("REMOTE", plainObject);
-		Gson gson = new Gson();
+		Log.d("REMOTE_RESPONSE", plainObject);
+		Gson gson = GsonProvider.getGson();
 		return gson.fromJson(plainObject, targetResponseClass);
 	}
 
@@ -106,9 +107,9 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 		HttpPost request = new HttpPost(method.buildUrl());
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Accept", "application/json");
-		Gson gson = new Gson();
+		Gson gson = GsonProvider.getGson();
 		String rawBody = gson.toJson(requestObject);
-		Log.d("REMOTE", rawBody);
+		Log.d("REMOTE_DO_POST", rawBody);
 		request.setEntity(new StringEntity(rawBody));
 
 		StringBuilder sb = new StringBuilder();
@@ -117,10 +118,7 @@ public class ControlApiHandler<T, V extends BaseEntity> extends
 		for (Header header : headers) {
 			sb.append(header.getName() + ":: " + header.getValue() + "::");
 		}
-		sb.append("::BODY::");
-		sb.append(rawBody);
-
-		Log.d("REMOTE", sb.toString());
+	
 		return innerApiCall(request);
 	}
 

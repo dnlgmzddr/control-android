@@ -36,7 +36,7 @@ public class Transaction extends BaseEntity implements Serializable{
 	}
 
 	@DatabaseField
-	private java.util.Date date = new java.util.Date(0);
+	private java.util.Date date = new java.util.Date();
 
 	public final java.util.Date getDate() {
 		return date;

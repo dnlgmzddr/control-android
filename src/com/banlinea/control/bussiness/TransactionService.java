@@ -1,5 +1,8 @@
 package com.banlinea.control.bussiness;
 
+import java.util.Date;
+import java.util.List;
+
 import android.content.Context;
 
 import com.banlinea.control.entities.Category;
@@ -56,5 +59,12 @@ public class TransactionService extends BaseService {
 		} 
 
 		return result;
+	}
+	
+	public List<Transaction> getCurrentMonthTransactions(){
+		
+		Date today = new Date();
+		
+		return null;
 	}
 }
