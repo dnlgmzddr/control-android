@@ -9,19 +9,14 @@ import com.banlinea.control.remote.util.ControlApiHandler;
 
 public class RemoteBudgetService {
 
-	
-	
-	public CallResult AddUserBudget(UserBudget userBudget) throws InterruptedException, ExecutionException {
-		
-		CallResult result = new ControlApiHandler<CallResult,UserBudget>(
-				userBudget,
-				ApiMethod.BUDGET_ADD,
-				CallResult.class
-				).execute().get();
-		
+	public CallResult AddUserBudget(UserBudget userBudget)
+			throws InterruptedException, ExecutionException {
+
+		CallResult result = new ControlApiHandler<CallResult, UserBudget>(
+				userBudget, ApiMethod.BUDGET_ADD, CallResult.class).execute()
+				.get();
+
 		return result;
 	}
-
-
 
 }

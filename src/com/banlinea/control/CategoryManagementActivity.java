@@ -33,8 +33,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.banlinea.control.bussiness.BudgetService;
 import com.banlinea.control.bussiness.CategoryService;
 import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.remote.util.CallResult;
 
 public class CategoryManagementActivity extends FragmentActivity {
@@ -348,9 +350,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 						@Override
 						public void onItemClick(AdapterView<?> adapter, View view,
 								int position, long id) {
-							Toast.makeText(getActivity(),
-									"1Click ListItem Number " + position,
-									Toast.LENGTH_LONG).show();
+							// never happens
 						}
 					});
 
@@ -431,7 +431,12 @@ public class CategoryManagementActivity extends FragmentActivity {
 						
 					}
 				});
-
+				
+				TextView filledBarTV = (TextView) rowView.findViewById(R.id.filledBar);
+				TextView emptyBarTV = (TextView) rowView.findViewById(R.id.emptyBar);
+				
+				
+				
 				TextView categoryNameTextView = (TextView) rowView
 						.findViewById(R.id.category_name_textview);
 				categoryNameTextView

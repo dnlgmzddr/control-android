@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import com.banlinea.control.bussiness.CategoryService;
 import com.banlinea.control.bussiness.TransactionService;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.UserFinancialProduct;
+import com.banlinea.control.remote.util.CallResult;
 
 public class RegisterTransactionActivity extends Activity {
 
@@ -34,11 +36,16 @@ public class RegisterTransactionActivity extends Activity {
 	Spinner productSpinner;
 	Button registerTransactionButton;
 	EditText amountEditText;
+	
+	ResultReceiver receiverTag;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_register_transaction);
 		
+		this.receiverTag = getIntent().getParcelableExtra("receiverTag");
+		
+		setContentView(R.layout.activity_register_transaction);
+
 		typeRadioGroup = (RadioGroup) findViewById(R.id.typeRadioGroup);
 		parentCategorySpinner = (Spinner) findViewById(R.id.parentCategorySpinner);
 		childrenCategorySpinner = (Spinner) findViewById(R.id.childrenCategorySpinner);
@@ -175,7 +182,10 @@ public class RegisterTransactionActivity extends Activity {
 			public void onClick(View v) {
 				String selectedCategory = ((Category)childrenCategorySpinner.getSelectedItem()).getId();
 				float amount = Float.parseFloat(amountEditText.getText().toString());
-				new TransactionService(RegisterTransactionActivity.this).AddTransaction(selectedCategory, amount, UserFinancialProduct.DEFAULT_PRODUCT);
+				CallResult result = new TransactionService(RegisterTransactionActivity.this).AddTransaction(selectedCategory, amount, UserFinancialProduct.DEFAULT_PRODUCT);
+				Bundle bundle = new Bundle();
+				bundle.putBoolean("result", result.isSuccessfullOperation());
+				receiverTag.send(0, bundle);
 				RegisterTransactionActivity.this.finish();	
 			}
 		});
