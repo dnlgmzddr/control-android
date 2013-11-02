@@ -8,6 +8,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
+import android.os.Handler;
+import android.os.ResultReceiver;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +24,7 @@ import com.banlinea.control.bussiness.AuthenticationService;
 public class BalanceActivity extends Activity {
 
 	TextView dailyBalance;
+	ResultReceiver registerTransactionResultReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +32,28 @@ public class BalanceActivity extends Activity {
 		setContentView(R.layout.activity_balance);
 		getOverflowMenu();
 
-		dailyBalance = (TextView) findViewById(R.id.dailySafeToSpend);
-		dailyBalance.setOnClickListener(new View.OnClickListener() {
+		// Result receiver to refresh balance when registering a new transaction.
+		this.registerTransactionResultReceiver = new ResultReceiver(new Handler()) {
 
 			@Override
+			protected void onReceiveResult(int resultCode, Bundle resultData) {
+				Log.d("NEW TRANSACTION REGISTERED", resultData.getBoolean("result")? "Successful": "Error");
+				if (resultData.getBoolean("result")) {
+					//TODO: must update balance.
+				}
+			}
+		};
+		
+		dailyBalance = (TextView) findViewById(R.id.dailySafeToSpend);
+		dailyBalance.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
 			public void onClick(View v) {
+
+				
 				Intent intent = new Intent(BalanceActivity.this,
 						RegisterTransactionActivity.class);
+				intent.putExtra("receiverTag", registerTransactionResultReceiver);
 				startActivity(intent);
 			}
 		});

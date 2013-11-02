@@ -1,9 +1,14 @@
 package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+
 import android.content.Context;
 
+import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.remote.RemoteBudgetService;
 import com.banlinea.control.remote.util.CallResult;
@@ -50,5 +55,37 @@ public class BudgetService extends BaseService {
 		
 	}
 	
-
+	public List<UserBudget> getUserBudgets() {
+		try {
+			Dao<UserBudget,String> budgetDAO = this.getHelper().getBudgets();
+			
+			
+			// EXPENSES
+			List <Category> categories = new ArrayList<Category>();
+			List <Category> parentCategories = new CategoryService(this.context).GetParentCategoriesPerGroup(Category.GROUP_EXPENSE);
+			categories.addAll(parentCategories);
+			for (Category parentCategory : parentCategories) {
+				categories.addAll(new CategoryService(this.context).GetChilds(parentCategory.getId()));
+			}
+			
+			for (Category category : categories) {
+				List <UserBudget> budgets = budgetDAO.queryForEq("idCategory", category.getId());
+				List <Transaction> transactions = new TransactionService(this.context).getCurrentMonthTransactions();
+			} 
+			/*
+			for (UserBudget userBudget : budgets) {
+				float 
+				for (Transaction transaction : transactions) {
+					if (transaction.getIdCategory().equals(userBudget.setIdCategory())) {
+						
+					}
+				}
+			}*/
+			 
+			 return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
