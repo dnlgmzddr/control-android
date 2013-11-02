@@ -8,14 +8,14 @@ public class UserResult extends CallResult{
 	
 
 
-	private UserProfile Body;
+	private UserProfile body;
 
 	public UserProfile getBody() {
-		return Body;
+		return body;
 	}
 
 	public void setBody(UserProfile body) {
-		Body = body;
+		this.body = body;
 	}
 	
 	

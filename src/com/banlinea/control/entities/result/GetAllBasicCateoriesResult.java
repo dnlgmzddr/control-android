@@ -9,14 +9,14 @@ public class GetAllBasicCateoriesResult extends CallResult{
 	
 	
 	
-	private ArrayList<Category> Body;
+	private ArrayList<Category> body;
 
 	public ArrayList<Category> getBody() {
-		return Body;
+		return body;
 	}
 
 	public void setBody(ArrayList<Category> body) {
-		Body = body;
+		this.body = body;
 	}
 	
 }

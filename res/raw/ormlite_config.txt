@@ -1,22 +1,122 @@
 #
-# generated on 2013/10/20 09:46:47
+# generated on 2013/11/02 11:21:26
 #
+# --table-start--
+dataClass=com.banlinea.control.entities.Category
+tableName=category
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=idParent
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=idOwner
+# --field-end--
+# --field-start--
+fieldName=group
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.banlinea.control.entities.Transaction
+tableName=transaction
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=idProduct
+# --field-end--
+# --field-start--
+fieldName=amount
+# --field-end--
+# --field-start--
+fieldName=idCategory
+indexName=transaction_idCategory_idx
+# --field-end--
+# --field-start--
+fieldName=comment
+# --field-end--
+# --field-start--
+fieldName=date
+# --field-end--
+# --field-start--
+fieldName=idUser
+# --field-end--
+# --field-start--
+fieldName=periodType
+# --field-end--
+# --field-start--
+fieldName=type
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.banlinea.control.entities.UserBudget
+tableName=userbudget
+# --table-fields-start--
+# --field-start--
+fieldName=idCategory
+id=true
+# --field-end--
+# --field-start--
+fieldName=idUser
+indexName=userbudget_idUser_idx
+# --field-end--
+# --field-start--
+fieldName=budget
+# --field-end--
+# --field-start--
+fieldName=period
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.banlinea.control.entities.UserFinancialProduct
+tableName=userfinancialproduct
+# --table-fields-start--
+# --field-start--
+fieldName=idProduct
+id=true
+# --field-end--
+# --field-start--
+fieldName=idUser
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=type
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
 # --table-start--
 dataClass=com.banlinea.control.entities.UserProfile
 tableName=userprofile
 # --table-fields-start--
 # --field-start--
-fieldName=Id
+fieldName=id
 id=true
 # --field-end--
 # --field-start--
-fieldName=Name
+fieldName=name
 # --field-end--
 # --field-start--
-fieldName=Password
+fieldName=password
 # --field-end--
 # --field-start--
-fieldName=Mail
+fieldName=mail
 # --field-end--
 # --table-fields-end--
 # --table-end--

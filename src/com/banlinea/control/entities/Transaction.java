@@ -13,9 +13,35 @@ public class Transaction extends BaseEntity implements Serializable{
 	 */
 	private static final long serialVersionUID = 4603073635487240094L;
 	
+	@DatabaseField(id = true)
+	private String id;
+
+	@DatabaseField
+	private String idProduct;
+	
 	@DatabaseField
 	private double amount;
 
+	@DatabaseField(index = true)
+	private String idCategory;
+
+	@DatabaseField
+	private String comment;
+
+	@DatabaseField
+	private java.util.Date date = new java.util.Date();	
+
+	@DatabaseField
+	private String idUser;
+
+	@DatabaseField
+	private int periodType;
+
+	@DatabaseField
+	private int type;
+
+	
+	
 	public final double getAmount() {
 		return amount;
 	}
@@ -23,21 +49,49 @@ public class Transaction extends BaseEntity implements Serializable{
 	public final void setAmount(double value) {
 		amount = value;
 	}
-
-	@DatabaseField
-	private String comment;
-
-	public final String getComment() {
-		return comment;
+	
+	
+	public final int getType() {
+		return type;
 	}
 
-	public final void setComment(String value) {
-		comment = value;
+	public final void setType(int value) {
+		type = value;
+	}
+	
+	public final int getPeriodType() {
+		return periodType;
 	}
 
-	@DatabaseField
-	private java.util.Date date = new java.util.Date();
+	public final void setPeriodType(int value) {
+		periodType = value;
+	}
+	
 
+	public final String getIdUser() {
+		return idUser;
+	}
+
+	public final void setIdUser(String value) {
+		idUser = value;
+	}
+	
+	public final String getIdCategory() {
+		return idCategory;
+	}
+
+	public final void setIdCategory(String value) {
+		idCategory = value;
+	}
+	
+	public final String getIdProduct() {
+		return idProduct;
+	}
+
+	public final void setIdProduct(String value) {
+		idProduct = value;
+	}
+	
 	public final java.util.Date getDate() {
 		return date;
 	}
@@ -45,9 +99,15 @@ public class Transaction extends BaseEntity implements Serializable{
 	public final void setDate(java.util.Date value) {
 		date = value;
 	}
+	
+	public final String getComment() {
+		return comment;
+	}
 
-	@DatabaseField(id = true)
-	private String id;
+	public final void setComment(String value) {
+		comment = value;
+	}
+	
 
 	public final String getId() {
 		return id;
@@ -57,58 +117,4 @@ public class Transaction extends BaseEntity implements Serializable{
 		id = value;
 	}
 
-	@DatabaseField
-	private String idProduct;
-
-	public final String getIdProduct() {
-		return idProduct;
-	}
-
-	public final void setIdProduct(String value) {
-		idProduct = value;
-	}
-
-	@DatabaseField(index = true)
-	private String idCategory;
-
-	public final String getIdCategory() {
-		return idCategory;
-	}
-
-	public final void setIdCategory(String value) {
-		idCategory = value;
-	}
-
-	@DatabaseField
-	private String idUser;
-
-	public final String getIdUser() {
-		return idUser;
-	}
-
-	public final void setIdUser(String value) {
-		idUser = value;
-	}
-
-	@DatabaseField
-	private int periodType;
-
-	public final int getPeriodType() {
-		return periodType;
-	}
-
-	public final void setPeriodType(int value) {
-		periodType = value;
-	}
-
-	@DatabaseField
-	private int type;
-
-	public final int getType() {
-		return type;
-	}
-
-	public final void setType(int value) {
-		type = value;
-	}
 }

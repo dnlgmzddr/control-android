@@ -109,8 +109,8 @@ public class CategoryService extends BaseService {
 
 		QueryBuilder<Category, String> queryBuilder = dao.queryBuilder();
 
-		queryBuilder.where().eq("IdParent", Category.SYSTEM_EMPTY_ID).and()
-				.eq("Group", group);
+		queryBuilder.where().eq("idParent", Category.SYSTEM_EMPTY_ID).and()
+				.eq("group", group);
 
 		PreparedQuery<Category> preparedQuery = queryBuilder.prepare();
 
@@ -134,7 +134,7 @@ public class CategoryService extends BaseService {
 
 		QueryBuilder<Category, String> queryBuilder = dao.queryBuilder();
 
-		queryBuilder.where().eq("IdParent", idParentCategory);
+		queryBuilder.where().eq("idParent", idParentCategory);
 
 		PreparedQuery<Category> preparedQuery = queryBuilder.prepare();
 

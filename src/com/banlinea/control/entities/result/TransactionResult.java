@@ -7,14 +7,14 @@ public class TransactionResult extends CallResult {
 
 	
 	public Transaction getBody() {
-		return Body;
+		return body;
 	}
 
 	public void setBody(Transaction body) {
-		Body = body;
+		this.body = body;
 	}
 
-	private Transaction Body;
+	private Transaction body;
 	
 	
 

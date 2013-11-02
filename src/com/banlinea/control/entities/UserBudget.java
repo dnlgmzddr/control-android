@@ -15,42 +15,53 @@ public class UserBudget extends BaseEntity implements Serializable {
 	
 	
 	@DatabaseField(id = true)
-	private String IdCategory;
+	private String idCategory;
 	@DatabaseField(index = true)
-	private String IdUser;
+	private String idUser;
 	@DatabaseField
-	private float Budget;
+	private float budget;
 	
 	/**
 	 * Indicate if the period of the budget is Monthly, Weekly... etc.
 	 */
 	@DatabaseField
-	private int Period;
+	private int period;
+	
+	private float currentExecutedBudget;
 	
 	public String getIdCategory() {
-		return IdCategory;
+		return idCategory;
 	}
 	public void setIdCategory(String idCategory) {
-		IdCategory = idCategory;
+		this.idCategory = idCategory;
 	}
 	public String getIdUser() {
-		return IdUser;
+		return idUser;
 	}
 	public void setIdUser(String idUser) {
-		IdUser = idUser;
+		this.idUser = idUser;
 	}
 	public float getBudget() {
-		return Budget;
+		return budget;
 	}
 	public void setBudget(float budget) {
-		Budget = budget;
+		this.budget = budget;
 	}
 	public int getPeriod() {
-		return Period;
+		return period;
 	}
 	public void setPeriod(int period) {
-		Period = period;
+		this.period = period;
 	}
+	
+	public float getCurrentExecutedBudget() {
+		return currentExecutedBudget;
+	}
+	public void setCurrentExecutedBudget(float currentExecutedBudget) {
+		this.currentExecutedBudget = currentExecutedBudget;
+	}
+	
+	
 	
 	
 }

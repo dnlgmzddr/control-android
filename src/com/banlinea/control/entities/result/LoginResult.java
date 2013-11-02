@@ -6,14 +6,14 @@ import com.banlinea.control.remote.util.CallResult;
 public class LoginResult extends CallResult {
 
 	
-	private LoginData Body;
+	private LoginData body;
 
 	public LoginData getBody() {
-		return Body;
+		return body;
 	}
 
 	public void setBody(LoginData body) {
-		Body = body;
+		this.body = body;
 	}
 	
 	

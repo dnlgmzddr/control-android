@@ -7,14 +7,14 @@ public class CategoryResult extends CallResult {
 
 	
 	public Category getBody() {
-		return Body;
+		return body;
 	}
 
 	public void setBody(Category body) {
-		Body = body;
+		this.body = body;
 	}
 
-	private Category Body;
+	private Category body;
 	
 	
 

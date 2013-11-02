@@ -2,6 +2,9 @@ package com.banlinea.control.remote.util;
 
 public class CallResult{
 	
+
+	protected boolean successfullOperation;
+	protected String message;
 	
 	
 	public CallResult(){
@@ -9,25 +12,27 @@ public class CallResult{
 	}
 	public CallResult(boolean successfullOperation) {
 		super();
-		SuccessfullOperation = successfullOperation;
+		this.successfullOperation = successfullOperation;
 	}
 	public CallResult(boolean successfullOperation, String message) {
 		super();
-		SuccessfullOperation = successfullOperation;
-		Message = message;
+		this.successfullOperation = successfullOperation;
+		this.message = message;
 	}
-	protected boolean SuccessfullOperation;
-	protected String Message;
+	
+	
+	
+	
 	public String getMessage() {
-		return Message;
+		return message;
 	}
 	public void setMessage(String message) {
-		Message = message;
+		this.message = message;
 	}
 	public boolean isSuccessfullOperation() {
-		return SuccessfullOperation;
+		return successfullOperation;
 	}
 	public void setSuccessfullOperation(boolean successfullOperation) {
-		SuccessfullOperation = successfullOperation;
+		this.successfullOperation = successfullOperation;
 	}
 }

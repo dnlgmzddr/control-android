@@ -22,54 +22,57 @@ public class Category extends BaseEntity implements Serializable{
 	public static String SYSTEM_EMPTY_ID = "00000000-0000-0000-0000-000000000000";
 	
 	@DatabaseField(id=true)
-	private String Id;
+	private String id;
 	
 	@DatabaseField
-	private String IdParent;
+	private String idParent;
 	
 	@DatabaseField
-	private String Name;
+	private String name;
 	
 	@DatabaseField
-	private String IdOwner;
+	private String idOwner;
 	
 	@DatabaseField
-	private int Group;
+	private int group;
+	
+	
+	
 	
 	public String getId() {
-		return Id;
+		return id;
 	}
 	public void setId(String id) {
-		Id = id;
+		this.id = id;
 	}
 	public String getIdParent() {
-		return IdParent;
+		return idParent;
 	}
 	public void setIdParent(String idParent) {
-		IdParent = idParent;
+		this.idParent = idParent;
 	}
 	public String getName() {
-		return Name;
+		return name;
 	}
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 	public String getIdOwner() {
-		return IdOwner;
+		return idOwner;
 	}
 	public void setIdOwner(String idOwner) {
-		IdOwner = idOwner;
+		this.idOwner = idOwner;
 	}
 	public int getGroup() {
-		return Group;
+		return group;
 	}
 	public void setGroup(int group) {
-		Group = group;
+		this.group = group;
 	}
 	
 	@Override
 	public String toString() {
-		return this.Name;
+		return this.name;
 	}
 
 }

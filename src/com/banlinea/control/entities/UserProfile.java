@@ -10,6 +10,18 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public  class UserProfile extends BaseEntity implements Serializable
 {
+	
+	
+	@DatabaseField(id=true)
+	private String id;
+	@DatabaseField
+    private String name;
+	@DatabaseField
+    private String password; 
+	@DatabaseField
+    private String mail; 
+	private List<UserFinancialProduct> userFinancialProducts;
+	
 
 	/**
 	 * 
@@ -21,51 +33,43 @@ public  class UserProfile extends BaseEntity implements Serializable
     }
 
     public String getPassword() {
-		return Password;
+		return password;
 	}
 	public void setPassword(String password) {
-		Password = password;
+		this.password = password;
 	}
 
 	public String getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(String id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getName() {
-		return Name;
+		return name;
 	}
 
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 
 	public String getMail() {
-		return Mail;
+		return mail;
 	}
 
 	public void setMail(String mail) {
-		Mail = mail;
+		this.mail = mail;
 	}
 
 	public List<UserFinancialProduct> getUserFinancialProducts() {
-		return UserFinancialProducts;
+		return userFinancialProducts;
 	}
 
 	public void setUserFinancialProducts(List<UserFinancialProduct> userFinancialProducts) {
-		UserFinancialProducts = userFinancialProducts;
+		this.userFinancialProducts = userFinancialProducts;
 	}
 
-	@DatabaseField(id=true)
-	private String Id;
-	@DatabaseField
-    private String Name;
-	@DatabaseField
-    private String Password; 
-	@DatabaseField
-    private String Mail; 
-	private List<UserFinancialProduct> UserFinancialProducts;
+	
 }

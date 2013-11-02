@@ -11,45 +11,47 @@ public class UserFinancialProduct extends BaseEntity {
 	public static final int TYPE_CREDIT_CARD = 0;
 	public static final int TYPE_SAVING_ACCOUNT = 0;
 	
-	@DatabaseField
-	private String IdProduct;
+	@DatabaseField(id = true)
+	private String idProduct;
 
+
+	@DatabaseField
+	private String idUser;
+	@DatabaseField
+	private String name;
+	@DatabaseField
+	private int type;
+	
 	public String getIdProduct() {
-		return IdProduct;
+		return idProduct;
 	}
 
 	public void setIdProduct(String idProduct) {
-		IdProduct = idProduct;
+		this.idProduct = idProduct;
 	}
 
 	public String getIdUser() {
-		return IdUser;
+		return idUser;
 	}
 
 	public void setIdUser(String idUser) {
-		IdUser = idUser;
+		this.idUser = idUser;
 	}
 
 	public String getName() {
-		return Name;
+		return name;
 	}
 
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 
 	public int getType() {
-		return Type;
+		return type;
 	}
 
 	public void setType(int type) {
-		Type = type;
+		this.type = type;
 	}
 
-	@DatabaseField
-	private String IdUser;
-	@DatabaseField
-	private String Name;
-	@DatabaseField
-	private int Type;
 }
