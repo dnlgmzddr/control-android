@@ -15,8 +15,7 @@ import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
 
 public class BudgetService extends BaseService {
-	
-	
+
 	private RemoteBudgetService remoteBudgetService;
 
 	public BudgetService(Context context) {
@@ -24,18 +23,19 @@ public class BudgetService extends BaseService {
 		super(context);
 		remoteBudgetService = new RemoteBudgetService();
 	}
-	
+
 	/**
 	 * Add or update a budget for a user.
+	 * 
 	 * @param userBudget
 	 * @return
 	 */
-	public CallResult AddBudget(UserBudget userBudget){
+	public CallResult AddBudget(UserBudget userBudget) {
 		CallResult callResult = null;
 		try {
 			callResult = remoteBudgetService.AddUserBudget(userBudget);
-			if(callResult.isSuccessfullOperation()){
-				Dao<UserBudget,String> budgets =  this.getHelper().getBudgets();
+			if (callResult.isSuccessfullOperation()) {
+				Dao<UserBudget, String> budgets = this.getHelper().getBudgets();
 				budgets.createOrUpdate(userBudget);
 			}
 		} catch (InterruptedException e) {
@@ -52,37 +52,42 @@ public class BudgetService extends BaseService {
 			callResult.setSuccessfullOperation(false);
 		}
 		return callResult;
-		
+
 	}
-	
-	public List<UserBudget> getUserBudgets() {
+
+	public List<UserBudget> getUserBudgets(int groupId) {
+		List<UserBudget> result = new ArrayList<UserBudget>();
 		try {
-			Dao<UserBudget,String> budgetDAO = this.getHelper().getBudgets();
-			
-			
-			// EXPENSES
-			List <Category> categories = new ArrayList<Category>();
-			List <Category> parentCategories = new CategoryService(this.context).GetParentCategoriesPerGroup(Category.GROUP_EXPENSE);
+			Dao<UserBudget, String> budgetDAO = this.getHelper().getBudgets();
+
+			List<Category> categories = new ArrayList<Category>();
+			List<Category> parentCategories = new CategoryService(this.context)
+					.GetParentCategoriesPerGroup(groupId);
 			categories.addAll(parentCategories);
 			for (Category parentCategory : parentCategories) {
-				categories.addAll(new CategoryService(this.context).GetChilds(parentCategory.getId()));
+				categories.addAll(new CategoryService(this.context)
+						.GetChilds(parentCategory.getId()));
 			}
-			
+
 			for (Category category : categories) {
-				List <UserBudget> budgets = budgetDAO.queryForEq("idCategory", category.getId());
-				List <Transaction> transactions = new TransactionService(this.context).getCurrentMonthTransactions();
-			} 
-			/*
-			for (UserBudget userBudget : budgets) {
-				float 
-				for (Transaction transaction : transactions) {
-					if (transaction.getIdCategory().equals(userBudget.setIdCategory())) {
-						
+				UserBudget budget = budgetDAO.queryForId(category.getId());
+				if (budget != null) {
+					List<Transaction> transactions = new TransactionService(
+							this.context).getCurrentMonthTransactionsFor(category
+							.getId());
+	
+					float executedBudget = 0;
+	
+					for (Transaction transaction : transactions) {
+						executedBudget += (float) transaction.getAmount();
 					}
+					
+					budget.setCurrentExecutedBudget(executedBudget);
+					result.add(budget);
 				}
-			}*/
-			 
-			 return null;
+			}
+
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
