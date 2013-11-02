@@ -403,7 +403,13 @@ public class CategoryManagementActivity extends FragmentActivity {
 						builder.setView(v1);
 						final EditText budgetEditText = (EditText) v1
 								.findViewById(R.id.budget);
-						budgetEditText.setText("$10.000");
+						UserBudget ub = new BudgetService(getActivity()).getUserBudget(categories.get(pos).getId());
+						if (ub != null) {
+							budgetEditText.setText(""+ub.getBudget());
+						}
+						else {
+							budgetEditText.setText("0");
+						}
 						builder.setTitle(getString(R.string.category_budget_title)
 								+ " " + categories.get(pos).getName());
 						builder.setMessage(R.string.category_budget_message);
@@ -470,6 +476,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 					float executedBudget = catBudget.getCurrentExecutedBudget();
 					float fraction = (totalBudget - executedBudget) / totalBudget;
 					if (executedBudget > totalBudget) {
+						filledBarTV.setBackgroundColor(Color.RED);
 						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0f));
 						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f));
 					}
