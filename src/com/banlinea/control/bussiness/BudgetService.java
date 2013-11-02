@@ -57,7 +57,7 @@ public class BudgetService extends BaseService {
 		return callResult;
 
 	}
-	
+
 	public UserBudget getUserBudget(String idCategory) {
 		Dao<UserBudget, String> budgetDAO;
 		try {
@@ -108,36 +108,36 @@ public class BudgetService extends BaseService {
 	}
 
 	public float getDailyBudget() {
-		
+
 		float dailyBudget = 0f;
+		try {
+			float monthlyIncome = calculateMonthlyIncome();
 
-		float monthlyIncome = calculateMonthlyIncome();
-		
-		float fixedExpenses = getFixedCategoriesBudget();
+			float fixedExpenses = getFixedCategoriesBudget();
 
-		 float expensesDueDate =  new TransactionService(this.context).getExpensesDueDate();
-		
-		dailyBudget = monthlyIncome - fixedExpenses - expensesDueDate;
-		
-		int days = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-		
-		
-		
-		dailyBudget = dailyBudget/days;
-		
+			float expensesDueDate = new TransactionService(this.context)
+					.getExpensesDueDate();
+
+			dailyBudget = monthlyIncome - fixedExpenses - expensesDueDate;
+
+			int days = Calendar.getInstance().getActualMaximum(
+					Calendar.DAY_OF_MONTH);
+
+			dailyBudget = dailyBudget / days;
+		} catch (Exception e) {
+
+		}
 		return dailyBudget;
 	}
-
 
 	private float getFixedCategoriesBudget() {
 		float fixedExpenses = 0f;
 		try {
 
-			
 			Dao<UserBudget, String> budgetDao = this.getHelper().getBudgets();
 
-			
-			List<String> incomeCategoriesIds = new CategoryService(this.context).getFixedExpensesCategoriesIds();
+			List<String> incomeCategoriesIds = new CategoryService(this.context)
+					.getFixedExpensesCategoriesIds();
 
 			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
 					.queryBuilder();
@@ -149,7 +149,10 @@ public class BudgetService extends BaseService {
 			List<UserBudget> budgets = budgetDao.query(budgetQuery);
 
 			for (UserBudget expenseBudget : budgets) {
-				fixedExpenses += Math.max(expenseBudget.getBudget(), new TransactionService(this.context).getTopTransactionInCurrentMonth(expenseBudget.getIdCategory()));
+				fixedExpenses += Math.max(expenseBudget.getBudget(),
+						new TransactionService(this.context)
+								.getTopTransactionInCurrentMonth(expenseBudget
+										.getIdCategory()));
 			}
 
 		} catch (SQLException e) {
@@ -160,16 +163,14 @@ public class BudgetService extends BaseService {
 		return fixedExpenses;
 	}
 
-	
-
 	public float calculateMonthlyIncome() {
 		float monthlyIncome = 0f;
 		try {
 
-			
 			Dao<UserBudget, String> budgetDao = this.getHelper().getBudgets();
 
-			List<String> incomeCategoriesIds = new CategoryService(this.context).getIncomeCategoriesId();
+			List<String> incomeCategoriesIds = new CategoryService(this.context)
+					.getIncomeCategoriesId();
 
 			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
 					.queryBuilder();
@@ -191,7 +192,5 @@ public class BudgetService extends BaseService {
 
 		return monthlyIncome;
 	}
-
-	
 
 }

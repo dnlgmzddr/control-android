@@ -128,7 +128,7 @@ public class TransactionService extends BaseService {
 			where.between("date",begin.getTime(), end.getTime());
 			where.and();
 			where.eq("idCategory", idCategory);
-			query.selectRaw("MAX (amount)");
+			query.selectRaw("MAX(amount)");
 
 			List<String[]> results = transactionDao.queryRaw(
 					query.prepareStatementString()).getResults();
