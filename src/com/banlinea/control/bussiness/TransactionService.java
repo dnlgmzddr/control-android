@@ -17,6 +17,7 @@ import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
 public class TransactionService extends BaseService {
 
@@ -82,7 +83,7 @@ public class TransactionService extends BaseService {
 
 		QueryBuilder<Transaction, String> query = transactionDao.queryBuilder();
 
-		query.where().between("date", begin, end);
+		query.where().between("date", begin.getTime(), end.getTime());
 		PreparedQuery<Transaction> preparedQuery = query.prepare();
 
 		List<Transaction> transactionInMonth = transactionDao
@@ -122,8 +123,11 @@ public class TransactionService extends BaseService {
 			QueryBuilder<Transaction, String> query = transactionDao
 					.queryBuilder();
 
-			query.where().between("date", begin, end);
-			query.where().and().eq("idCategory", idCategory);
+			Where<Transaction,String> where = query.where();
+			
+			where.between("date",begin.getTime(), end.getTime());
+			where.and();
+			where.eq("idCategory", idCategory);
 			query.selectRaw("MAX (amount)");
 
 			List<String[]> results = transactionDao.queryRaw(
@@ -159,8 +163,13 @@ public class TransactionService extends BaseService {
 			QueryBuilder<Transaction, String> query = transactionDao
 					.queryBuilder();
 
-			query.where().between("date", begin, end);
-			query.where().and().in("idCategory", unFixedExpensesCategories);
+			Where<Transaction, String> where = query.where();
+			
+			
+			
+			where.between("date", begin.getTime(), end.getTime());
+			where.and();
+			where.in("idCategory", unFixedExpensesCategories);
 
 			List<Transaction> transactions = transactionDao.query(query
 					.prepare());

@@ -8,7 +8,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.util.Log;
@@ -20,18 +19,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.banlinea.control.bussiness.AuthenticationService;
+import com.banlinea.control.bussiness.BudgetService;
 
 public class BalanceActivity extends Activity {
 
 	TextView dailyBalance;
 	ResultReceiver registerTransactionResultReceiver;
 
+	BudgetService budgetService;
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		budgetService = new BudgetService(this);
+		
 		setContentView(R.layout.activity_balance);
 		getOverflowMenu();
 
+		
+		
+		
 		// Result receiver to refresh balance when registering a new transaction.
 		this.registerTransactionResultReceiver = new ResultReceiver(new Handler()) {
 
@@ -39,12 +48,16 @@ public class BalanceActivity extends Activity {
 			protected void onReceiveResult(int resultCode, Bundle resultData) {
 				Log.d("NEW TRANSACTION REGISTERED", resultData.getBoolean("result")? "Successful": "Error");
 				if (resultData.getBoolean("result")) {
-					//TODO: must update balance.
+					dailyBalance.setText("Presupeuesto diario\n "+ budgetService.getDailyBudget());
+					
 				}
 			}
 		};
 		
 		dailyBalance = (TextView) findViewById(R.id.dailySafeToSpend);
+		
+		dailyBalance.setText("Presupeuesto diario\n "+ budgetService.getDailyBudget());
+		
 		dailyBalance.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

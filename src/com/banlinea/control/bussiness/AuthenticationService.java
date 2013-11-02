@@ -8,6 +8,7 @@ import android.content.Context;
 
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
+import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.result.LoginData;
@@ -35,23 +36,25 @@ public class AuthenticationService extends BaseService {
 
 			final DatabaseHelper helper = this.getHelper();
 			final UserProfile profileToSave = result.getBody();
-			
+
 			TransactionManager.callInTransaction(helper.getConnectionSource(),
-					  new Callable<Void>() {
-					    public Void call() throws Exception {
-					    	Dao<UserProfile, String> userProfileDao = helper.getUserProfiles();
-							Dao<UserFinancialProduct, String> financialProductsDao = helper.getUserFinantialProducts();
-						
-							for( UserFinancialProduct product : profileToSave.getUserFinancialProducts()){
+					new Callable<Void>() {
+						public Void call() throws Exception {
+							Dao<UserProfile, String> userProfileDao = helper
+									.getUserProfiles();
+							Dao<UserFinancialProduct, String> financialProductsDao = helper
+									.getUserFinantialProducts();
+
+							for (UserFinancialProduct product : profileToSave
+									.getUserFinancialProducts()) {
 								financialProductsDao.create(product);
 							}
 							userProfileDao.create(profileToSave);
-					        // you could pass back an object here
-					        return null;
-					    }
+							// you could pass back an object here
+							return null;
+						}
 					});
-			
-			
+
 		}
 		return result;
 
@@ -65,24 +68,36 @@ public class AuthenticationService extends BaseService {
 		if (result != null && result.isSuccessfullOperation()) {
 
 			DatabaseHelper helper = this.getHelper();
-			
+
 			Dao<UserProfile, String> userDao = helper.getUserProfiles();
 			Dao<Transaction, String> transactionDao = helper.getTransactions();
 			Dao<Category, String> categoriesDao = helper.getCategories();
-			Dao<UserFinancialProduct, String> productsDao = helper.getUserFinantialProducts();
-			
-			
+			Dao<UserFinancialProduct, String> productsDao = helper
+					.getUserFinantialProducts();
+			Dao<UserBudget, String> budgetDao = helper.getBudgets();
+
 			LoginData loginData = result.getBody();
 			userDao.create(loginData.getUser());
-			
-			for(Category cat : loginData.getCategories()){
-				categoriesDao.createOrUpdate(cat);
+			if (loginData.getCategories() != null) {
+				for (Category cat : loginData.getCategories()) {
+					categoriesDao.createOrUpdate(cat);
+				}
 			}
-			for(UserFinancialProduct product : loginData.getFinancialProducts()){
-				productsDao.createOrUpdate(product);
+			if (loginData.getFinancialProducts() != null) {
+				for (UserFinancialProduct product : loginData
+						.getFinancialProducts()) {
+					productsDao.createOrUpdate(product);
+				}
 			}
-			for(Transaction transaction : loginData.getTransactions()){
-				transactionDao.createOrUpdate(transaction);
+			if (loginData.getTransactions() != null) {
+				for (Transaction transaction : loginData.getTransactions()) {
+					transactionDao.createOrUpdate(transaction);
+				}
+			}
+			if (loginData.getBudgets() != null) {
+				for (UserBudget budget : loginData.getBudgets()) {
+					budgetDao.createOrUpdate(budget);
+				}
 			}
 		}
 

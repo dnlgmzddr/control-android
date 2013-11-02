@@ -108,6 +108,7 @@ public class BudgetService extends BaseService {
 	}
 
 	public float getDailyBudget() {
+		
 		float dailyBudget = 0f;
 
 		float monthlyIncome = calculateMonthlyIncome();

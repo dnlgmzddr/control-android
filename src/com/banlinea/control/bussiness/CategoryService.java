@@ -16,6 +16,7 @@ import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
 public class CategoryService extends BaseService {
 
@@ -175,8 +176,10 @@ public class CategoryService extends BaseService {
 				.queryBuilder();
 
 
-		categoryQBuilder.where().eq("group",Category.GROUP_EXPENSE);
-		categoryQBuilder.where().and().eq("isFixed", true);
+		Where<Category, String> where = categoryQBuilder.where();
+		where.eq("group",Category.GROUP_EXPENSE);
+		where.and();
+		where.eq("isFixed", true);
 		
 		PreparedQuery<Category> categoryQuery = categoryQBuilder.prepare();
 		
@@ -196,8 +199,12 @@ public class CategoryService extends BaseService {
 				.queryBuilder();
 
 
-		categoryQBuilder.where().eq("group",Category.GROUP_EXPENSE);
-		categoryQBuilder.where().and().eq("isFixed", false);
+		Where<Category,String> where = categoryQBuilder.where();
+		
+		where.eq("group",Category.GROUP_EXPENSE);
+		where.and();
+		where.eq("isFixed", false);
+
 		
 		PreparedQuery<Category> categoryQuery = categoryQBuilder.prepare();
 		

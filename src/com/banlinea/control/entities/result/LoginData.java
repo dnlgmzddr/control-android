@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
+import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.remote.util.CallResult;
@@ -17,6 +18,8 @@ public class LoginData extends CallResult {
 	private UserProfile user;
 	private List<Category> categories;
 	private List<UserFinancialProduct> financialProducts;
+	private List<UserBudget> budgets;
+	
 	
 	private List<Transaction> transactions;
 
@@ -50,6 +53,14 @@ public class LoginData extends CallResult {
 
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
+	}
+
+	public List<UserBudget> getBudgets() {
+		return budgets;
+	}
+
+	public void setBudgets(List<UserBudget> budgets) {
+		this.budgets = budgets;
 	}
 	
 	
