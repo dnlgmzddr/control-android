@@ -1,7 +1,9 @@
 package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.content.Context;
@@ -65,6 +67,13 @@ public class TransactionService extends BaseService {
 	}
 	
 	public List<Transaction> getCurrentMonthTransactions(){
+		Calendar begin = GregorianCalendar.getInstance();
+		Calendar end = GregorianCalendar.getInstance();
+		
+		
+		begin.set(Calendar.DAY_OF_MONTH, 1);
+		//end.set(Calendar., value)
+		
 		
 		Date today = new Date();
 		

@@ -87,7 +87,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	
 	public Dao<Transaction, String> getTransactions() throws SQLException {
 		if (transactions == null) {
-			transactions = getDao(UserBudget.class);
+			transactions = getDao(Transaction.class);
 		}
 		return transactions;
 	}
