@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import android.R.fraction;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -390,10 +389,11 @@ public class CategoryManagementActivity extends FragmentActivity {
 
 					@Override
 					public void onClick(View v) {
-						Toast.makeText(getActivity().getApplicationContext(),
+						/*Toast.makeText(getActivity().getApplicationContext(),
 								"Click ListItem Number " + pos,
 								Toast.LENGTH_LONG).show();
-
+						*/
+						
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								getActivity());
 						LayoutInflater inflater = getActivity()
@@ -474,8 +474,16 @@ public class CategoryManagementActivity extends FragmentActivity {
 						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f));
 					}
 					else {
-						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, fraction));
-						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f-fraction));
+						if (fraction < 0.5f) {
+							if (fraction < 0.15f) {
+								filledBarTV.setBackgroundColor(Color.RED);
+							}
+							else {
+								filledBarTV.setBackgroundColor(Color.YELLOW);
+							}
+						}
+						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f-fraction));
+						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, fraction));
 					}
 					
 					TextView categoryNameTextView = (TextView) rowView

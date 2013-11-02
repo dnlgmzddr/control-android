@@ -1,7 +1,10 @@
 package com.banlinea.control.bussiness;
 
+<<<<<<< HEAD
 import java.sql.SQLException;
+=======
 import java.util.Calendar;
+>>>>>>> 321819fc8d09a419f01a54e4197e6a4a5eeb102a
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -10,6 +13,7 @@ import android.content.Context;
 
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
+import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.result.TransactionResult;
