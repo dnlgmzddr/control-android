@@ -1,5 +1,6 @@
 package com.banlinea.control.bussiness;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -7,11 +8,13 @@ import android.content.Context;
 
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
+import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.result.TransactionResult;
 import com.banlinea.control.remote.RemoteTransactionService;
 import com.banlinea.control.remote.util.CallResult;
+import com.j256.ormlite.dao.Dao;
 
 public class TransactionService extends BaseService {
 
@@ -66,5 +69,17 @@ public class TransactionService extends BaseService {
 		Date today = new Date();
 		
 		return null;
+	}
+
+	public List<Transaction> getCurrentMonthTransactionsFor(String idCategory) {
+		try {
+			// TODO: set for time period
+			Dao<Transaction,String> transactionDAO = this.getHelper().getTransactions();
+			List<Transaction> transactions = transactionDAO.queryForEq("idCategory", idCategory);
+			return transactions;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

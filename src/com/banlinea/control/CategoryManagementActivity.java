@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.R.fraction;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -28,13 +30,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.banlinea.control.bussiness.AuthenticationService;
 import com.banlinea.control.bussiness.BudgetService;
 import com.banlinea.control.bussiness.CategoryService;
 import com.banlinea.control.entities.Category;
-import com.banlinea.control.entities.Transaction;
+import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.remote.util.CallResult;
 
 public class CategoryManagementActivity extends FragmentActivity {
@@ -73,13 +78,12 @@ public class CategoryManagementActivity extends FragmentActivity {
 				mViewPager.setAdapter(mSectionsPagerAdapter);
 				mViewPager.setCurrentItem(currPage);
 			}
-			
+
 		});
-		
+
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		
 
 	}
 
@@ -168,7 +172,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 					public void onClick(DialogInterface dialog, int which) {
 
 						CallResult creationResult;
-						if (!((Category)parentCategory.getSelectedItem()).getId().equals("0")) {
+						if (!((Category) parentCategory.getSelectedItem())
+								.getId().equals("0")) {
 							creationResult = new CategoryService(
 									CategoryManagementActivity.this)
 									.AddCustomCategory(categoryName.getText()
@@ -275,10 +280,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 			}
 			return null;
 		}
-		
+
 	}
-	
-	
 
 	/**
 	 * A list fragment representing a section of the app, but that simply
@@ -291,6 +294,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 		 */
 		public static final String ARG_SECTION_TYPE = "section_type";
 		private ListView categoryListView;
+		private int groupId;
 
 		public ListSectionFragment() {
 		}
@@ -301,28 +305,18 @@ public class CategoryManagementActivity extends FragmentActivity {
 			View rootView = inflater.inflate(
 					R.layout.fragment_category_management, container, false);
 
-			int type = getArguments().getInt(ARG_SECTION_TYPE);
+			groupId = getArguments().getInt(ARG_SECTION_TYPE);
 
 			CategoryService catService = new CategoryService(getActivity());
+			BudgetService budService = new BudgetService(getActivity());
 
 			List<Category> categories = new ArrayList<Category>();
+			List<UserBudget> budgets = new ArrayList<UserBudget>();
 
 			try {
 				List<Category> parents = null;
-				switch (type) {
-				case Category.GROUP_EXPENSE:
-					parents = catService
-							.GetParentCategoriesPerGroup(Category.GROUP_EXPENSE);
-					break;
-				case Category.GROUP_INCOME:
-					parents = catService
-							.GetParentCategoriesPerGroup(Category.GROUP_INCOME);
-					break;
-				case Category.GROUP_SAVING:
-					parents = catService
-							.GetParentCategoriesPerGroup(Category.GROUP_SAVING);
-					break;
-				}
+				parents = catService.GetParentCategoriesPerGroup(groupId);
+				budgets = budService.getUserBudgets(groupId);
 
 				for (Category category : parents) {
 					categories.add(category);
@@ -337,7 +331,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 			}
 
 			final CategoryArrayAdapter adapter = new CategoryArrayAdapter(
-					getActivity(), categories);
+					getActivity(), categories, budgets);
 
 			categoryListView = (ListView) rootView.findViewById(R.id.listview);
 			categoryListView.setAdapter(adapter);
@@ -346,8 +340,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 						@Override
-						public void onItemClick(AdapterView<?> adapter, View view,
-								int position, long id) {
+						public void onItemClick(AdapterView<?> adapter,
+								View view, int position, long id) {
 							// never happens
 						}
 					});
@@ -359,16 +353,14 @@ public class CategoryManagementActivity extends FragmentActivity {
 
 			private final Context context;
 			private List<Category> categories;
-			
-			public void setCategories(List<Category> categories) {
-				this.categories = categories;
-			}
+			private List<UserBudget> budgets;
 
 			public CategoryArrayAdapter(Context context,
-					List<Category> categories) {
+					List<Category> categories, List<UserBudget> budgets) {
 				super();
 				this.context = context;
 				this.categories = categories;
+				this.budgets = budgets;
 			}
 
 			@Override
@@ -401,44 +393,105 @@ public class CategoryManagementActivity extends FragmentActivity {
 						Toast.makeText(getActivity().getApplicationContext(),
 								"Click ListItem Number " + pos,
 								Toast.LENGTH_LONG).show();
-						
-						AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-						LayoutInflater inflater = getActivity().getLayoutInflater();
-						View v1 = inflater.inflate(R.layout.alert_edit_category_budget, null);
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getActivity());
+						LayoutInflater inflater = getActivity()
+								.getLayoutInflater();
+						View v1 = inflater.inflate(
+								R.layout.alert_edit_category_budget, null);
 						builder.setView(v1);
-						final EditText budgetEditText = (EditText) v1.findViewById(R.id.budget);
+						final EditText budgetEditText = (EditText) v1
+								.findViewById(R.id.budget);
 						budgetEditText.setText("$10.000");
-						builder.setTitle(getString(R.string.category_budget_title)+" "+categories.get(pos).getName());
+						builder.setTitle(getString(R.string.category_budget_title)
+								+ " " + categories.get(pos).getName());
 						builder.setMessage(R.string.category_budget_message);
-						builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								Toast.makeText(getActivity(), "budget set to: $" + budgetEditText.getText().toString(), Toast.LENGTH_SHORT).show();
-							}
-						});
-						builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								
-							}
-						});
+						builder.setPositiveButton(R.string.confirm,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										UserBudget newb = new UserBudget();
+										newb.setBudget(Float.parseFloat(budgetEditText.getText().toString()));
+										newb.setIdUser(new AuthenticationService(getActivity()).GetUser().getId());
+										newb.setIdCategory(categories.get(pos).getId());
+										// TODO: adjust period.
+										newb.setPeriod(1);
+										new BudgetService(getActivity()).AddBudget(newb);
+										
+										Toast.makeText(
+												getActivity(),
+												"budget set to: $"
+														+ budgetEditText
+																.getText()
+																.toString(),
+												Toast.LENGTH_SHORT).show();
+										
+										((CategoryManagementActivity) getActivity()).mViewPager
+										.getAdapter()
+										.notifyDataSetChanged();
+									}
+								});
+						builder.setNegativeButton(R.string.cancel,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+									}
+								});
 						AlertDialog dialog = builder.create();
 						dialog.show();
-						
+
 					}
 				});
+
+				TextView filledBarTV = (TextView) rowView
+						.findViewById(R.id.filledBar);
+				TextView emptyBarTV = (TextView) rowView
+						.findViewById(R.id.emptyBar);
 				
-				TextView filledBarTV = (TextView) rowView.findViewById(R.id.filledBar);
-				TextView emptyBarTV = (TextView) rowView.findViewById(R.id.emptyBar);
+				filledBarTV.setBackgroundColor(Color.GREEN);
+				filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f));
+				emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0f));
+				UserBudget catBudget = null;
+				for (UserBudget budget : budgets) {
+					if (categories.get(position).getId().equals(budget.getIdCategory())) {
+						catBudget = budget;
+						break;
+					}
+				}
+				if (catBudget != null) {
+					float totalBudget = catBudget.getBudget();
+					float executedBudget = catBudget.getCurrentExecutedBudget();
+					float fraction = (totalBudget - executedBudget) / totalBudget;
+					if (executedBudget > totalBudget) {
+						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0f));
+						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f));
+					}
+					else {
+						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, fraction));
+						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f-fraction));
+					}
+					
+					TextView categoryNameTextView = (TextView) rowView
+							.findViewById(R.id.category_name_textview);
+					categoryNameTextView
+							.setText(categories.get(position).getName() + " (" + fraction + "/" + totalBudget + ")");
+					
+				}
+				else {
+					TextView categoryNameTextView = (TextView) rowView
+							.findViewById(R.id.category_name_textview);
+					categoryNameTextView
+							.setText(categories.get(position).getName());
+				}
+
 				
-				
-				
-				TextView categoryNameTextView = (TextView) rowView
-						.findViewById(R.id.category_name_textview);
-				categoryNameTextView
-						.setText(categories.get(position).getName());
 
 				CategoryService catService = new CategoryService(getActivity()
 						.getApplicationContext());
@@ -464,24 +517,28 @@ public class CategoryManagementActivity extends FragmentActivity {
 				ImageButton deleteButton = (ImageButton) rowView
 						.findViewById(R.id.delete_imagebutton);
 
-				if (!categories.get(position).getIdOwner().equals(Category.SYSTEM_OWNER_ID)) {
-					
-					int page = ((CategoryManagementActivity)getActivity()).mViewPager.getCurrentItem();
-					
+				if (!categories.get(position).getIdOwner()
+						.equals(Category.SYSTEM_OWNER_ID)) {
+
+					int page = ((CategoryManagementActivity) getActivity()).mViewPager
+							.getCurrentItem();
+
 					final Category currCategory = categories.get(position);
-					
+
 					final int groupId = (page == 0 ? Category.GROUP_EXPENSE
-							: (page == 1 ? Category.GROUP_INCOME : Category.GROUP_SAVING));
-					
+							: (page == 1 ? Category.GROUP_INCOME
+									: Category.GROUP_SAVING));
+
 					editButton.setOnClickListener(new View.OnClickListener() {
 
 						@Override
 						public void onClick(View v) {
-							
+
 							AlertDialog.Builder builder = new AlertDialog.Builder(
 									v.getContext());
 
-							LayoutInflater inflater = getActivity().getLayoutInflater();
+							LayoutInflater inflater = getActivity()
+									.getLayoutInflater();
 							View layout = inflater.inflate(
 									R.layout.alert_edit_category, null);
 							builder.setTitle(R.string.edit_category_title);
@@ -491,38 +548,43 @@ public class CategoryManagementActivity extends FragmentActivity {
 							categoryName.setText(currCategory.getName());
 							final Spinner parentCategory = (Spinner) layout
 									.findViewById(R.id.parent_spinner);
-							
+
 							ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(
-									v.getContext(), R.layout.simple_spinner_item);
+									v.getContext(),
+									R.layout.simple_spinner_item);
 							adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-							
-							CategoryService catService = new CategoryService(getActivity().getApplicationContext());
+
+							CategoryService catService = new CategoryService(
+									getActivity().getApplicationContext());
 							List<Category> parentCategories = new ArrayList<Category>();
 							try {
-								parentCategories = catService.GetParentCategoriesPerGroup(groupId);
+								parentCategories = catService
+										.GetParentCategoriesPerGroup(groupId);
 							} catch (SQLException e1) {
 								e1.printStackTrace();
 							}
-							
+
 							Category noCat = new Category();
 							noCat.setName("Ninguna");
 							noCat.setId("0");
 							adapter.add(noCat);
-							
+
 							adapter.addAll(parentCategories);
 							parentCategory.setAdapter(adapter);
-							
-							
-							Log.d("Searching category", currCategory.getIdParent());
+
+							Log.d("Searching category",
+									currCategory.getIdParent());
 							for (int i = 0; i < parentCategories.size(); i++) {
-								Log.d("Looking at", parentCategories.get(i).getId());
-								if(parentCategories.get(i).getId().equals(currCategory.getIdParent())) {
-									parentCategory.setSelection(i+1);
+								Log.d("Looking at", parentCategories.get(i)
+										.getId());
+								if (parentCategories.get(i).getId()
+										.equals(currCategory.getIdParent())) {
+									parentCategory.setSelection(i + 1);
 									break;
 								}
-								
+
 							}
-							
+
 							builder.setPositiveButton(R.string.confirm,
 									new DialogInterface.OnClickListener() {
 
@@ -530,29 +592,43 @@ public class CategoryManagementActivity extends FragmentActivity {
 										public void onClick(
 												DialogInterface dialog,
 												int which) {
-											CategoryService catService = new CategoryService(getActivity().getApplicationContext());
+											CategoryService catService = new CategoryService(
+													getActivity()
+															.getApplicationContext());
 											List<Category> childrenCats = new ArrayList<Category>();
 											try {
-												childrenCats = catService.GetChilds(currCategory.getId());
+												childrenCats = catService
+														.GetChilds(currCategory
+																.getId());
 											} catch (SQLException e) {
 												e.printStackTrace();
 											}
-											if(childrenCats.size() == 0){
+											if (childrenCats.size() == 0) {
 												CallResult editResult = null;
-												if (((Category)parentCategory.getSelectedItem()).getId().equals("0")) {
+												if (((Category) parentCategory
+														.getSelectedItem())
+														.getId().equals("0")) {
 													editResult = catService.AddCustomCategory(
-															currCategory.getId(), 
-															categoryName.getText().toString(),
+															currCategory
+																	.getId(),
+															categoryName
+																	.getText()
+																	.toString(),
 															groupId);
-												}
-												else {
+												} else {
 													editResult = catService.AddCustomCategory(
-															currCategory.getId(), 
-															categoryName.getText().toString(),
+															currCategory
+																	.getId(),
+															categoryName
+																	.getText()
+																	.toString(),
 															groupId,
-															((Category)parentCategory.getSelectedItem()).getId());
+															((Category) parentCategory
+																	.getSelectedItem())
+																	.getId());
 												}
-												if (editResult.isSuccessfullOperation()) {
+												if (editResult
+														.isSuccessfullOperation()) {
 													Toast.makeText(
 															getActivity()
 																	.getApplicationContext(),
@@ -560,26 +636,30 @@ public class CategoryManagementActivity extends FragmentActivity {
 																	+ categoryName
 																			.getText()
 																			.toString(),
-															Toast.LENGTH_SHORT).show();
-													((CategoryManagementActivity)getActivity()).mViewPager.getAdapter().notifyDataSetChanged();
-												}
-												else {
+															Toast.LENGTH_SHORT)
+															.show();
+													((CategoryManagementActivity) getActivity()).mViewPager
+															.getAdapter()
+															.notifyDataSetChanged();
+												} else {
 													Toast.makeText(
 															getActivity()
 																	.getApplicationContext(),
 															"Error: "
-																	+ editResult.getMessage(),
-															Toast.LENGTH_SHORT).show();
+																	+ editResult
+																			.getMessage(),
+															Toast.LENGTH_SHORT)
+															.show();
 												}
-											}
-											else {
+											} else {
 												Toast.makeText(
 														getActivity()
 																.getApplicationContext(),
 														R.string.children_parent_category_error,
-														Toast.LENGTH_SHORT).show();
+														Toast.LENGTH_SHORT)
+														.show();
 											}
-											
+
 										}
 									});
 							builder.setNegativeButton(R.string.cancel,
