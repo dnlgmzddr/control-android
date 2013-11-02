@@ -74,6 +74,9 @@ public class RegisterTransactionActivity extends Activity {
 							parentCategories);
 					parentCategoryAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
 					parentCategorySpinner.setAdapter(parentCategoryAdapter);
+					if (parentCategories.size() > 0) {
+						parentCategorySpinner.setSelection(0);
+					}
 					
 					if (parentCategories.size() == 0) {
 						ArrayAdapter<Category> childrenCategoryAdapter = new ArrayAdapter<Category>(
@@ -102,6 +105,8 @@ public class RegisterTransactionActivity extends Activity {
 					parentCategories);
 			parentCategoryAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
 			parentCategorySpinner.setAdapter(parentCategoryAdapter);
+			if (parentCategories.size() > 0)
+				parentCategorySpinner.setSelection(0);
 			
 		} catch (SQLException e) {
 			Log.d("RedisterTransaction", e.getMessage());
@@ -126,7 +131,9 @@ public class RegisterTransactionActivity extends Activity {
 							childrenCategories);
 					childrenCategoryAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
 					childrenCategorySpinner.setAdapter(childrenCategoryAdapter);
-					
+					if (childrenCategories.size() > 0) {
+						childrenCategorySpinner.setSelection(0);
+					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -180,7 +187,14 @@ public class RegisterTransactionActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				String selectedCategory = ((Category)childrenCategorySpinner.getSelectedItem()).getId();
+				String selectedCategory;
+				if (childrenCategorySpinner.getSelectedItem() != null) {
+					selectedCategory = ((Category)childrenCategorySpinner.getSelectedItem()).getId();
+				}
+				else {
+					selectedCategory = ((Category)parentCategorySpinner.getSelectedItem()).getId();
+				}
+				
 				float amount = Float.parseFloat(amountEditText.getText().toString());
 				CallResult result = new TransactionService(RegisterTransactionActivity.this).AddTransaction(selectedCategory, amount, UserFinancialProduct.DEFAULT_PRODUCT);
 				Bundle bundle = new Bundle();

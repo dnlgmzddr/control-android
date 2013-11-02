@@ -54,6 +54,16 @@ public class BudgetService extends BaseService {
 		return callResult;
 
 	}
+	
+	public UserBudget getUserBudget(String idCategory) {
+		Dao<UserBudget, String> budgetDAO;
+		try {
+			budgetDAO = this.getHelper().getBudgets();
+			return budgetDAO.queryForId(idCategory);
+		} catch (SQLException e) {
+			return null;
+		}
+	}
 
 	public List<UserBudget> getUserBudgets(int groupId) {
 		List<UserBudget> result = new ArrayList<UserBudget>();
