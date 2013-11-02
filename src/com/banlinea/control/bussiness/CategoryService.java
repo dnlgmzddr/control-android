@@ -1,6 +1,7 @@
 package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -155,6 +156,59 @@ public class CategoryService extends BaseService {
 		Dao<Category, String> dao = helper.getCategories();
 		Category category = dao.queryForId(categoryId);
 		return category;
+	}
+	
+	public List<String> getIncomeCategoriesId() throws SQLException {
+		Dao<Category, String> catDao = this.getHelper().getCategories();
+		List<Category> incomeCatgories = catDao.queryForEq("group",
+				Category.GROUP_INCOME);
+		List<String> incomeCategoriesIds = new ArrayList<String>();
+		for (Category income : incomeCatgories) {
+			incomeCategoriesIds.add(income.getId());
+		}
+		return incomeCategoriesIds;
+	}
+	
+	public List<String> getFixedExpensesCategoriesIds() throws SQLException {
+		Dao<Category, String> catDao = this.getHelper().getCategories();
+		QueryBuilder<Category, String> categoryQBuilder = catDao
+				.queryBuilder();
+
+
+		categoryQBuilder.where().eq("group",Category.GROUP_EXPENSE);
+		categoryQBuilder.where().and().eq("isFixed", true);
+		
+		PreparedQuery<Category> categoryQuery = categoryQBuilder.prepare();
+		
+		
+		List<Category> fixedExpensesCategoriesIds = catDao.query(categoryQuery);
+		
+		List<String> incomeCategoriesIds = new ArrayList<String>();
+		for (Category income : fixedExpensesCategoriesIds) {
+			incomeCategoriesIds.add(income.getId());
+		}
+		return incomeCategoriesIds;
+	}
+	
+	public List<String> getUnFixedExpensesCategoriesIds() throws SQLException {
+		Dao<Category, String> catDao = this.getHelper().getCategories();
+		QueryBuilder<Category, String> categoryQBuilder = catDao
+				.queryBuilder();
+
+
+		categoryQBuilder.where().eq("group",Category.GROUP_EXPENSE);
+		categoryQBuilder.where().and().eq("isFixed", false);
+		
+		PreparedQuery<Category> categoryQuery = categoryQBuilder.prepare();
+		
+		
+		List<Category> fixedExpensesCategoriesIds = catDao.query(categoryQuery);
+		
+		List<String> incomeCategoriesIds = new ArrayList<String>();
+		for (Category income : fixedExpensesCategoriesIds) {
+			incomeCategoriesIds.add(income.getId());
+		}
+		return incomeCategoriesIds;
 	}
 
 }

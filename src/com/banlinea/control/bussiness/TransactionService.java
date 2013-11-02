@@ -77,23 +77,26 @@ public class TransactionService extends BaseService {
 		end.set(Calendar.MONTH, end.get(Calendar.MONDAY) + 1);
 		end.set(Calendar.DAY_OF_MONTH, 1);
 
-		Dao<Transaction, String> transactionDao = this.getHelper().getTransactions();
-		
+		Dao<Transaction, String> transactionDao = this.getHelper()
+				.getTransactions();
+
 		QueryBuilder<Transaction, String> query = transactionDao.queryBuilder();
-		
+
 		query.where().between("date", begin, end);
 		PreparedQuery<Transaction> preparedQuery = query.prepare();
-		
-		List<Transaction> transactionInMonth = transactionDao.query(preparedQuery);
-		
+
+		List<Transaction> transactionInMonth = transactionDao
+				.query(preparedQuery);
+
 		return transactionInMonth;
 	}
 
 	public List<Transaction> getCurrentMonthTransactionsFor(String idCategory) {
 		try {
-			// TODO: set for time period
-			Dao<Transaction,String> transactionDAO = this.getHelper().getTransactions();
-			List<Transaction> transactions = transactionDAO.queryForEq("idCategory", idCategory);
+			Dao<Transaction, String> transactionDAO = this.getHelper()
+					.getTransactions();
+			List<Transaction> transactions = transactionDAO.queryForEq(
+					"idCategory", idCategory);
 			return transactions;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -101,5 +104,76 @@ public class TransactionService extends BaseService {
 		}
 	}
 
-	
+	public float getTopTransactionInCurrentMonth(String idCategory) {
+		float topTransaction = 0f;
+		try {
+
+			Calendar begin = GregorianCalendar.getInstance();
+			Calendar end = GregorianCalendar.getInstance();
+
+			begin.set(Calendar.DAY_OF_MONTH, 1);
+			end.set(Calendar.MONTH, end.get(Calendar.MONDAY) + 1);
+			end.set(Calendar.DAY_OF_MONTH, 1);
+
+			Dao<Transaction, String> transactionDao;
+
+			transactionDao = this.getHelper().getTransactions();
+
+			QueryBuilder<Transaction, String> query = transactionDao
+					.queryBuilder();
+
+			query.where().between("date", begin, end);
+			query.where().and().eq("idCategory", idCategory);
+			query.selectRaw("MAX (amount)");
+
+			List<String[]> results = transactionDao.queryRaw(
+					query.prepareStatementString()).getResults();
+			if (results.size() > 0 && results.get(0).length > 0) {
+				topTransaction = Float.parseFloat(results.get(0)[0]);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return topTransaction;
+	}
+
+	public float getExpensesDueDate() {
+		float totalExpenses = 0f;
+		try {
+
+			List<String> unFixedExpensesCategories = new CategoryService(
+					this.context).getUnFixedExpensesCategoriesIds();
+
+			Calendar begin = GregorianCalendar.getInstance();
+			Calendar end = GregorianCalendar.getInstance();
+			end.add(Calendar.DAY_OF_MONTH, -1);
+
+			begin.set(Calendar.DAY_OF_MONTH, 1);
+
+			Dao<Transaction, String> transactionDao;
+
+			transactionDao = this.getHelper().getTransactions();
+
+			QueryBuilder<Transaction, String> query = transactionDao
+					.queryBuilder();
+
+			query.where().between("date", begin, end);
+			query.where().and().in("idCategory", unFixedExpensesCategories);
+
+			List<Transaction> transactions = transactionDao.query(query
+					.prepare());
+
+			for (Transaction transaction : transactions) {
+				totalExpenses += transaction.getAmount();
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return totalExpenses;
+	}
+
 }

@@ -2,6 +2,7 @@ package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -13,6 +14,8 @@ import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.remote.RemoteBudgetService;
 import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 public class BudgetService extends BaseService {
 
@@ -73,15 +76,15 @@ public class BudgetService extends BaseService {
 				UserBudget budget = budgetDAO.queryForId(category.getId());
 				if (budget != null) {
 					List<Transaction> transactions = new TransactionService(
-							this.context).getCurrentMonthTransactionsFor(category
-							.getId());
-	
+							this.context)
+							.getCurrentMonthTransactionsFor(category.getId());
+
 					float executedBudget = 0;
-	
+
 					for (Transaction transaction : transactions) {
 						executedBudget += (float) transaction.getAmount();
 					}
-					
+
 					budget.setCurrentExecutedBudget(executedBudget);
 					result.add(budget);
 				}
@@ -93,10 +96,91 @@ public class BudgetService extends BaseService {
 			return null;
 		}
 	}
-	
-	
-	public float getTodayExpenses(){
-		return 0f;
+
+	public float getDailyBudget() {
+		float dailyBudget = 0f;
+
+		float monthlyIncome = calculateMonthlyIncome();
+		
+		float fixedExpenses = getFixedCategoriesBudget();
+
+		 float expensesDueDate =  new TransactionService(this.context).getExpensesDueDate();
+		
+		dailyBudget = monthlyIncome - fixedExpenses - expensesDueDate;
+		
+		int days = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+		
+		
+		
+		dailyBudget = dailyBudget/days;
+		
+		return dailyBudget;
 	}
+
+
+	private float getFixedCategoriesBudget() {
+		float fixedExpenses = 0f;
+		try {
+
+			
+			Dao<UserBudget, String> budgetDao = this.getHelper().getBudgets();
+
+			
+			List<String> incomeCategoriesIds = new CategoryService(this.context).getFixedExpensesCategoriesIds();
+
+			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
+					.queryBuilder();
+
+			budgetQBuilder.where().in("idCategory", incomeCategoriesIds);
+
+			PreparedQuery<UserBudget> budgetQuery = budgetQBuilder.prepare();
+
+			List<UserBudget> budgets = budgetDao.query(budgetQuery);
+
+			for (UserBudget expenseBudget : budgets) {
+				fixedExpenses += Math.max(expenseBudget.getBudget(), new TransactionService(this.context).getTopTransactionInCurrentMonth(expenseBudget.getIdCategory()));
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return fixedExpenses;
+	}
+
+	
+
+	public float calculateMonthlyIncome() {
+		float monthlyIncome = 0f;
+		try {
+
+			
+			Dao<UserBudget, String> budgetDao = this.getHelper().getBudgets();
+
+			List<String> incomeCategoriesIds = new CategoryService(this.context).getIncomeCategoriesId();
+
+			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
+					.queryBuilder();
+
+			budgetQBuilder.where().in("idCategory", incomeCategoriesIds);
+
+			PreparedQuery<UserBudget> budgetQuery = budgetQBuilder.prepare();
+
+			List<UserBudget> budgets = budgetDao.query(budgetQuery);
+
+			for (UserBudget incomeBudget : budgets) {
+				monthlyIncome += incomeBudget.getBudget();
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return monthlyIncome;
+	}
+
+	
 
 }
