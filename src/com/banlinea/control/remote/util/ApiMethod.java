@@ -55,7 +55,7 @@ public enum ApiMethod {
 	/**
 	 * Base URL for the API.
 	 */
-	private static final String ENDPOINT = "http://controlbanlinea.azurewebsites.net/";
+	private static final String ENDPOINT = "http://ec2-54-201-1-32.us-west-2.compute.amazonaws.com/";
 
 	/**
 	 * look up for the type of the given operation
