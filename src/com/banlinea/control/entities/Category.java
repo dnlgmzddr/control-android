@@ -36,6 +36,10 @@ public class Category extends BaseEntity implements Serializable{
 	@DatabaseField
 	private int group;
 	
+	@DatabaseField
+	private boolean isFixed;
+	
+	
 	
 	
 	
@@ -73,6 +77,12 @@ public class Category extends BaseEntity implements Serializable{
 	@Override
 	public String toString() {
 		return this.name;
+	}
+	public boolean isFixed() {
+		return isFixed;
+	}
+	public void setFixed(boolean isFixed) {
+		this.isFixed = isFixed;
 	}
 
 }
