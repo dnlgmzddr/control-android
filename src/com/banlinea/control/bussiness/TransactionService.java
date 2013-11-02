@@ -1,7 +1,7 @@
 package com.banlinea.control.bussiness;
 
+import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -14,6 +14,9 @@ import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.result.TransactionResult;
 import com.banlinea.control.remote.RemoteTransactionService;
 import com.banlinea.control.remote.util.CallResult;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 public class TransactionService extends BaseService {
 
@@ -25,7 +28,8 @@ public class TransactionService extends BaseService {
 		remoteTransactionService = new RemoteTransactionService();
 	}
 
-	public CallResult AddTransaction(String categoryId, float amount, String pruductId) {
+	public CallResult AddTransaction(String categoryId, float amount,
+			String pruductId) {
 
 		TransactionResult result;
 
@@ -34,12 +38,14 @@ public class TransactionService extends BaseService {
 					.GetUser();
 			Category currentCategory = new CategoryService(this.context)
 					.GetCategory(categoryId);
-			
-			UserFinancialProduct financialProduct = new FinancialProductService(this.context).getProductById(pruductId);
-			
-			
-			if (currentUser == null || currentCategory == null || financialProduct == null) {
-				return new CallResult(false, "No es posible realizar la operación.");
+
+			UserFinancialProduct financialProduct = new FinancialProductService(
+					this.context).getProductById(pruductId);
+
+			if (currentUser == null || currentCategory == null
+					|| financialProduct == null) {
+				return new CallResult(false,
+						"No es posible realizar la operación.");
 			}
 			Transaction transaction = new Transaction();
 			transaction.setAmount(amount);
@@ -48,32 +54,38 @@ public class TransactionService extends BaseService {
 			transaction.setIdCategory(currentCategory.getId());
 			transaction.setIdProduct(financialProduct.getIdProduct());
 			result = remoteTransactionService.AddTransaction(transaction);
-			
-			if(result.isSuccessfullOperation()){
-				Transaction  newTransaction = result.getBody();
-				this.getHelper().getTransactions().create(newTransaction);	
+
+			if (result.isSuccessfullOperation()) {
+				Transaction newTransaction = result.getBody();
+				this.getHelper().getTransactions().create(newTransaction);
 			}
 
 		} catch (Exception e) {
-			result  = new TransactionResult();
+			result = new TransactionResult();
 			result.setMessage("Lo sentimos un error ha ocurrido.");
 			result.setSuccessfullOperation(false);
-		} 
+		}
 
 		return result;
 	}
-	
-	public List<Transaction> getCurrentMonthTransactions(){
+
+	public List<Transaction> getCurrentMonthTransactions() throws SQLException {
 		Calendar begin = GregorianCalendar.getInstance();
 		Calendar end = GregorianCalendar.getInstance();
-		
-		
+
 		begin.set(Calendar.DAY_OF_MONTH, 1);
-		//end.set(Calendar., value)
+		end.set(Calendar.MONTH, end.get(Calendar.MONDAY) + 1);
+		end.set(Calendar.DAY_OF_MONTH, 1);
+
+		Dao<Transaction, String> transactionDao = this.getHelper().getTransactions();
 		
+		QueryBuilder<Transaction, String> query = transactionDao.queryBuilder();
 		
-		Date today = new Date();
+		query.where().between("date", begin, end);
+		PreparedQuery<Transaction> preparedQuery = query.prepare();
 		
-		return null;
+		List<Transaction> transactionInMonth = transactionDao.query(preparedQuery);
+		
+		return transactionInMonth;
 	}
 }

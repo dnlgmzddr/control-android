@@ -88,4 +88,10 @@ public class BudgetService extends BaseService {
 			return null;
 		}
 	}
+	
+	
+	public float getTodayExpenses(){
+		return 0f;
+	}
+
 }
