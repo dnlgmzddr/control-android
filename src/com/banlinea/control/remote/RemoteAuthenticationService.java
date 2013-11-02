@@ -3,6 +3,7 @@ package com.banlinea.control.remote;
 import java.util.concurrent.ExecutionException;
 
 import com.banlinea.control.entities.UserProfile;
+import com.banlinea.control.entities.result.LoginResult;
 import com.banlinea.control.entities.result.UserResult;
 import com.banlinea.control.entities.util.LoginRequest;
 import com.banlinea.control.remote.util.ApiMethod;
@@ -30,13 +31,13 @@ public class RemoteAuthenticationService {
 		return result;
 	}
 
-	public UserResult Auth(String email, String password) {
-		UserResult result = null;
+	public LoginResult Auth(String email, String password) {
+		LoginResult result = null;
 
 		try {
 			LoginRequest loginRequest = new LoginRequest(email,password);
-			result = new ControlApiHandler<UserResult, LoginRequest>(
-					loginRequest, ApiMethod.AUTH_LOGIN_USER, UserResult.class)
+			result = new ControlApiHandler<LoginResult, LoginRequest>(
+					loginRequest, ApiMethod.AUTH_LOGIN_USER, LoginResult.class)
 					.execute().get();
 
 		} catch (InterruptedException e) {

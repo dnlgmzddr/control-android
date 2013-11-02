@@ -6,8 +6,12 @@ import java.util.concurrent.Callable;
 
 import android.content.Context;
 
+import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
+import com.banlinea.control.entities.result.LoginData;
+import com.banlinea.control.entities.result.LoginResult;
 import com.banlinea.control.entities.result.UserResult;
 import com.banlinea.control.local.DatabaseHelper;
 import com.banlinea.control.remote.RemoteAuthenticationService;
@@ -56,14 +60,30 @@ public class AuthenticationService extends BaseService {
 	public CallResult Login(String userMail, String password)
 			throws SQLException {
 
-		UserResult result = remoteAuthSerice.Auth(userMail, password);
+		LoginResult result = remoteAuthSerice.Auth(userMail, password);
 
 		if (result != null && result.isSuccessfullOperation()) {
 
 			DatabaseHelper helper = this.getHelper();
-			Dao<UserProfile, String> dao = helper.getUserProfiles();
-			UserProfile profileToSave = result.getBody();
-			dao.create(profileToSave);
+			
+			Dao<UserProfile, String> userDao = helper.getUserProfiles();
+			Dao<Transaction, String> transactionDao = helper.getTransactions();
+			Dao<Category, String> categoriesDao = helper.getCategories();
+			Dao<UserFinancialProduct, String> productsDao = helper.getUserFinantialProducts();
+			
+			
+			LoginData loginData = result.getBody();
+			userDao.create(loginData.getUser());
+			
+			for(Category cat : loginData.getCategories()){
+				categoriesDao.createOrUpdate(cat);
+			}
+			for(UserFinancialProduct product : loginData.getFinancialProducts()){
+				productsDao.createOrUpdate(product);
+			}
+			for(Transaction transaction : loginData.getTransactions()){
+				transactionDao.createOrUpdate(transaction);
+			}
 		}
 
 		return result;
