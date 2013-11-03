@@ -8,8 +8,11 @@ import com.banlinea.control.bussiness.FinancialProductService;
 import com.banlinea.control.dto.in.FinancialEntityDTO;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.FinancialProduct;
+import com.banlinea.control.bussiness.FinancialProductService;
+import com.banlinea.control.dto.in.FinancialEntityDTO;
+import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.FinancialProduct;
 import com.banlinea.control.remote.util.CallResult;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,6 +38,10 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.banlinea.control.bussiness.FinancialProductService;
+import com.banlinea.control.dto.in.FinancialEntityDTO;
+import com.banlinea.control.entities.FinancialProduct;
 
 public class ProductManagementActivity extends FragmentActivity {
 

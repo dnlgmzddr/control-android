@@ -8,13 +8,12 @@ public class UserFinancialProduct {
 
 	public static final String DEFAULT_PRODUCT = "DEFAULT";
 	
-	
 	@DatabaseField(id = true)
 	private String idProduct;
 
-
 	@DatabaseField
 	private String idUser;
+	
 	@DatabaseField
 	private String name;
 	
@@ -52,8 +51,8 @@ public class UserFinancialProduct {
 		return category;
 	}
 
-	public void setCategory(int type) {
-		this.category = type;
+	public void setCategory(int category) {
+		this.category = category;
 	}
 
 }

@@ -39,6 +39,7 @@ public class AuthenticationService extends BaseService {
 
 			TransactionManager.callInTransaction(helper.getConnectionSource(),
 					new Callable<Void>() {
+						@Override
 						public Void call() throws Exception {
 							Dao<UserProfile, String> userProfileDao = helper
 									.getUserProfiles();

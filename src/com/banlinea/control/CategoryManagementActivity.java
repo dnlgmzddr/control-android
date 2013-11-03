@@ -30,7 +30,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.TableLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -462,8 +461,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 						.findViewById(R.id.emptyBar);
 				
 				filledBarTV.setBackgroundColor(Color.GREEN);
-				filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f));
-				emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0f));
+				filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+				emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 0f));
 				UserBudget catBudget = null;
 				for (UserBudget budget : budgets) {
 					if (categories.get(position).getId().equals(budget.getIdCategory())) {
@@ -477,8 +476,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 					float fraction = (totalBudget - executedBudget) / totalBudget;
 					if (executedBudget > totalBudget) {
 						filledBarTV.setBackgroundColor(Color.RED);
-						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0f));
-						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f));
+						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 0f));
+						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 1f));
 					}
 					else {
 						if (fraction < 0.5f) {
@@ -489,8 +488,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 								filledBarTV.setBackgroundColor(Color.YELLOW);
 							}
 						}
-						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f-fraction));
-						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, fraction));
+						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 1.0f-fraction));
+						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, fraction));
 					}
 					
 					TextView categoryNameTextView = (TextView) rowView
