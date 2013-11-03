@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
@@ -125,7 +126,7 @@ public class BudgetService extends BaseService {
 
 			dailyBudget = dailyBudget / days;
 		} catch (Exception e) {
-
+				Log.d("ERROR", e.getMessage());
 		}
 		return dailyBudget;
 	}
@@ -156,7 +157,6 @@ public class BudgetService extends BaseService {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -186,7 +186,6 @@ public class BudgetService extends BaseService {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
