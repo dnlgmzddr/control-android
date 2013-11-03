@@ -29,11 +29,57 @@ public class FinancialProductService extends BaseService {
 	}
 
 	/**
-	 * 
+	 * Get user products with full financial products.
+	 * @return
+	 */
+	public List<UserFinancialProduct> getUserProducts(){
+		
+		List<UserFinancialProduct> userProducts =null;
+		
+		
+		try {
+			UserProfile userProfile =  new AuthenticationService(this.context).GetUser();
+			Dao<UserFinancialProduct, String> userProductsDao = this.getHelper().getUserFinantialProducts();
+			
+			userProducts = userProductsDao.queryForEq("idUser", userProfile.getId());
+			
+			for(UserFinancialProduct uProduct: userProducts){
+				uProduct.setProduct(this.getFinancialProductById(uProduct.getIdProduct()));
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return userProducts;
+	}
+	
+	/**
+	 * Get financial product by Id.
 	 * @param productId
 	 * @return
 	 */
-	public UserFinancialProduct getProductById(String productId) {
+	public FinancialProduct getFinancialProductById(String productId){
+		FinancialProduct product = null;
+		try {
+			Dao<FinancialProduct, String> productsDao = this.getHelper().getFinantialProducts();
+			product = productsDao.queryForId(productId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return product;
+	}
+	
+	
+	/**
+	 * Get user financial products. (without dependent financial product)
+	 * @param productId
+	 * @return
+	 */
+	public UserFinancialProduct getUserProductById(String productId) {
 		UserFinancialProduct result = null;
 		try {
 			Dao<UserFinancialProduct, String> productDao = this.getHelper()
@@ -95,6 +141,13 @@ public class FinancialProductService extends BaseService {
 		return result.getBody();
 	}
 	
+	/**
+	 * Add a financial product to the user.
+	 * @param name
+	 * @param productId
+	 * @param productCategory
+	 * @return
+	 */
 	public CallResult AddProduct(String name, String productId, int productCategory){
 		
 		UserProfile user = new AuthenticationService(this.context).GetUser();

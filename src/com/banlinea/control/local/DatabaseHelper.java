@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.banlinea.control.R;
 import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.FinancialProduct;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
@@ -28,6 +29,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<Transaction, String> transactions;
 	private Dao<UserFinancialProduct, String> userFinantialProducts;
 	
+	private Dao<FinancialProduct, String> finantialProducts;
+	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION,
 				R.raw.ormlite_config);
@@ -42,6 +45,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, UserBudget.class);
 			TableUtils.createTable(connectionSource, Transaction.class);
 			TableUtils.createTable(connectionSource, UserFinancialProduct.class);
+			TableUtils.createTable(connectionSource, FinancialProduct.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
 		}
@@ -56,6 +60,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, UserBudget.class, true);
 			TableUtils.dropTable(connectionSource, Transaction.class, true);
 			TableUtils.dropTable(connectionSource, UserFinancialProduct.class, true);
+			TableUtils.dropTable(connectionSource, FinancialProduct.class, true);
 			onCreate(sqliteDatabase, connectionSource);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(),
@@ -96,6 +101,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			userFinantialProducts = getDao(UserFinancialProduct.class);
 		}
 		return userFinantialProducts;
+	}
+	
+	public Dao<FinancialProduct, String> getFinantialProducts() throws SQLException {
+		if (finantialProducts == null) {
+			finantialProducts = getDao(FinancialProduct.class);
+		}
+		return finantialProducts;
 	}
 
 }

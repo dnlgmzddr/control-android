@@ -17,6 +17,8 @@ public class UserFinancialProduct {
 	@DatabaseField
 	private String name;
 	
+	private FinancialProduct product;
+	
 	/**
 	 * Category of the product
 	 */
@@ -53,6 +55,14 @@ public class UserFinancialProduct {
 
 	public void setCategory(int category) {
 		this.category = category;
+	}
+
+	public FinancialProduct getProduct() {
+		return product;
+	}
+
+	public void setProduct(FinancialProduct product) {
+		this.product = product;
 	}
 
 }
