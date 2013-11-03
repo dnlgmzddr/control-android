@@ -1,5 +1,5 @@
 #
-# generated on 2013/11/03 02:27:56
+# generated on 2013/11/03 04:36:41
 #
 # --table-start--
 dataClass=com.banlinea.control.entities.Category
@@ -76,7 +76,7 @@ fieldName=comment
 # --field-end--
 # --field-start--
 fieldName=date
-dataPersister=DATE_TIME
+dataPersister=DATE_LONG
 # --field-end--
 # --field-start--
 fieldName=idUser

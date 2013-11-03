@@ -8,6 +8,7 @@ import android.content.Context;
 
 import com.banlinea.control.dto.in.LoginDTO;
 import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.FinancialProduct;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
@@ -73,10 +74,12 @@ public class AuthenticationService extends BaseService {
 			Dao<UserProfile, String> userDao = helper.getUserProfiles();
 			Dao<Transaction, String> transactionDao = helper.getTransactions();
 			Dao<Category, String> categoriesDao = helper.getCategories();
-			Dao<UserFinancialProduct, String> productsDao = helper
+			Dao<UserFinancialProduct, String> userProductsDao = helper
 					.getUserFinantialProducts();
 			Dao<UserBudget, String> budgetDao = helper.getBudgets();
 
+			Dao<FinancialProduct,String> productsDao = helper.getFinantialProducts();
+			
 			LoginDTO loginData = result.getBody();
 			userDao.create(loginData.getUser());
 			if (loginData.getCategories() != null) {
@@ -85,9 +88,15 @@ public class AuthenticationService extends BaseService {
 				}
 			}
 			if (loginData.getFinancialProducts() != null) {
-				for (UserFinancialProduct product : loginData
+				for (FinancialProduct product : loginData
 						.getFinancialProducts()) {
 					productsDao.createOrUpdate(product);
+				}
+			}
+			if (loginData.getUserProducts()!= null) {
+				for (UserFinancialProduct product : loginData
+						.getUserProducts()) {
+					userProductsDao.createOrUpdate(product);
 				}
 			}
 			if (loginData.getTransactions() != null) {

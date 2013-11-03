@@ -30,7 +30,7 @@ public class TransactionService extends BaseService {
 	}
 
 	public CallResult AddTransaction(String categoryId, float amount,
-			String pruductId) {
+			String productId) {
 
 		TransactionResult result;
 
@@ -41,7 +41,7 @@ public class TransactionService extends BaseService {
 					.GetCategory(categoryId);
 
 			UserFinancialProduct financialProduct = new FinancialProductService(
-					this.context).getUserProductById(pruductId);
+					this.context).getUserProductById(productId);
 
 			if (currentUser == null || currentCategory == null
 					|| financialProduct == null) {
