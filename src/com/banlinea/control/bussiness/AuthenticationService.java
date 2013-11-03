@@ -6,12 +6,12 @@ import java.util.concurrent.Callable;
 
 import android.content.Context;
 
+import com.banlinea.control.dto.in.LoginDTO;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
-import com.banlinea.control.entities.result.LoginData;
 import com.banlinea.control.entities.result.LoginResult;
 import com.banlinea.control.entities.result.UserResult;
 import com.banlinea.control.local.DatabaseHelper;
@@ -76,7 +76,7 @@ public class AuthenticationService extends BaseService {
 					.getUserFinantialProducts();
 			Dao<UserBudget, String> budgetDao = helper.getBudgets();
 
-			LoginData loginData = result.getBody();
+			LoginDTO loginData = result.getBody();
 			userDao.create(loginData.getUser());
 			if (loginData.getCategories() != null) {
 				for (Category cat : loginData.getCategories()) {

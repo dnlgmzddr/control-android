@@ -1,4 +1,4 @@
-package com.banlinea.control.entities.util;
+package com.banlinea.control.remote.util;
 
 import com.google.gson.*;
 

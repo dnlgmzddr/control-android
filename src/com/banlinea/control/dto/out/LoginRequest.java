@@ -1,8 +1,8 @@
-package com.banlinea.control.entities.util;
+package com.banlinea.control.dto.out;
 
-import com.banlinea.control.entities.BaseEntity;
 
-public class LoginRequest extends BaseEntity {
+
+public class LoginRequest  {
 
 	private String userMail;
 	private String password;

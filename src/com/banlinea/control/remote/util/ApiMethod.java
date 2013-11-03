@@ -35,8 +35,18 @@ public enum ApiMethod {
 	 * Part of the category management service, this method get all the system
 	 * categories.
 	 */
-	CATS_GET_ALL(HttpMethods.GET, "api/Categories/GetBasics");
+	CATS_GET_ALL(HttpMethods.GET, "api/Categories/GetBasics"),
 
+	PRODUCTS_GET_ADD_TO_USER(HttpMethods.POST,"api/FinancialProduct/AddProductToUser"),
+	
+	PRODUCTS_GET_FILTERED(HttpMethods.GET,"api/FinancialProduct/GetFiltered"),
+	
+	/**
+	 * Get the financial entities that have products for the specified category.
+	 */
+	PRODUCTS_GET_ENTITIES(HttpMethods.GET,"api/FinancialProduct/GetFinancialEntitiesByType");
+	
+	
 	/**
 	 * The HTTP method used to do the request. GET or POST
 	 */
