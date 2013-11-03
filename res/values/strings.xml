@@ -95,5 +95,15 @@
     <string name="reminder_message">¿Ya registraste hoy tus transacciones?</string>
     <string name="exit_app">Salir de Banlinea Control</string>
     <string name="exit_message">¿Deseas salir de la aplicación?</string>
+    <string name="reminder_set_message">Recordatorios activados diariamente a las 8 PM</string>
+    <string name="manage_products">Productos Financieros</string>
+    <string name="title_activity_product_management">Gestión de Productos Financieros</string>
+    <string name="add_product">Registrar Producto</string>
+    <string name="title_bank_account">Cuentas de Ahorro</string>
+    <string name="title_credit_card">Tarjetas de Crédito</string>
+    <string name="product_name">Nombre de Producto</string>
+    <string name="product_bank">Entidad Bancaria</string>
+    <string name="edit_product_title">Editar Producto</string>
+    <string name="create_product_title">Registrar Producto</string>
 
 </resources>

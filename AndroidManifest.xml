@@ -9,8 +9,9 @@
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
-	
+    <uses-permission android:name="android.permission.VIBRATE" >
+    </uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -18,32 +19,38 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.banlinea.control.LoginActivity"
-            android:label="@string/app_name" android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.banlinea.control.RegisterActivity"
             android:label="@string/app_name"
-            android:parentActivityName="com.banlinea.control.LoginActivity" android:screenOrientation="portrait">
+            android:parentActivityName="com.banlinea.control.LoginActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.banlinea.control.HomeActivity" />
         </activity>
         <activity
             android:name="com.banlinea.control.ReminderSetupActivity"
-            android:label="@string/app_name" android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.banlinea.control.InitialSetupActivity"
-            android:label="@string/app_name" android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.banlinea.control.BalanceActivity"
-            android:label="@string/app_name" android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.banlinea.control.RegisterTransactionActivity"
             android:label="@string/title_activity_register_transaction"
-            android:parentActivityName="com.banlinea.control.BalanceActivity" android:screenOrientation="portrait">
+            android:parentActivityName="com.banlinea.control.BalanceActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.banlinea.control.BalanceActivity" />
@@ -51,7 +58,8 @@
         <activity
             android:name="com.banlinea.control.SplashScreenActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,9 +68,21 @@
         </activity>
         <activity
             android:name="com.banlinea.control.CategoryManagementActivity"
-            android:label="@string/title_activity_category_management" android:screenOrientation="portrait">
+            android:label="@string/title_activity_category_management"
+            android:screenOrientation="portrait" >
         </activity>
-        <receiver android:name="ReminderReceiver"></receiver>
+
+        <receiver android:name="com.banlinea.control.ReminderReceiver" >
+        </receiver>
+
+        <activity
+            android:name="com.banlinea.control.ProductManagementActivity"
+            android:label="@string/title_activity_product_management"
+            android:parentActivityName="com.banlinea.control.BalanceActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.banlinea.control.BalanceActivity" />
+        </activity>
     </application>
 
 </manifest>

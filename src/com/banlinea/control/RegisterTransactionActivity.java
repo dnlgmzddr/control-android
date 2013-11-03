@@ -117,9 +117,9 @@ public class RegisterTransactionActivity extends Activity {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
-				Toast.makeText(RegisterTransactionActivity.this, 
+				/*Toast.makeText(RegisterTransactionActivity.this, 
 		                "On Parent Category Select : \n" + parent.getItemAtPosition(pos).toString(),
-		                Toast.LENGTH_LONG).show();
+		                Toast.LENGTH_LONG).show();*/
 				
 				try {
 					CategoryService catService = new CategoryService(getApplicationContext());
@@ -153,9 +153,9 @@ public class RegisterTransactionActivity extends Activity {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
-				Toast.makeText(RegisterTransactionActivity.this, 
+				/*Toast.makeText(RegisterTransactionActivity.this, 
 		                "On Child Category Select : \n" + parent.getItemAtPosition(pos).toString(),
-		                Toast.LENGTH_LONG).show();
+		                Toast.LENGTH_LONG).show();*/
 			}
 
 			@Override

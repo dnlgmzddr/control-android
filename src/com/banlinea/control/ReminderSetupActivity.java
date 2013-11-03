@@ -13,6 +13,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
@@ -33,19 +34,24 @@ public class ReminderSetupActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder_setup);
         
-        Log.d("Calendar Time", "" + Calendar.getInstance().toString());
-        
         setRemindersToggle = (ToggleButton) findViewById(R.id.set_reminders_toggle);
+        SharedPreferences settings = getSharedPreferences("ReminderSetup", MODE_PRIVATE);
+        setRemindersToggle.setChecked(settings.getBoolean("RemindersOn", false));
+        
         
         continueButton = (Button) findViewById(R.id.continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				SharedPreferences settings = getSharedPreferences("ReminderSetup", MODE_PRIVATE);
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putBoolean("RemindersOn", setRemindersToggle.isChecked());
+				editor.commit();
 				
 				if (setRemindersToggle.isChecked()) {
 					createScheduledNotification();
-					Toast.makeText(getApplicationContext(), "Recordatorio ajustado", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.reminder_set_message, Toast.LENGTH_SHORT).show();
 				}
 				
 				
@@ -93,7 +99,7 @@ public class ReminderSetupActivity extends Activity {
 		// Get new calendar object and set the date to now
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.HOUR_OF_DAY, 20);
-		calendar.set(Calendar.MINUTE, 54);
+		calendar.set(Calendar.MINUTE, 00);
 		calendar.set(Calendar.SECOND, 00);
 		
 		// Retrieve alarm manager from the system
