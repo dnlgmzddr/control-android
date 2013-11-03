@@ -10,9 +10,11 @@ import com.banlinea.control.dto.out.FinancialEntitiesRequest;
 import com.banlinea.control.dto.out.ProductFilterRequest;
 import com.banlinea.control.entities.FinancialProduct;
 import com.banlinea.control.entities.UserFinancialProduct;
+import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.result.FinancialEntitiesResult;
 import com.banlinea.control.entities.result.FinancialProductResult;
 import com.banlinea.control.remote.RemoteFinancialProductService;
+import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -42,7 +44,7 @@ public class FinancialProductService extends BaseService {
 				QueryBuilder<UserFinancialProduct, String> queryBuilder = productDao
 						.queryBuilder();
 
-				queryBuilder.where().eq("type", UserFinancialProduct.TYPE_CASH);
+				queryBuilder.where().eq("type", FinancialProduct.CATEGORY_CASH);
 				PreparedQuery<UserFinancialProduct> preparedQuery = queryBuilder
 						.prepare();
 
@@ -93,6 +95,18 @@ public class FinancialProductService extends BaseService {
 		return result.getBody();
 	}
 	
+	public CallResult AddProduct(String name, String productId, int productCategory){
+		
+		UserProfile user = new AuthenticationService(this.context).GetUser();
+		
+		UserFinancialProduct userProduct = new UserFinancialProduct();
+		userProduct.setIdProduct(productId);
+		userProduct.setName(name);
+		userProduct.setCategory(productCategory);
+		userProduct.setIdUser(user.getId());
+		
+		return this.financialProductService.AddProductToUser(userProduct);
+	}
 	
 
 }

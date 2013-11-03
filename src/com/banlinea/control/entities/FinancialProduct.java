@@ -6,8 +6,9 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class FinancialProduct {
 	
-	public static final int CATEGORY_CREDIT_CARD = 0;
-	public static final int CATEGORY_SAVING_ACCOUNT = 1;
+	public static final int CATEGORY_CASH = 0;
+	public static final int CATEGORY_CREDIT_CARD = 1;
+	public static final int CATEGORY_SAVING_ACCOUNT = 2;
 	
 	
 	@DatabaseField

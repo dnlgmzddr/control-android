@@ -7,9 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class UserFinancialProduct {
 
 	public static final String DEFAULT_PRODUCT = "DEFAULT";
-	public static final int TYPE_CASH = 0;
-	public static final int TYPE_CREDIT_CARD = 0;
-	public static final int TYPE_SAVING_ACCOUNT = 0;
+	
 	
 	@DatabaseField(id = true)
 	private String idProduct;
@@ -19,8 +17,12 @@ public class UserFinancialProduct {
 	private String idUser;
 	@DatabaseField
 	private String name;
+	
+	/**
+	 * Category of the product
+	 */
 	@DatabaseField
-	private int type;
+	private int category;
 	
 	public String getIdProduct() {
 		return idProduct;
@@ -46,12 +48,12 @@ public class UserFinancialProduct {
 		this.name = name;
 	}
 
-	public int getType() {
-		return type;
+	public int getCategory() {
+		return category;
 	}
 
-	public void setType(int type) {
-		this.type = type;
+	public void setCategory(int type) {
+		this.category = type;
 	}
 
 }
