@@ -117,8 +117,8 @@ public class CategoryManagementActivity extends FragmentActivity {
 			return true;
 
 		case R.id.add_category:
-			Toast.makeText(this, "Create New Category", Toast.LENGTH_SHORT)
-					.show();
+			/*Toast.makeText(this, "Create New Category", Toast.LENGTH_SHORT)
+					.show();*/
 			onCreateCategory();
 			break;
 		}
@@ -428,13 +428,13 @@ public class CategoryManagementActivity extends FragmentActivity {
 										newb.setPeriod(1);
 										new BudgetService(getActivity()).AddBudget(newb);
 										
-										Toast.makeText(
+										/*Toast.makeText(
 												getActivity(),
 												"budget set to: $"
 														+ budgetEditText
 																.getText()
 																.toString(),
-												Toast.LENGTH_SHORT).show();
+												Toast.LENGTH_SHORT).show();*/
 										
 										((CategoryManagementActivity) getActivity()).mViewPager
 										.getAdapter()
@@ -644,7 +644,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 												}
 												if (editResult
 														.isSuccessfullOperation()) {
-													Toast.makeText(
+													/*Toast.makeText(
 															getActivity()
 																	.getApplicationContext(),
 															"Edited: "
@@ -652,7 +652,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 																			.getText()
 																			.toString(),
 															Toast.LENGTH_SHORT)
-															.show();
+															.show();*/
 													((CategoryManagementActivity) getActivity()).mViewPager
 															.getAdapter()
 															.notifyDataSetChanged();
@@ -690,9 +690,9 @@ public class CategoryManagementActivity extends FragmentActivity {
 							AlertDialog dialog = builder.create();
 							dialog.show();
 
-							Toast.makeText(
+							/*Toast.makeText(
 									getActivity().getApplicationContext(),
-									"Edit", Toast.LENGTH_SHORT).show();
+									"Edit", Toast.LENGTH_SHORT).show();*/
 						}
 					});
 
@@ -716,7 +716,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 											Toast.makeText(
 													getActivity()
 															.getApplicationContext(),
-													"Deleted",
+													"Deleted not implemented yet.",
 													Toast.LENGTH_SHORT).show();
 										}
 									});

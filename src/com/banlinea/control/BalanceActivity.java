@@ -110,22 +110,29 @@ public class BalanceActivity extends Activity {
 
 		switch (item.getItemId()) {
 		case R.id.menu_category_manager:
-			Toast.makeText(getApplicationContext(), "category manager",
-					Toast.LENGTH_SHORT).show();
+			/*Toast.makeText(getApplicationContext(), "category manager",
+					Toast.LENGTH_SHORT).show();*/
 			Intent categoryManagerIntent = new Intent(getApplicationContext(), CategoryManagementActivity.class);
 			startActivity(categoryManagerIntent);
 			break;
+			
+		case R.id.menu_product_manager:
+			/*Toast.makeText(getApplicationContext(), "product manager",
+					Toast.LENGTH_SHORT).show();*/
+			Intent productManagerIntent = new Intent(getApplicationContext(), ProductManagementActivity.class);
+			startActivity(productManagerIntent);
+			break;
 
 		case R.id.menu_set_reminders:
-			Toast.makeText(getApplicationContext(), "set reminders",
-					Toast.LENGTH_SHORT).show();
+			/*Toast.makeText(getApplicationContext(), "set reminders",
+					Toast.LENGTH_SHORT).show();*/
 			Intent setRemindersIntent = new Intent(getApplicationContext(), ReminderSetupActivity.class);
 			startActivity(setRemindersIntent);
 			break;
 
 		case R.id.menu_action_initial_setup:
-			Toast.makeText(getApplicationContext(), "action initial setup",
-					Toast.LENGTH_SHORT).show();
+			/*Toast.makeText(getApplicationContext(), "action initial setup",
+					Toast.LENGTH_SHORT).show();*/
 			Intent initialSetupIntent = new Intent(getApplicationContext(), InitialSetupActivity.class);
 			startActivity(initialSetupIntent);
 			break;
@@ -154,7 +161,7 @@ public class BalanceActivity extends Activity {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(getApplicationContext(), "logout", Toast.LENGTH_SHORT).show();
+				/*Toast.makeText(getApplicationContext(), "logout", Toast.LENGTH_SHORT).show();*/
 				try {
 					new AuthenticationService(BalanceActivity.this).Logout();
 				} catch (SQLException e) {

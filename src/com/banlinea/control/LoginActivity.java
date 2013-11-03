@@ -89,7 +89,7 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(getApplicationContext(), "redirect to website", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "redirected to website not implemented yet", Toast.LENGTH_SHORT).show();
 			}
 		});
         
