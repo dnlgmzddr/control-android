@@ -2,10 +2,10 @@ package com.banlinea.control.remote;
 
 import java.util.concurrent.ExecutionException;
 
+import com.banlinea.control.dto.out.LoginRequest;
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.result.LoginResult;
 import com.banlinea.control.entities.result.UserResult;
-import com.banlinea.control.entities.util.LoginRequest;
 import com.banlinea.control.remote.util.ApiMethod;
 import com.banlinea.control.remote.util.ControlApiHandler;
 

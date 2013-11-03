@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 
 @DatabaseTable
-public  class UserProfile extends BaseEntity implements Serializable
+public  class UserProfile  implements Serializable
 {
 	
 	

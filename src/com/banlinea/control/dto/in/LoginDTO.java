@@ -1,4 +1,4 @@
-package com.banlinea.control.entities.result;
+package com.banlinea.control.dto.in;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.remote.util.CallResult;
 
 
-public class LoginData extends CallResult {
+public class LoginDTO extends CallResult {
 
 	
 	

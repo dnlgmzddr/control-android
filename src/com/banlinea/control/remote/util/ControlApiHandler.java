@@ -18,11 +18,9 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.banlinea.control.entities.BaseEntity;
-import com.banlinea.control.entities.util.GsonProvider;
 import com.google.gson.Gson;
 
-public class ControlApiHandler<T, V extends BaseEntity> extends
+public class ControlApiHandler<T, V> extends
 		AsyncTask<Void, Void, T> {
 
 	private V requestObject;

@@ -2,7 +2,6 @@ package com.banlinea.control.remote;
 
 import java.util.concurrent.ExecutionException;
 
-import com.banlinea.control.entities.BaseEntity;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.result.CategoryResult;
 import com.banlinea.control.entities.result.GetAllBasicCateoriesResult;
@@ -17,7 +16,7 @@ public class RemoteCategoryService {
 
 		try {
 
-			result = new ControlApiHandler<GetAllBasicCateoriesResult, BaseEntity>(
+			result = new ControlApiHandler<GetAllBasicCateoriesResult, Object>(
 					null, ApiMethod.CATS_GET_ALL,
 					GetAllBasicCateoriesResult.class).execute().get();
 

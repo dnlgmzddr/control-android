@@ -4,7 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable
-public class UserFinancialProduct extends BaseEntity {
+public class UserFinancialProduct {
 
 	public static final String DEFAULT_PRODUCT = "DEFAULT";
 	public static final int TYPE_CASH = 0;

@@ -26,7 +26,7 @@ import android.widget.Toast;
 import com.banlinea.control.bussiness.AuthenticationService;
 import com.banlinea.control.bussiness.BudgetService;
 import com.banlinea.control.entities.UserBudget;
-import com.banlinea.control.entities.util.TimePeriod;
+import com.banlinea.control.entities.definitions.TimePeriod;
 import com.banlinea.control.remote.util.CallResult;
 
 /**
