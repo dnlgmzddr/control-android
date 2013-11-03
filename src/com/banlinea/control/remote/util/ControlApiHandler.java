@@ -85,6 +85,7 @@ public class ControlApiHandler<T, V> extends
 		if (requestObject != null) {
 			for (Field field : requestObject.getClass().getDeclaredFields()) {
 				try {
+					field.setAccessible(true);
 					httpParams.setParameter(field.getName(),
 							field.get(requestObject));
 

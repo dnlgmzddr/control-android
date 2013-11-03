@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.banlinea.control.bussiness.FinancialProductService;
+import com.banlinea.control.dto.in.FinancialEntityDTO;
 import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.FinancialProduct;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,8 +25,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class ProductManagementActivity extends FragmentActivity {
@@ -106,7 +113,7 @@ public class ProductManagementActivity extends FragmentActivity {
 	private void onCreateProduct() {
 		int page = this.mViewPager.getCurrentItem();
 
-		final String groupId = (page == 0)? "Cuenta": "Tarjeta";
+		final int groupId = (page == 0)? FinancialProduct.CATEGORY_SAVING_ACCOUNT: FinancialProduct.CATEGORY_CREDIT_CARD;
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				ProductManagementActivity.this);
@@ -117,6 +124,57 @@ public class ProductManagementActivity extends FragmentActivity {
 		builder.setTitle(R.string.create_product_title);
 
 		builder.setView(layout);
+		
+		EditText productAlias = (EditText) layout.findViewById(R.id.product_alias_textedit);
+		Spinner banksSpinner = (Spinner) layout.findViewById(R.id.bank_spinner);
+		final Spinner productsSpinner = (Spinner) layout.findViewById(R.id.product_spinner);
+		
+		ArrayAdapter<FinancialEntityDTO> banksSpinnerAdapter = new ArrayAdapter<FinancialEntityDTO>(
+				ProductManagementActivity.this, R.layout.simple_spinner_item);
+		
+		banksSpinnerAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+		
+		List<FinancialEntityDTO> banks;
+		try {
+			banks = new FinancialProductService(ProductManagementActivity.this).getFinancialEntitiesByType(groupId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			banks = new ArrayList<FinancialEntityDTO>();
+		}
+		final List<FinancialEntityDTO> banksFinal = banks;
+		banksSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> adapter, View view,
+					int position, long id) {
+				String bankId = banksFinal.get(position).getId();
+				List<FinancialProduct> products;
+				try {
+					products = new FinancialProductService(ProductManagementActivity.this).getFilteredProducts(groupId, bankId);
+				} catch (Exception e) {
+					products = new ArrayList<FinancialProduct>();
+				}
+				
+				ArrayAdapter<FinancialProduct> productsSpinnerAdapter = new ArrayAdapter<FinancialProduct>(
+						ProductManagementActivity.this, R.layout.simple_spinner_item);
+				productsSpinnerAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+				productsSpinnerAdapter.addAll(products);
+				productsSpinner.setAdapter(productsSpinnerAdapter);
+				if (products.size() != 0) {
+					productsSpinner.setSelection(0);
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {}
+			
+		});
+		
+		banksSpinnerAdapter.addAll(banks);
+		banksSpinner.setAdapter(banksSpinnerAdapter);
+		if (banks.size() != 0) {
+			banksSpinner.setSelection(0);
+		}
 		
 		builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
 			
@@ -155,10 +213,10 @@ public class ProductManagementActivity extends FragmentActivity {
 			Bundle args = new Bundle();
 			switch (position) {
 			case 0:
-				args.putString(ListSectionFragment.ARG_SECTION_TYPE, "Cuenta");
+				args.putInt(ListSectionFragment.ARG_SECTION_TYPE, FinancialProduct.CATEGORY_SAVING_ACCOUNT);
 				break;
 			case 1:
-				args.putString(ListSectionFragment.ARG_SECTION_TYPE, "Tarjeta");
+				args.putInt(ListSectionFragment.ARG_SECTION_TYPE, FinancialProduct.CATEGORY_SAVING_ACCOUNT);
 				break;
 			}
 			fragment.setArguments(args);
@@ -193,7 +251,7 @@ public class ProductManagementActivity extends FragmentActivity {
 
 		public static final String ARG_SECTION_TYPE = "section_type";
 		private ListView productListView;
-		private String groupId;
+		private int groupId;
 
 		public ListSectionFragment() {
 		}
@@ -204,7 +262,7 @@ public class ProductManagementActivity extends FragmentActivity {
 			View rootView = inflater.inflate(
 					R.layout.fragment_product_management, container, false);
 
-			groupId = getArguments().getString(ARG_SECTION_TYPE);
+			groupId = getArguments().getInt(ARG_SECTION_TYPE);
 
 			List<String> products = new ArrayList<String>();
 			products.add("Test1");
