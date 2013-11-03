@@ -1,23 +1,16 @@
 package com.banlinea.control;
 
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -102,9 +95,10 @@ public class ReminderSetupActivity extends Activity {
 		calendar.set(Calendar.MINUTE, 00);
 		calendar.set(Calendar.SECOND, 00);
 		
+		getBaseContext();
 		// Retrieve alarm manager from the system
 		AlarmManager alarmManager = (AlarmManager) ReminderSetupActivity.this
-				.getSystemService(getBaseContext().ALARM_SERVICE);
+				.getSystemService(Context.ALARM_SERVICE);
 		// Every scheduled intent needs a different ID, else it is just executed
 		// once
 		int id = (int) System.currentTimeMillis();

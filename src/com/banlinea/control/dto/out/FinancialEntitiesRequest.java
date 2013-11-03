@@ -1,6 +1,7 @@
 package com.banlinea.control.dto.out;
 
 public class FinancialEntitiesRequest {
+	
 	private int category;
 
 	public FinancialEntitiesRequest() {

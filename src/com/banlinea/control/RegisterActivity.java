@@ -2,10 +2,6 @@ package com.banlinea.control;
 
 import java.sql.SQLException;
 
-import com.banlinea.control.bussiness.AuthenticationService;
-import com.banlinea.control.entities.UserProfile;
-import com.banlinea.control.remote.util.CallResult;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +14,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.banlinea.control.bussiness.AuthenticationService;
+import com.banlinea.control.entities.UserProfile;
+import com.banlinea.control.remote.util.CallResult;
 
 public class RegisterActivity extends Activity {
 	

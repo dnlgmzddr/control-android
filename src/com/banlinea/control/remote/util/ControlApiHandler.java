@@ -2,17 +2,21 @@ package com.banlinea.control.remote.util;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
@@ -20,8 +24,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-public class ControlApiHandler<T, V> extends
-		AsyncTask<Void, Void, T> {
+public class ControlApiHandler<T, V> extends AsyncTask<Void, Void, T> {
 
 	private V requestObject;
 	private ApiMethod method;
@@ -79,16 +82,18 @@ public class ControlApiHandler<T, V> extends
 
 	private String doGetRequest() throws IOException, ClientProtocolException {
 
-		HttpGet request = new HttpGet(method.buildUrl());
+		String url = method.buildUrl();
+		if (!url.endsWith("?")) {
+			url += "?";
+		}
+		List<NameValuePair> params = new LinkedList<NameValuePair>();
 
-		BasicHttpParams httpParams = new BasicHttpParams();
 		if (requestObject != null) {
 			for (Field field : requestObject.getClass().getDeclaredFields()) {
 				try {
 					field.setAccessible(true);
-					httpParams.setParameter(field.getName(),
-							field.get(requestObject));
-
+					params.add(new BasicNameValuePair(field.getName(), field
+							.get(requestObject).toString()));
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -96,8 +101,11 @@ public class ControlApiHandler<T, V> extends
 				}
 			}
 		}
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		url += paramString;
+		HttpGet request = new HttpGet(url);
+
 		request.addHeader("Accept", "application/json");
-		request.setParams(httpParams);
 
 		return innerApiCall(request);
 	}
@@ -117,7 +125,7 @@ public class ControlApiHandler<T, V> extends
 		for (Header header : headers) {
 			sb.append(header.getName() + ":: " + header.getValue() + "::");
 		}
-	
+
 		return innerApiCall(request);
 	}
 

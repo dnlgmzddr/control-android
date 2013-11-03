@@ -2,7 +2,6 @@ package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.content.Context;
@@ -72,8 +71,8 @@ public class TransactionService extends BaseService {
 	}
 
 	public List<Transaction> getCurrentMonthTransactions() throws SQLException {
-		Calendar begin = GregorianCalendar.getInstance();
-		Calendar end = GregorianCalendar.getInstance();
+		Calendar begin = Calendar.getInstance();
+		Calendar end = Calendar.getInstance();
 
 		begin.set(Calendar.DAY_OF_MONTH, 1);
 		end.set(Calendar.MONTH, end.get(Calendar.MONDAY) + 1);
@@ -110,8 +109,8 @@ public class TransactionService extends BaseService {
 		double topTransaction = 0f;
 		try {
 
-			Calendar begin = GregorianCalendar.getInstance();
-			Calendar end = GregorianCalendar.getInstance();
+			Calendar begin = Calendar.getInstance();
+			Calendar end = Calendar.getInstance();
 
 			begin.set(Calendar.DAY_OF_MONTH, 1);
 			end.set(Calendar.MONTH, end.get(Calendar.MONDAY) + 1);
@@ -151,8 +150,8 @@ public class TransactionService extends BaseService {
 			List<String> unFixedExpensesCategories = new CategoryService(
 					this.context).getUnFixedExpensesCategoriesIds();
 
-			Calendar begin = GregorianCalendar.getInstance();
-			Calendar end = GregorianCalendar.getInstance();
+			Calendar begin = Calendar.getInstance();
+			Calendar end = Calendar.getInstance();
 			end.add(Calendar.DAY_OF_MONTH, -1);
 
 			begin.set(Calendar.DAY_OF_MONTH, 1);
