@@ -41,7 +41,7 @@ public class TransactionService extends BaseService {
 					.GetCategory(categoryId);
 
 			UserFinancialProduct financialProduct = new FinancialProductService(
-					this.context).getProductById(pruductId);
+					this.context).getUserProductById(pruductId);
 
 			if (currentUser == null || currentCategory == null
 					|| financialProduct == null) {
