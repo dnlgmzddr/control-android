@@ -94,10 +94,9 @@ public class ReminderSetupActivity extends Activity {
 		calendar.set(Calendar.MINUTE, 00);
 		calendar.set(Calendar.SECOND, 00);
 		
-		getBaseContext();
 		// Retrieve alarm manager from the system
 		AlarmManager alarmManager = (AlarmManager) ReminderSetupActivity.this
-				.getSystemService(Context.ALARM_SERVICE);
+				.getSystemService(getBaseContext().ALARM_SERVICE);
 		// Every scheduled intent needs a different ID, else it is just executed
 		// once
 		int id = (int) System.currentTimeMillis();

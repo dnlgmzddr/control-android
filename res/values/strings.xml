@@ -106,5 +106,6 @@
     <string name="edit_product_title">Editar Producto</string>
     <string name="create_product_title">Registrar Producto</string>
     <string name="product_created">Producto Registrado</string>
+    <string name="safe_to_spend">Tu presupuesto para hoy</string>
 
 </resources>

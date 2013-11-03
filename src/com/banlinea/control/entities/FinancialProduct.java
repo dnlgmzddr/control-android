@@ -15,7 +15,7 @@ public class FinancialProduct {
 	private String excerpt;
 	
 	@DatabaseField
-	private String financualEntityName;
+	private String financialEntityName;
 
 	@DatabaseField(id = true)
 	private String id;
@@ -37,12 +37,12 @@ public class FinancialProduct {
 		this.excerpt = excerpt;
 	}
 
-	public String getFinancualEntityName() {
-		return financualEntityName;
+	public String getFinancialEntityName() {
+		return financialEntityName;
 	}
 
-	public void setFinancualEntityName(String financualEntityName) {
-		this.financualEntityName = financualEntityName;
+	public void setFinancialEntityName(String financialEntityName) {
+		this.financialEntityName = financialEntityName;
 	}
 
 	public String getId() {
@@ -77,4 +77,9 @@ public class FinancialProduct {
 		this.category = category;
 	}
 
+	@Override
+	public String toString() {
+		return this.name;
+	}
+	
 }

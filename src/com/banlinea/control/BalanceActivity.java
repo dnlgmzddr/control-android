@@ -51,7 +51,7 @@ public class BalanceActivity extends Activity {
 			protected void onReceiveResult(int resultCode, Bundle resultData) {
 				Log.d("NEW TRANSACTION REGISTERED", resultData.getBoolean("result")? "Successful": "Error");
 				if (resultData.getBoolean("result")) {
-					dailyBalance.setText("Para hoy\n "+ budgetService.getDailyBudget());
+					dailyBalance.setText(""+budgetService.getDailyBudget());
 					
 				}
 			}
@@ -59,7 +59,7 @@ public class BalanceActivity extends Activity {
 		
 		dailyBalance = (TextView) findViewById(R.id.dailySafeToSpend);
 		
-		dailyBalance.setText("Para hoy\n "+ budgetService.getDailyBudget());
+		dailyBalance.setText(""+budgetService.getDailyBudget());
 		
 		dailyBalance.setOnClickListener(new View.OnClickListener() {
 			
