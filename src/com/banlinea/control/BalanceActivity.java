@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.banlinea.control.bussiness.AuthenticationService;
 import com.banlinea.control.bussiness.BudgetService;

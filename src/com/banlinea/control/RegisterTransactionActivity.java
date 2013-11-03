@@ -19,7 +19,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.banlinea.control.bussiness.CategoryService;
 import com.banlinea.control.bussiness.TransactionService;

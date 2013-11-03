@@ -105,5 +105,6 @@
     <string name="product_bank">Entidad Bancaria</string>
     <string name="edit_product_title">Editar Producto</string>
     <string name="create_product_title">Registrar Producto</string>
+    <string name="product_created">Producto Registrado</string>
 
 </resources>

@@ -8,6 +8,7 @@ import com.banlinea.control.bussiness.FinancialProductService;
 import com.banlinea.control.dto.in.FinancialEntityDTO;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.FinancialProduct;
+import com.banlinea.control.remote.util.CallResult;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,8 +30,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ProductManagementActivity extends FragmentActivity {
@@ -62,7 +65,7 @@ public class ProductManagementActivity extends FragmentActivity {
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
-		
+
 		mSectionsPagerAdapter.registerDataSetObserver(new DataSetObserver() {
 
 			@Override
@@ -89,7 +92,7 @@ public class ProductManagementActivity extends FragmentActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
+
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
@@ -102,19 +105,20 @@ public class ProductManagementActivity extends FragmentActivity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.add_product:
-			//Toast.makeText(this, "Create New Product not implemented yet",
-			//		Toast.LENGTH_SHORT).show();
+			// Toast.makeText(this, "Create New Product not implemented yet",
+			// Toast.LENGTH_SHORT).show();
 			onCreateProduct();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	private void onCreateProduct() {
 		int page = this.mViewPager.getCurrentItem();
 
-		final int groupId = (page == 0)? FinancialProduct.CATEGORY_SAVING_ACCOUNT: FinancialProduct.CATEGORY_CREDIT_CARD;
-		
+		final int groupId = (page == 0) ? FinancialProduct.CATEGORY_SAVING_ACCOUNT
+				: FinancialProduct.CATEGORY_CREDIT_CARD;
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				ProductManagementActivity.this);
 
@@ -124,74 +128,102 @@ public class ProductManagementActivity extends FragmentActivity {
 		builder.setTitle(R.string.create_product_title);
 
 		builder.setView(layout);
-		
-		EditText productAlias = (EditText) layout.findViewById(R.id.product_alias_textedit);
+
+		final EditText productAlias = (EditText) layout
+				.findViewById(R.id.product_alias_textedit);
 		Spinner banksSpinner = (Spinner) layout.findViewById(R.id.bank_spinner);
-		final Spinner productsSpinner = (Spinner) layout.findViewById(R.id.product_spinner);
-		
+		final Spinner productsSpinner = (Spinner) layout
+				.findViewById(R.id.product_spinner);
+
 		ArrayAdapter<FinancialEntityDTO> banksSpinnerAdapter = new ArrayAdapter<FinancialEntityDTO>(
 				ProductManagementActivity.this, R.layout.simple_spinner_item);
-		
-		banksSpinnerAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-		
+
+		banksSpinnerAdapter
+				.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+
 		List<FinancialEntityDTO> banks;
 		try {
-			banks = new FinancialProductService(ProductManagementActivity.this).getFinancialEntitiesByType(groupId);
+			banks = new FinancialProductService(ProductManagementActivity.this)
+					.getFinancialEntitiesByType(groupId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			banks = new ArrayList<FinancialEntityDTO>();
 		}
 		final List<FinancialEntityDTO> banksFinal = banks;
-		banksSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		banksSpinner
+				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> adapter, View view,
-					int position, long id) {
-				String bankId = banksFinal.get(position).getId();
-				List<FinancialProduct> products;
-				try {
-					products = new FinancialProductService(ProductManagementActivity.this).getFilteredProducts(groupId, bankId);
-				} catch (Exception e) {
-					products = new ArrayList<FinancialProduct>();
-				}
-				
-				ArrayAdapter<FinancialProduct> productsSpinnerAdapter = new ArrayAdapter<FinancialProduct>(
-						ProductManagementActivity.this, R.layout.simple_spinner_item);
-				productsSpinnerAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-				productsSpinnerAdapter.addAll(products);
-				productsSpinner.setAdapter(productsSpinnerAdapter);
-				if (products.size() != 0) {
-					productsSpinner.setSelection(0);
-				}
-			}
+					@Override
+					public void onItemSelected(AdapterView<?> adapter,
+							View view, int position, long id) {
+						String bankId = banksFinal.get(position).getId();
+						List<FinancialProduct> products;
+						try {
+							products = new FinancialProductService(
+									ProductManagementActivity.this)
+									.getFilteredProducts(groupId, bankId);
+						} catch (Exception e) {
+							products = new ArrayList<FinancialProduct>();
+						}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {}
-			
-		});
-		
+						ArrayAdapter<FinancialProduct> productsSpinnerAdapter = new ArrayAdapter<FinancialProduct>(
+								ProductManagementActivity.this,
+								R.layout.simple_spinner_item);
+						productsSpinnerAdapter
+								.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+						productsSpinnerAdapter.addAll(products);
+						productsSpinner.setAdapter(productsSpinnerAdapter);
+						if (products.size() != 0) {
+							productsSpinner.setSelection(0);
+						}
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+					}
+
+				});
+
 		banksSpinnerAdapter.addAll(banks);
 		banksSpinner.setAdapter(banksSpinnerAdapter);
 		if (banks.size() != 0) {
 			banksSpinner.setSelection(0);
 		}
-		
-		builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(ProductManagementActivity.this, "Registrado", Toast.LENGTH_SHORT).show();
-			}
-		});
-		
-		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(ProductManagementActivity.this, "cancelado", Toast.LENGTH_SHORT).show();
-			}
-		});
-		
+
+		builder.setPositiveButton(R.string.confirm,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Toast.makeText(ProductManagementActivity.this,
+						// "Registrado", Toast.LENGTH_SHORT).show();
+						CallResult result = new FinancialProductService(
+								ProductManagementActivity.this).AddProduct(
+								productAlias.getText().toString(),
+								((FinancialProduct) productsSpinner
+										.getSelectedItem()).getId(), groupId);
+						if (result.isSuccessfullOperation()) {
+							Toast.makeText(ProductManagementActivity.this,
+									R.string.product_created,
+									Toast.LENGTH_SHORT).show();
+						} else {
+							Toast.makeText(ProductManagementActivity.this,
+									result.getMessage(), Toast.LENGTH_SHORT)
+									.show();
+						}
+					}
+				});
+
+		builder.setNegativeButton(R.string.cancel,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Toast.makeText(ProductManagementActivity.this,
+						// "cancelado", Toast.LENGTH_SHORT).show();
+					}
+				});
+
 		AlertDialog dialog = builder.create();
 		dialog.show();
 	}
@@ -213,10 +245,12 @@ public class ProductManagementActivity extends FragmentActivity {
 			Bundle args = new Bundle();
 			switch (position) {
 			case 0:
-				args.putInt(ListSectionFragment.ARG_SECTION_TYPE, FinancialProduct.CATEGORY_SAVING_ACCOUNT);
+				args.putInt(ListSectionFragment.ARG_SECTION_TYPE,
+						FinancialProduct.CATEGORY_SAVING_ACCOUNT);
 				break;
 			case 1:
-				args.putInt(ListSectionFragment.ARG_SECTION_TYPE, FinancialProduct.CATEGORY_SAVING_ACCOUNT);
+				args.putInt(ListSectionFragment.ARG_SECTION_TYPE,
+						FinancialProduct.CATEGORY_SAVING_ACCOUNT);
 				break;
 			}
 			fragment.setArguments(args);
@@ -264,9 +298,21 @@ public class ProductManagementActivity extends FragmentActivity {
 
 			groupId = getArguments().getInt(ARG_SECTION_TYPE);
 
-			List<String> products = new ArrayList<String>();
-			products.add("Test1");
-			products.add("Test2");
+			List<FinancialProduct> products = new ArrayList<FinancialProduct>();
+			
+			FinancialProductService financialService = new FinancialProductService(getActivity());
+			List<FinancialEntityDTO> entities;
+			try {
+				entities = financialService.getFinancialEntitiesByType(groupId);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				entities = new ArrayList<FinancialEntityDTO>();
+			}
+			for (FinancialEntityDTO entity : entities) {
+				try {
+					products.addAll(financialService.getFilteredProducts(groupId, entity.getId()));
+				} catch (Exception e) {}
+			}
 
 			ProductArrayAdapter adapter = new ProductArrayAdapter(
 					getActivity(), products);
@@ -280,9 +326,9 @@ public class ProductManagementActivity extends FragmentActivity {
 		private class ProductArrayAdapter extends BaseAdapter {
 
 			private final Context context;
-			private List<String> products;
+			private List<FinancialProduct> products;
 
-			public ProductArrayAdapter(Context context, List<String> products) {
+			public ProductArrayAdapter(Context context, List<FinancialProduct> products) {
 				super();
 				this.context = context;
 				this.products = products;
@@ -309,6 +355,13 @@ public class ProductManagementActivity extends FragmentActivity {
 						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View rowView = inflater.inflate(R.layout.row_product_manager,
 						parent, false);
+				
+				TextView productNameTextView = (TextView) rowView.findViewById(R.id.product_name_textview);
+				TextView bankNameTextView = (TextView) rowView.findViewById(R.id.product_bank_textview);
+				ImageButton editButton = (ImageButton) rowView.findViewById(R.id.edit_imagebutton);
+				ImageButton deleteButton = (ImageButton) rowView.findViewById(R.id.delete_imagebutton);
+				
+				productNameTextView.setText(products.get(position).getName() + " (" + products.get(position).ge + ")")
 				
 				return rowView;
 			}
