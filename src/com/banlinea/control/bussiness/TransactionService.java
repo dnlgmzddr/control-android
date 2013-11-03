@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
@@ -85,7 +86,7 @@ public class TransactionService extends BaseService {
 
 		query.where().between("date", begin.getTime(), end.getTime());
 		PreparedQuery<Transaction> preparedQuery = query.prepare();
-
+		Log.d("ORMLITE", preparedQuery.toString());
 		List<Transaction> transactionInMonth = transactionDao
 				.query(preparedQuery);
 
@@ -106,7 +107,7 @@ public class TransactionService extends BaseService {
 	}
 
 	public float getTopTransactionInCurrentMonth(String idCategory) {
-		float topTransaction = 0f;
+		double topTransaction = 0f;
 		try {
 
 			Calendar begin = GregorianCalendar.getInstance();
@@ -123,24 +124,24 @@ public class TransactionService extends BaseService {
 			QueryBuilder<Transaction, String> query = transactionDao
 					.queryBuilder();
 
-			Where<Transaction,String> where = query.where();
-			
-			where.between("date",begin.getTime(), end.getTime());
+			Where<Transaction, String> where = query.where();
+
+			where.between("date", begin.getTime(), end.getTime());
 			where.and();
 			where.eq("idCategory", idCategory);
-			query.selectRaw("MAX(amount)");
+			query.orderBy("amount", true);
 
-			List<String[]> results = transactionDao.queryRaw(
-					query.prepareStatementString()).getResults();
-			if (results.size() > 0 && results.get(0).length > 0) {
-				topTransaction = Float.parseFloat(results.get(0)[0]);
+			Log.d("ORMLITE", query.prepareStatementString());
+
+			Transaction tr = transactionDao.queryForFirst(query.prepare());
+			if (tr != null) {
+				topTransaction = tr.getAmount();
 			}
-
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return topTransaction;
+		return (float) topTransaction;
 	}
 
 	public float getExpensesDueDate() {
@@ -164,12 +165,12 @@ public class TransactionService extends BaseService {
 					.queryBuilder();
 
 			Where<Transaction, String> where = query.where();
-			
-			
-			
+
 			where.between("date", begin.getTime(), end.getTime());
 			where.and();
 			where.in("idCategory", unFixedExpensesCategories);
+
+			Log.d("ORMLITE", query.prepareStatementString());
 
 			List<Transaction> transactions = transactionDao.query(query
 					.prepare());

@@ -2,6 +2,7 @@ package com.banlinea.control.entities;
 
 import java.io.Serializable;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -28,7 +29,7 @@ public class Transaction extends BaseEntity implements Serializable{
 	@DatabaseField
 	private String comment;
 
-	@DatabaseField
+	@DatabaseField(dataType = DataType.DATE_TIME)
 	private java.util.Date date = new java.util.Date();	
 
 	@DatabaseField
