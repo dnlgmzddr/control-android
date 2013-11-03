@@ -72,7 +72,7 @@ public class InitialSetupActivity extends FragmentActivity {
 		if (mViewPager.getCurrentItem() > 0) {
 			mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1, true);
 		} else {
-			super.onBackPressed();
+			finish();
 		}
 	}
 
@@ -154,7 +154,7 @@ public class InitialSetupActivity extends FragmentActivity {
 		private EditText amountEditText;
 		private Button nextButton;
 
-		private final String SalaryCategoryId = "4EE36B0A-98D7-4AA6-9C3A-F2305ECD863A";
+		private final String SalaryCategoryId = "4ee36b0a-98d7-4aa6-9c3a-f2305ecd863a";
 
 		public IncomesSectionFragment() {
 
@@ -184,21 +184,20 @@ public class InitialSetupActivity extends FragmentActivity {
 						ub.setPeriod(TimePeriod.MONTHLY);
 						ub.setBudget(Float.parseFloat(amountEditText.getText()
 								.toString()));
+						CallResult budgetResult = new BudgetService(v
+								.getContext()).AddBudget(ub);
+						if (budgetResult.isSuccessfullOperation())
+							mViewPager.setCurrentItem(
+									mViewPager.getCurrentItem() + 1, true);
+						else
+							Toast.makeText(getActivity(),
+									budgetResult.getMessage(),
+									Toast.LENGTH_SHORT).show();
 					} catch (NumberFormatException e) {
 						Toast.makeText(getActivity(),
 								R.string.number_format_error_message,
 								Toast.LENGTH_SHORT).show();
 					}
-
-					CallResult budgetResult = new BudgetService(v.getContext())
-							.AddBudget(ub);
-					if (budgetResult.isSuccessfullOperation())
-						mViewPager.setCurrentItem(
-								mViewPager.getCurrentItem() + 1, true);
-					else
-						Toast.makeText(getActivity(),
-								budgetResult.getMessage(), Toast.LENGTH_SHORT)
-								.show();
 				}
 			});
 
@@ -217,7 +216,7 @@ public class InitialSetupActivity extends FragmentActivity {
 		private long animationDuration = 1000;
 		private Button continueButton;
 
-		private final String ExpensesCategoryId = "7E590D6E-3614-11E3-98FD-CE3F5508ACD9";
+		private final String ExpensesCategoryId = "7e590d6e-3614-11e3-98fd-ce3f5508acd9";
 
 		public ExpensesSectionFragment() {
 
@@ -255,7 +254,7 @@ public class InitialSetupActivity extends FragmentActivity {
 
 			rentLayout = (LinearLayout) rootView.findViewById(R.id.rent_layout);
 			rentLayout.setVisibility(View.GONE);
-			
+
 			rentEditText = (EditText) rootView.findViewById(R.id.rent_edittext);
 
 			continueButton = (Button) rootView
@@ -321,11 +320,11 @@ public class InitialSetupActivity extends FragmentActivity {
 		private EditText gasEditText;
 		private EditText otherEditText;
 		private Button finishButton;
-		
-		private final String EnergyCategoryId = "7E591692-3614-11E3-98FD-CE3F5508ACD9";
-		private final String WaterCategoryId = "7E590F80-3614-11E3-98FD-CE3F5508ACD9";
-		private final String GasCategoryId = "7E5912C8-3614-11E3-98FD-CE3F5508ACD9";
-		private final String OtherCategoryId = "7E592506-3614-11E3-98FD-CE3F5508ACD9";
+
+		private final String EnergyCategoryId = "7e591692-3614-11e3-98fd-ce3f5508acd9";
+		private final String WaterCategoryId = "7e590f80-3614-11e3-98fd-ce3f5508acd9";
+		private final String GasCategoryId = "7e5912c8-3614-11e3-98fd-ce3f5508acd9";
+		private final String OtherCategoryId = "7e592506-3614-11e3-98fd-ce3f5508acd9";
 
 		public PublicServicesSectionFragment() {
 
@@ -337,27 +336,29 @@ public class InitialSetupActivity extends FragmentActivity {
 			View rootView = inflater.inflate(R.layout.fragment_public_services,
 					container, false);
 
-			
-			energyEditText = (EditText) rootView.findViewById(R.id.energy_edittext);
-			waterEditText = (EditText) rootView.findViewById(R.id.water_edittext);
+			energyEditText = (EditText) rootView
+					.findViewById(R.id.energy_edittext);
+			waterEditText = (EditText) rootView
+					.findViewById(R.id.water_edittext);
 			gasEditText = (EditText) rootView.findViewById(R.id.gas_edittext);
-			otherEditText = (EditText) rootView.findViewById(R.id.others_edittext);
-			
+			otherEditText = (EditText) rootView
+					.findViewById(R.id.others_edittext);
+
 			finishButton = (Button) rootView.findViewById(R.id.finish_button);
 			finishButton.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					
+
 					UserBudget ubEnergy = new UserBudget();
 
 					try {
 						ubEnergy.setIdCategory(EnergyCategoryId);
-						ubEnergy.setIdUser(new AuthenticationService(v.getContext())
-								.GetUser().getId());
+						ubEnergy.setIdUser(new AuthenticationService(v
+								.getContext()).GetUser().getId());
 						ubEnergy.setPeriod(TimePeriod.MONTHLY);
-						ubEnergy.setBudget(Float.parseFloat(energyEditText.getText()
-								.toString()));
+						ubEnergy.setBudget(Float.parseFloat(energyEditText
+								.getText().toString()));
 					} catch (NumberFormatException e) {
 						Toast.makeText(getActivity(),
 								R.string.number_format_error_message,
@@ -367,89 +368,84 @@ public class InitialSetupActivity extends FragmentActivity {
 					CallResult budgetResult = new BudgetService(v.getContext())
 							.AddBudget(ubEnergy);
 					if (budgetResult.isSuccessfullOperation()) {
-						
+
 						UserBudget ubWater = new UserBudget();
 
 						try {
 							ubWater.setIdCategory(WaterCategoryId);
-							ubWater.setIdUser(new AuthenticationService(v.getContext())
-									.GetUser().getId());
+							ubWater.setIdUser(new AuthenticationService(v
+									.getContext()).GetUser().getId());
 							ubWater.setPeriod(TimePeriod.MONTHLY);
-							ubWater.setBudget(Float.parseFloat(waterEditText.getText()
-									.toString()));
+							ubWater.setBudget(Float.parseFloat(waterEditText
+									.getText().toString()));
 						} catch (NumberFormatException e) {
 							Toast.makeText(getActivity(),
 									R.string.number_format_error_message,
 									Toast.LENGTH_SHORT).show();
 						}
 
-						CallResult budgetResult1 = new BudgetService(v.getContext())
-								.AddBudget(ubWater);
+						CallResult budgetResult1 = new BudgetService(v
+								.getContext()).AddBudget(ubWater);
 						if (budgetResult1.isSuccessfullOperation()) {
-							
+
 							UserBudget ubGas = new UserBudget();
 
 							try {
 								ubGas.setIdCategory(GasCategoryId);
-								ubGas.setIdUser(new AuthenticationService(v.getContext())
-										.GetUser().getId());
+								ubGas.setIdUser(new AuthenticationService(v
+										.getContext()).GetUser().getId());
 								ubGas.setPeriod(TimePeriod.MONTHLY);
-								ubGas.setBudget(Float.parseFloat(gasEditText.getText()
-										.toString()));
+								ubGas.setBudget(Float.parseFloat(gasEditText
+										.getText().toString()));
 							} catch (NumberFormatException e) {
 								Toast.makeText(getActivity(),
 										R.string.number_format_error_message,
 										Toast.LENGTH_SHORT).show();
 							}
 
-							CallResult budgetResult2 = new BudgetService(v.getContext())
-									.AddBudget(ubGas);
-							if (budgetResult2.isSuccessfullOperation()){
-								
+							CallResult budgetResult2 = new BudgetService(v
+									.getContext()).AddBudget(ubGas);
+							if (budgetResult2.isSuccessfullOperation()) {
+
 								UserBudget ubOther = new UserBudget();
 
 								try {
 									ubOther.setIdCategory(OtherCategoryId);
-									ubOther.setIdUser(new AuthenticationService(v.getContext())
-											.GetUser().getId());
+									ubOther.setIdUser(new AuthenticationService(
+											v.getContext()).GetUser().getId());
 									ubOther.setPeriod(TimePeriod.MONTHLY);
-									ubOther.setBudget(Float.parseFloat(otherEditText.getText()
-											.toString()));
+									ubOther.setBudget(Float
+											.parseFloat(otherEditText.getText()
+													.toString()));
 								} catch (NumberFormatException e) {
-									Toast.makeText(getActivity(),
+									Toast.makeText(
+											getActivity(),
 											R.string.number_format_error_message,
 											Toast.LENGTH_SHORT).show();
 								}
 
-								CallResult budgetResult3 = new BudgetService(v.getContext())
-										.AddBudget(ubOther);
+								CallResult budgetResult3 = new BudgetService(v
+										.getContext()).AddBudget(ubOther);
 								if (budgetResult3.isSuccessfullOperation()) {
-									
-									Intent intent = new Intent(getActivity(),
-											BalanceActivity.class);
-									startActivity(intent);
+
 									getActivity().finish();
-									
-								}	
-								else {
+
+								} else {
 									Toast.makeText(getActivity(),
-											budgetResult3.getMessage(), Toast.LENGTH_SHORT)
-											.show();
+											budgetResult3.getMessage(),
+											Toast.LENGTH_SHORT).show();
 								}
-							}
-							else {
+							} else {
 								Toast.makeText(getActivity(),
-										budgetResult2.getMessage(), Toast.LENGTH_SHORT)
-										.show();
+										budgetResult2.getMessage(),
+										Toast.LENGTH_SHORT).show();
 							}
-						}
-						else{
+						} else {
 							Toast.makeText(getActivity(),
-									budgetResult1.getMessage(), Toast.LENGTH_SHORT)
-									.show();
+									budgetResult1.getMessage(),
+									Toast.LENGTH_SHORT).show();
 						}
-					}
-					else {
+					} else {
 						Toast.makeText(getActivity(),
 								budgetResult.getMessage(), Toast.LENGTH_SHORT)
 								.show();

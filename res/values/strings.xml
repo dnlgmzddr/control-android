@@ -90,5 +90,10 @@
     <string name="children_parent_category_error">Una categoría no puede ser padre si ya tiene un padre. Intenta otra categoría</string>
     <string name="category_budget_title">Presupuesto de categoría</string>
     <string name="category_budget_message">El presupuesto para esta categoría es:</string>
+    <string name="on">Activados</string>
+    <string name="off">Desactivados</string>
+    <string name="reminder_message">¿Ya registraste hoy tus transacciones?</string>
+    <string name="exit_app">Salir de Banlinea Control</string>
+    <string name="exit_message">¿Deseas salir de la aplicación?</string>
 
 </resources>

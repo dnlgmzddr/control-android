@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +35,9 @@ public class BalanceActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		budgetService = new BudgetService(this);
+		
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.cancel(ReminderReceiver.REMINDER_NOTIFICATION);
 		
 		setContentView(R.layout.activity_balance);
 		getOverflowMenu();
@@ -70,6 +74,13 @@ public class BalanceActivity extends Activity {
 				startActivity(intent);
 			}
 		});
+		
+		if (getIntent().getBooleanExtra("firsTime", false)) {
+			Intent intent = new Intent(BalanceActivity.this, ReminderSetupActivity.class);
+			intent.putExtra("suggestSetup", true);
+			startActivity(intent);
+		}
+		
 	}
 
 	private void getOverflowMenu() {
@@ -129,7 +140,7 @@ public class BalanceActivity extends Activity {
 	public void onBackPressed() {
 		//super.onBackPressed();
 		AlertDialog.Builder builder = new AlertDialog.Builder(BalanceActivity.this);
-		builder.setTitle(R.string.initial_setup_prompt_title).setMessage(R.string.initial_setup_prompt);
+		builder.setTitle(R.string.exit_app).setMessage(R.string.exit_message);
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 			
 			@Override

@@ -9,7 +9,8 @@
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+	<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+	
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -61,6 +62,7 @@
             android:name="com.banlinea.control.CategoryManagementActivity"
             android:label="@string/title_activity_category_management" android:screenOrientation="portrait">
         </activity>
+        <receiver android:name="ReminderReceiver"></receiver>
     </application>
 
 </manifest>

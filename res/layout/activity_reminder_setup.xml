@@ -31,7 +31,10 @@
                 android:id="@+id/set_reminders_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/reminders_enabled" />
+                android:text="@string/reminders_enabled"
+                android:textOn="@string/on"
+                android:textOff="@string/off" />
+
         </LinearLayout>
 
         <ImageView

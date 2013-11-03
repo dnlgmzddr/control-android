@@ -62,7 +62,8 @@ public class RegisterActivity extends Activity {
 						userProfile.setPassword(passwordTextView.getText().toString());
 						CallResult result = authService.Register(userProfile);
 						if(result.isSuccessfullOperation()) {
-							Intent intent = new Intent(RegisterActivity.this, ReminderSetupActivity.class);
+							Intent intent = new Intent(RegisterActivity.this, BalanceActivity.class);
+							intent.putExtra("firstTime", true);
 							startActivity(intent);
 							finish();
 						}
