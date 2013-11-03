@@ -97,7 +97,7 @@ public class FinancialProductService extends BaseService {
 				QueryBuilder<UserFinancialProduct, String> queryBuilder = productDao
 						.queryBuilder();
 
-				queryBuilder.where().eq("type", FinancialProduct.CATEGORY_CASH);
+				queryBuilder.where().eq("category", FinancialProduct.CATEGORY_CASH);
 				PreparedQuery<UserFinancialProduct> preparedQuery = queryBuilder
 						.prepare();
 

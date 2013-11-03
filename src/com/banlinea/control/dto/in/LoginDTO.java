@@ -3,6 +3,7 @@ package com.banlinea.control.dto.in;
 import java.util.List;
 
 import com.banlinea.control.entities.Category;
+import com.banlinea.control.entities.FinancialProduct;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
@@ -17,9 +18,9 @@ public class LoginDTO extends CallResult {
 	
 	private UserProfile user;
 	private List<Category> categories;
-	private List<UserFinancialProduct> financialProducts;
+	private List<UserFinancialProduct> userProducts;
 	private List<UserBudget> budgets;
-	
+	private List<FinancialProduct> financialProducts;
 	
 	private List<Transaction> transactions;
 
@@ -39,11 +40,11 @@ public class LoginDTO extends CallResult {
 		this.categories = categories;
 	}
 
-	public List<UserFinancialProduct> getFinancialProducts() {
+	public List<FinancialProduct> getFinancialProducts() {
 		return financialProducts;
 	}
 
-	public void setFinancialProducts(List<UserFinancialProduct> financialProducts) {
+	public void setFinancialProducts(List<FinancialProduct> financialProducts) {
 		this.financialProducts = financialProducts;
 	}
 
@@ -61,6 +62,14 @@ public class LoginDTO extends CallResult {
 
 	public void setBudgets(List<UserBudget> budgets) {
 		this.budgets = budgets;
+	}
+
+	public List<UserFinancialProduct> getUserProducts() {
+		return userProducts;
+	}
+
+	public void setUserProducts(List<UserFinancialProduct> userProducts) {
+		this.userProducts = userProducts;
 	}
 	
 	

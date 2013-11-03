@@ -29,7 +29,7 @@ public class Transaction implements Serializable{
 	@DatabaseField
 	private String comment;
 
-	@DatabaseField(dataType = DataType.DATE_TIME)
+	@DatabaseField(dataType = DataType.DATE_LONG)
 	private java.util.Date date = new java.util.Date();	
 
 	@DatabaseField

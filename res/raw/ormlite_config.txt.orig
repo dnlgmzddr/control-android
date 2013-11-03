@@ -1,5 +1,9 @@
 #
+<<<<<<< HEAD
 # generated on 2013/11/03 04:12:20
+=======
+# generated on 2013/11/03 04:36:41
+>>>>>>> 944f9b8b68a799d8817a9fb2199b25087afb92cf
 #
 # --table-start--
 dataClass=com.banlinea.control.entities.Category
