@@ -11,6 +11,7 @@ import com.banlinea.control.dto.out.ProductFilterRequest;
 import com.banlinea.control.entities.FinancialProduct;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
+import com.banlinea.control.entities.result.AddUserFinancialProductResult;
 import com.banlinea.control.entities.result.FinancialEntitiesResult;
 import com.banlinea.control.entities.result.FinancialProductResult;
 import com.banlinea.control.remote.RemoteFinancialProductService;
@@ -30,52 +31,58 @@ public class FinancialProductService extends BaseService {
 
 	/**
 	 * Get user products with full financial products.
+	 * 
 	 * @return
 	 */
-	public List<UserFinancialProduct> getUserProducts(){
-		
-		List<UserFinancialProduct> userProducts =null;
-		
-		
+	public List<UserFinancialProduct> getUserProducts() {
+
+		List<UserFinancialProduct> userProducts = null;
+
 		try {
-			UserProfile userProfile =  new AuthenticationService(this.context).GetUser();
-			Dao<UserFinancialProduct, String> userProductsDao = this.getHelper().getUserFinantialProducts();
-			
-			userProducts = userProductsDao.queryForEq("idUser", userProfile.getId());
-			
-			for(UserFinancialProduct uProduct: userProducts){
-				uProduct.setProduct(this.getFinancialProductById(uProduct.getIdProduct()));
+			UserProfile userProfile = new AuthenticationService(this.context)
+					.GetUser();
+			Dao<UserFinancialProduct, String> userProductsDao = this
+					.getHelper().getUserFinantialProducts();
+
+			userProducts = userProductsDao.queryForEq("idUser",
+					userProfile.getId());
+
+			for (UserFinancialProduct uProduct : userProducts) {
+				uProduct.setProduct(this.getFinancialProductById(uProduct
+						.getIdProduct()));
 			}
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return userProducts;
 	}
-	
+
 	/**
 	 * Get financial product by Id.
+	 * 
 	 * @param productId
 	 * @return
 	 */
-	public FinancialProduct getFinancialProductById(String productId){
+	public FinancialProduct getFinancialProductById(String productId) {
 		FinancialProduct product = null;
 		try {
-			Dao<FinancialProduct, String> productsDao = this.getHelper().getFinantialProducts();
+			Dao<FinancialProduct, String> productsDao = this.getHelper()
+					.getFinantialProducts();
 			product = productsDao.queryForId(productId);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return product;
 	}
-	
-	
+
 	/**
 	 * Get user financial products. (without dependent financial product)
+	 * 
 	 * @param productId
 	 * @return
 	 */
@@ -106,6 +113,7 @@ public class FinancialProductService extends BaseService {
 
 	/**
 	 * Get the financial entities that have products in the category specified.
+	 * 
 	 * @param category
 	 * @return the entities
 	 * @throws Exception
@@ -118,48 +126,59 @@ public class FinancialProductService extends BaseService {
 				.getFinancialEntitiesByType(new FinancialEntitiesRequest(
 						category));
 
-		if (!result.isSuccessfullOperation()) {	
+		if (!result.isSuccessfullOperation()) {
 			throw new Exception(result.getMessage());
 		}
 		entities = result.getBody();
-		return entities;	
+		return entities;
 	}
-	
-	
-	public List<FinancialProduct> getFilteredProducts(int category, String entityId) throws Exception{
-		
+
+	public List<FinancialProduct> getFilteredProducts(int category,
+			String entityId) throws Exception {
+
 		ProductFilterRequest filter = new ProductFilterRequest();
-		
+
 		filter.setCategory(category);
 		filter.setFinancialEntityId(entityId);
-		
-		FinancialProductResult result = financialProductService.GetFiltered(filter);
-		if(!result.isSuccessfullOperation()){
+
+		FinancialProductResult result = financialProductService
+				.GetFiltered(filter);
+		if (!result.isSuccessfullOperation()) {
 			throw new Exception(result.getMessage());
 		}
-		
+
 		return result.getBody();
 	}
-	
+
 	/**
 	 * Add a financial product to the user.
+	 * 
 	 * @param name
 	 * @param productId
 	 * @param productCategory
 	 * @return
-	 */
-	public CallResult AddProduct(String name, String productId, int productCategory){
+	 * @throws Exception 
+	 */	
+	public CallResult AddProduct(String name, String productId, int productCategory) throws Exception{
 		
 		UserProfile user = new AuthenticationService(this.context).GetUser();
 		
 		UserFinancialProduct userProduct = new UserFinancialProduct();
+		
 		userProduct.setIdProduct(productId);
 		userProduct.setName(name);
 		userProduct.setCategory(productCategory);
 		userProduct.setIdUser(user.getId());
 		
-		return this.financialProductService.AddProductToUser(userProduct);
+		AddUserFinancialProductResult result = this.financialProductService.AddProductToUser(userProduct);
+		if(!result.isSuccessfullOperation()){
+			throw new Exception(result.getMessage());
+		}
+		
+		this.getHelper().getUserFinantialProducts().createOrUpdate(userProduct);
+		this.getHelper().getFinantialProducts().createOrUpdate(result.getBody());
+		
+		return result;
 	}
-	
 
 }
