@@ -1,9 +1,13 @@
 package com.banlinea.control;
 
+import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,18 +26,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.banlinea.control.bussiness.AuthenticationService;
 import com.banlinea.control.bussiness.BudgetService;
 import com.banlinea.control.bussiness.CategoryService;
 import com.banlinea.control.entities.Category;
@@ -116,8 +118,10 @@ public class CategoryManagementActivity extends FragmentActivity {
 			return true;
 
 		case R.id.add_category:
-			/*Toast.makeText(this, "Create New Category", Toast.LENGTH_SHORT)
-					.show();*/
+			/*
+			 * Toast.makeText(this, "Create New Category", Toast.LENGTH_SHORT)
+			 * .show();
+			 */
 			onCreateCategory();
 			break;
 		}
@@ -291,7 +295,7 @@ public class CategoryManagementActivity extends FragmentActivity {
 		 * fragment.
 		 */
 		public static final String ARG_SECTION_TYPE = "section_type";
-		private ListView categoryListView;
+		private ExpandableListView categoryListView;
 		private int groupId;
 
 		public ListSectionFragment() {
@@ -308,20 +312,24 @@ public class CategoryManagementActivity extends FragmentActivity {
 			CategoryService catService = new CategoryService(getActivity());
 			BudgetService budService = new BudgetService(getActivity());
 
-			List<Category> categories = new ArrayList<Category>();
-			List<UserBudget> budgets = new ArrayList<UserBudget>();
+			List<Category> parentCategories = new ArrayList<Category>();
+			Map<String, List<Category>> childCategories = new HashMap<String, List<Category>>();
+			Map<String, UserBudget> budgets = new HashMap<String, UserBudget>();
+			// List<UserBudget> budgets = new ArrayList<UserBudget>();
 
 			try {
-				List<Category> parents = null;
-				parents = catService.GetParentCategoriesPerGroup(groupId);
-				budgets = budService.getUserBudgets(groupId);
+				parentCategories = catService
+						.GetParentCategoriesPerGroup(groupId);
+				for (Category category : parentCategories) {
 
-				for (Category category : parents) {
-					categories.add(category);
+					budgets.put(category.getId(),
+							budService.getUserBudget(category.getId()));
 					List<Category> children = catService.GetChilds(category
 							.getId());
+					childCategories.put(category.getId(), children);
 					for (Category category2 : children) {
-						categories.add(category2);
+						budgets.put(category2.getId(),
+								budService.getUserBudget(category2.getId()));
 					}
 				}
 			} catch (SQLException e) {
@@ -329,416 +337,418 @@ public class CategoryManagementActivity extends FragmentActivity {
 			}
 
 			final CategoryArrayAdapter adapter = new CategoryArrayAdapter(
-					getActivity(), categories, budgets);
+					getActivity(), parentCategories, childCategories, budgets);
 
-			categoryListView = (ListView) rootView.findViewById(R.id.listview);
+			categoryListView = (ExpandableListView) rootView
+					.findViewById(R.id.listview);
 			categoryListView.setAdapter(adapter);
-
-			categoryListView
-					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-						@Override
-						public void onItemClick(AdapterView<?> adapter,
-								View view, int position, long id) {
-							// never happens
-						}
-					});
 
 			return rootView;
 		}
 
-		private class CategoryArrayAdapter extends BaseAdapter {
+		private class CategoryArrayAdapter extends BaseExpandableListAdapter {
 
 			private final Context context;
-			private List<Category> categories;
-			private List<UserBudget> budgets;
+			private List<Category> parentCategories;
+			private Map<String, List<Category>> childCategories;
+			private Map<String, UserBudget> budgets;
 
 			public CategoryArrayAdapter(Context context,
-					List<Category> categories, List<UserBudget> budgets) {
+					List<Category> parentCategories,
+					Map<String, List<Category>> childCategories,
+					Map<String, UserBudget> budgets) {
 				super();
 				this.context = context;
-				this.categories = categories;
+				this.parentCategories = parentCategories;
+				this.childCategories = childCategories;
 				this.budgets = budgets;
 			}
 
+			/*
+			 * @Override public int getCount() { return categories.size(); }
+			 * 
+			 * @Override public Object getItem(int position) { return
+			 * categories.get(position); }
+			 * 
+			 * @Override public long getItemId(int position) { return position;
+			 * }
+			 * 
+			 * @Override public View getView(int position, View convertView,
+			 * ViewGroup parent) { LayoutInflater inflater = (LayoutInflater)
+			 * context .getSystemService(Context.LAYOUT_INFLATER_SERVICE); View
+			 * rowView = inflater.inflate(R.layout.row_category_manager, parent,
+			 * false);
+			 * 
+			 * final int pos = position; rowView.setOnClickListener(new
+			 * View.OnClickListener() {
+			 * 
+			 * @Override public void onClick(View v) {
+			 * /*Toast.makeText(getActivity().getApplicationContext(),
+			 * "Click ListItem Number " + pos, Toast.LENGTH_LONG).show();
+			 */
+			/*
+			 * AlertDialog.Builder builder = new AlertDialog.Builder(
+			 * getActivity()); LayoutInflater inflater = getActivity()
+			 * .getLayoutInflater(); View v1 = inflater.inflate(
+			 * R.layout.alert_edit_category_budget, null); builder.setView(v1);
+			 * final EditText budgetEditText = (EditText) v1
+			 * .findViewById(R.id.budget); UserBudget ub = new
+			 * BudgetService(getActivity
+			 * ()).getUserBudget(categories.get(pos).getId()); if (ub != null) {
+			 * budgetEditText.setText(""+ub.getBudget()); } else {
+			 * budgetEditText.setText("0"); }
+			 * builder.setTitle(getString(R.string.category_budget_title) + " "
+			 * + categories.get(pos).getName());
+			 * builder.setMessage(R.string.category_budget_message);
+			 * builder.setPositiveButton(R.string.confirm, new
+			 * DialogInterface.OnClickListener() {
+			 * 
+			 * @Override public void onClick(DialogInterface dialog, int which)
+			 * {
+			 * 
+			 * UserBudget newb = new UserBudget();
+			 * newb.setBudget(Float.parseFloat
+			 * (budgetEditText.getText().toString())); newb.setIdUser(new
+			 * AuthenticationService(getActivity()).GetUser().getId());
+			 * newb.setIdCategory(categories.get(pos).getId()); // TODO: adjust
+			 * period. newb.setPeriod(1); new
+			 * BudgetService(getActivity()).AddBudget(newb);
+			 * 
+			 * /*Toast.makeText( getActivity(), "budget set to: $" +
+			 * budgetEditText .getText() .toString(),
+			 * Toast.LENGTH_SHORT).show();
+			 */
+			/*
+			 * ((CategoryManagementActivity) getActivity()).mViewPager
+			 * .getAdapter() .notifyDataSetChanged(); } });
+			 * builder.setNegativeButton(R.string.cancel, new
+			 * DialogInterface.OnClickListener() {
+			 * 
+			 * @Override public void onClick(DialogInterface dialog, int which)
+			 * {
+			 * 
+			 * } }); AlertDialog dialog = builder.create(); dialog.show();
+			 * 
+			 * } });
+			 * 
+			 * TextView filledBarTV = (TextView) rowView
+			 * .findViewById(R.id.filledBar); TextView emptyBarTV = (TextView)
+			 * rowView .findViewById(R.id.emptyBar);
+			 * 
+			 * filledBarTV.setBackgroundColor(Color.GREEN);
+			 * filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0,
+			 * android.view.ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+			 * emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0,
+			 * android.view.ViewGroup.LayoutParams.MATCH_PARENT, 0f));
+			 * UserBudget catBudget = null; for (UserBudget budget : budgets) {
+			 * if
+			 * (categories.get(position).getId().equals(budget.getIdCategory()))
+			 * { catBudget = budget; break; } } if (catBudget != null) { float
+			 * totalBudget = catBudget.getBudget(); float executedBudget =
+			 * catBudget.getCurrentExecutedBudget(); float fraction =
+			 * (totalBudget - executedBudget) / totalBudget; if (executedBudget
+			 * > totalBudget) { filledBarTV.setBackgroundColor(Color.RED);
+			 * filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0,
+			 * android.view.ViewGroup.LayoutParams.MATCH_PARENT, 0f));
+			 * emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0,
+			 * android.view.ViewGroup.LayoutParams.MATCH_PARENT, 1f)); } else {
+			 * if (fraction < 0.5f) { if (fraction < 0.15f) {
+			 * filledBarTV.setBackgroundColor(Color.RED); } else {
+			 * filledBarTV.setBackgroundColor(Color.YELLOW); } }
+			 * filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0,
+			 * android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+			 * 1.0f-fraction)); emptyBarTV.setLayoutParams(new
+			 * TableLayout.LayoutParams(0,
+			 * android.view.ViewGroup.LayoutParams.MATCH_PARENT, fraction)); }
+			 * 
+			 * TextView categoryNameTextView = (TextView) rowView
+			 * .findViewById(R.id.category_name_textview); categoryNameTextView
+			 * .setText(categories.get(position).getName() + " (" + fraction +
+			 * "/" + totalBudget + ")");
+			 * 
+			 * } else { TextView categoryNameTextView = (TextView) rowView
+			 * .findViewById(R.id.category_name_textview); categoryNameTextView
+			 * .setText(categories.get(position).getName()); }
+			 * 
+			 * 
+			 * 
+			 * CategoryService catService = new CategoryService(getActivity()
+			 * .getApplicationContext()); Category parentCategory; try {
+			 * parentCategory = catService.GetCategory(categories.get(
+			 * position).getIdParent()); TextView categoryParentTextView =
+			 * (TextView) rowView .findViewById(R.id.parent_category_textview);
+			 * if (parentCategory != null) { categoryParentTextView
+			 * .setText(parentCategory.getName()); } else {
+			 * categoryParentTextView.setText(""); } } catch (SQLException e) {
+			 * Log.d(CategoryManagementActivity.class.getName(),
+			 * e.getMessage()); }
+			 * 
+			 * ImageButton editButton = (ImageButton) rowView
+			 * .findViewById(R.id.edit_imagebutton); ImageButton deleteButton =
+			 * (ImageButton) rowView .findViewById(R.id.delete_imagebutton);
+			 * 
+			 * if (!categories.get(position).getIdOwner()
+			 * .equals(Category.SYSTEM_OWNER_ID)) {
+			 * 
+			 * int page = ((CategoryManagementActivity)
+			 * getActivity()).mViewPager .getCurrentItem();
+			 * 
+			 * final Category currCategory = categories.get(position);
+			 * 
+			 * final int groupId = (page == 0 ? Category.GROUP_EXPENSE : (page
+			 * == 1 ? Category.GROUP_INCOME : Category.GROUP_SAVING));
+			 * 
+			 * editButton.setOnClickListener(new View.OnClickListener() {
+			 * 
+			 * @Override public void onClick(View v) {
+			 * 
+			 * AlertDialog.Builder builder = new AlertDialog.Builder(
+			 * v.getContext());
+			 * 
+			 * LayoutInflater inflater = getActivity() .getLayoutInflater();
+			 * View layout = inflater.inflate( R.layout.alert_edit_category,
+			 * null); builder.setTitle(R.string.edit_category_title);
+			 * builder.setView(layout); final EditText categoryName = (EditText)
+			 * layout .findViewById(R.id.category_name_textedit);
+			 * categoryName.setText(currCategory.getName()); final Spinner
+			 * parentCategory = (Spinner) layout
+			 * .findViewById(R.id.parent_spinner);
+			 * 
+			 * ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(
+			 * v.getContext(), R.layout.simple_spinner_item);
+			 * adapter.setDropDownViewResource
+			 * (R.layout.simple_spinner_dropdown_item);
+			 * 
+			 * CategoryService catService = new CategoryService(
+			 * getActivity().getApplicationContext()); List<Category>
+			 * parentCategories = new ArrayList<Category>(); try {
+			 * parentCategories = catService
+			 * .GetParentCategoriesPerGroup(groupId); } catch (SQLException e1)
+			 * { e1.printStackTrace(); }
+			 * 
+			 * Category noCat = new Category(); noCat.setName("Ninguna");
+			 * noCat.setId("0"); adapter.add(noCat);
+			 * 
+			 * adapter.addAll(parentCategories);
+			 * parentCategory.setAdapter(adapter);
+			 * 
+			 * Log.d("Searching category", currCategory.getIdParent()); for (int
+			 * i = 0; i < parentCategories.size(); i++) { Log.d("Looking at",
+			 * parentCategories.get(i) .getId()); if
+			 * (parentCategories.get(i).getId()
+			 * .equals(currCategory.getIdParent())) {
+			 * parentCategory.setSelection(i + 1); break; }
+			 * 
+			 * }
+			 * 
+			 * builder.setPositiveButton(R.string.confirm, new
+			 * DialogInterface.OnClickListener() {
+			 * 
+			 * @Override public void onClick( DialogInterface dialog, int which)
+			 * { CategoryService catService = new CategoryService( getActivity()
+			 * .getApplicationContext()); List<Category> childrenCats = new
+			 * ArrayList<Category>(); try { childrenCats = catService
+			 * .GetChilds(currCategory .getId()); } catch (SQLException e) {
+			 * e.printStackTrace(); } if (childrenCats.size() == 0) { CallResult
+			 * editResult = null; if (((Category) parentCategory
+			 * .getSelectedItem()) .getId().equals("0")) { editResult =
+			 * catService.AddCustomCategory( currCategory .getId(), categoryName
+			 * .getText() .toString(), groupId); } else { editResult =
+			 * catService.AddCustomCategory( currCategory .getId(), categoryName
+			 * .getText() .toString(), groupId, ((Category) parentCategory
+			 * .getSelectedItem()) .getId()); } if (editResult
+			 * .isSuccessfullOperation()) { /*Toast.makeText( getActivity()
+			 * .getApplicationContext(), "Edited: " + categoryName .getText()
+			 * .toString(), Toast.LENGTH_SHORT) .show();
+			 *//*
+				 * ((CategoryManagementActivity) getActivity()).mViewPager
+				 * .getAdapter() .notifyDataSetChanged(); } else {
+				 * Toast.makeText( getActivity() .getApplicationContext(),
+				 * "Error: " + editResult .getMessage(), Toast.LENGTH_SHORT)
+				 * .show(); } } else { Toast.makeText( getActivity()
+				 * .getApplicationContext(),
+				 * R.string.children_parent_category_error, Toast.LENGTH_SHORT)
+				 * .show(); }
+				 * 
+				 * } }); builder.setNegativeButton(R.string.cancel, new
+				 * DialogInterface.OnClickListener() {
+				 * 
+				 * @Override public void onClick( DialogInterface dialog, int
+				 * which) { dialog.cancel(); } }); AlertDialog dialog =
+				 * builder.create(); dialog.show();
+				 * 
+				 * /*Toast.makeText( getActivity().getApplicationContext(),
+				 * "Edit", Toast.LENGTH_SHORT).show();
+				 *//*
+					 * } });
+					 * 
+					 * deleteButton.setOnClickListener(new
+					 * View.OnClickListener() {
+					 * 
+					 * @Override public void onClick(View v) {
+					 * 
+					 * AlertDialog.Builder builder = new AlertDialog.Builder(
+					 * v.getContext());
+					 * builder.setTitle(R.string.delete_category_title)
+					 * .setMessage( R.string.delete_category_message);
+					 * builder.setPositiveButton(R.string.yes, new
+					 * DialogInterface.OnClickListener() {
+					 * 
+					 * @Override public void onClick( DialogInterface dialog,
+					 * int which) { Toast.makeText( getActivity()
+					 * .getApplicationContext(), "Deleted not implemented yet.",
+					 * Toast.LENGTH_SHORT).show(); } });
+					 * builder.setNegativeButton(R.string.cancel, new
+					 * DialogInterface.OnClickListener() {
+					 * 
+					 * @Override public void onClick( DialogInterface dialog,
+					 * int which) { dialog.cancel(); } }); AlertDialog dialog =
+					 * builder.create(); dialog.show(); } }); } else {
+					 * editButton.setVisibility(View.INVISIBLE);
+					 * deleteButton.setVisibility(View.INVISIBLE); }
+					 * 
+					 * return rowView; }
+					 */
 			@Override
-			public int getCount() {
-				return categories.size();
+			public Object getChild(int groupPosition, int childPosition) {
+				return this.childCategories.get(
+						this.parentCategories.get(groupPosition).getId()).get(
+						childPosition);
 			}
 
 			@Override
-			public Object getItem(int position) {
-				return categories.get(position);
+			public long getChildId(int groupPosition, int childPosition) {
+				return childPosition;
 			}
 
 			@Override
-			public long getItemId(int position) {
-				return position;
-			}
+			public View getChildView(int groupPosition, int childPosition,
+					boolean isLastChild, View convertView, ViewGroup parent) {
 
-			@Override
-			public View getView(int position, View convertView, ViewGroup parent) {
-				LayoutInflater inflater = (LayoutInflater) context
-						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				View rowView = inflater.inflate(R.layout.row_category_manager,
-						parent, false);
+				final NumberFormat formatter = NumberFormat
+						.getCurrencyInstance();
+				formatter.setRoundingMode(RoundingMode.FLOOR);
 
-				final int pos = position;
-				rowView.setOnClickListener(new View.OnClickListener() {
+				//if (convertView == null) {
+					LayoutInflater inflater = (LayoutInflater) this.context
+							.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					convertView = inflater.inflate(
+							R.layout.row_category_manager, null);
+					Category cat = this.childCategories.get(
+							this.parentCategories.get(groupPosition).getId())
+							.get(childPosition);
+					UserBudget bud = this.budgets.get(cat.getName());
 
-					@Override
-					public void onClick(View v) {
-						/*Toast.makeText(getActivity().getApplicationContext(),
-								"Click ListItem Number " + pos,
-								Toast.LENGTH_LONG).show();
-						*/
-						
-						AlertDialog.Builder builder = new AlertDialog.Builder(
-								getActivity());
-						LayoutInflater inflater = getActivity()
-								.getLayoutInflater();
-						View v1 = inflater.inflate(
-								R.layout.alert_edit_category_budget, null);
-						builder.setView(v1);
-						final EditText budgetEditText = (EditText) v1
-								.findViewById(R.id.budget);
-						UserBudget ub = new BudgetService(getActivity()).getUserBudget(categories.get(pos).getId());
-						if (ub != null) {
-							budgetEditText.setText(""+ub.getBudget());
-						}
-						else {
-							budgetEditText.setText("0");
-						}
-						builder.setTitle(getString(R.string.category_budget_title)
-								+ " " + categories.get(pos).getName());
-						builder.setMessage(R.string.category_budget_message);
-						builder.setPositiveButton(R.string.confirm,
-								new DialogInterface.OnClickListener() {
+					TextView categoryNameTextView = (TextView) convertView
+							.findViewById(R.id.category_name_textview);
+					categoryNameTextView.setText(cat.getName());
 
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										
-										UserBudget newb = new UserBudget();
-										newb.setBudget(Float.parseFloat(budgetEditText.getText().toString()));
-										newb.setIdUser(new AuthenticationService(getActivity()).GetUser().getId());
-										newb.setIdCategory(categories.get(pos).getId());
-										// TODO: adjust period.
-										newb.setPeriod(1);
-										new BudgetService(getActivity()).AddBudget(newb);
-										
-										/*Toast.makeText(
-												getActivity(),
-												"budget set to: $"
-														+ budgetEditText
-																.getText()
-																.toString(),
-												Toast.LENGTH_SHORT).show();*/
-										
-										((CategoryManagementActivity) getActivity()).mViewPager
-										.getAdapter()
-										.notifyDataSetChanged();
-									}
-								});
-						builder.setNegativeButton(R.string.cancel,
-								new DialogInterface.OnClickListener() {
+					TextView budgetTextView = (TextView) convertView
+							.findViewById(R.id.budget_textview);
 
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+					TextView filledBarTV = (TextView) convertView
+							.findViewById(R.id.filledBar);
 
-									}
-								});
-						AlertDialog dialog = builder.create();
-						dialog.show();
+					TextView emptyBarTV = (TextView) convertView
+							.findViewById(R.id.emptyBar);
 
-					}
-				});
+					filledBarTV.setBackgroundColor(Color.GREEN);
+					filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0,
+							android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+							1f));
+					emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0,
+							android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+							0f));
 
-				TextView filledBarTV = (TextView) rowView
-						.findViewById(R.id.filledBar);
-				TextView emptyBarTV = (TextView) rowView
-						.findViewById(R.id.emptyBar);
-				
-				filledBarTV.setBackgroundColor(Color.GREEN);
-				filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 1f));
-				emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 0f));
-				UserBudget catBudget = null;
-				for (UserBudget budget : budgets) {
-					if (categories.get(position).getId().equals(budget.getIdCategory())) {
-						catBudget = budget;
-						break;
-					}
-				}
-				if (catBudget != null) {
-					float totalBudget = catBudget.getBudget();
-					float executedBudget = catBudget.getCurrentExecutedBudget();
-					float fraction = (totalBudget - executedBudget) / totalBudget;
-					if (executedBudget > totalBudget) {
-						filledBarTV.setBackgroundColor(Color.RED);
-						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 0f));
-						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 1f));
-					}
-					else {
-						if (fraction < 0.5f) {
-							if (fraction < 0.15f) {
+					if (bud != null) {
+						budgetTextView.setText("Presupuesto: "
+								+ formatter.format(bud.getBudget()));
+
+						float totalBudget = bud.getBudget();
+						float executedBudget = bud.getCurrentExecutedBudget();
+						float percentage = executedBudget / totalBudget;
+
+						filledBarTV
+								.setLayoutParams(new TableLayout.LayoutParams(
+										0,
+										android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+										1f - percentage));
+						emptyBarTV
+								.setLayoutParams(new TableLayout.LayoutParams(
+										0,
+										android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+										percentage));
+
+						if (percentage < 0.5f) {
+							if (percentage < 0.15f) {
 								filledBarTV.setBackgroundColor(Color.RED);
-							}
-							else {
+							} else {
 								filledBarTV.setBackgroundColor(Color.YELLOW);
 							}
 						}
-						filledBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 1.0f-fraction));
-						emptyBarTV.setLayoutParams(new TableLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.MATCH_PARENT, fraction));
-					}
-					
-					TextView categoryNameTextView = (TextView) rowView
-							.findViewById(R.id.category_name_textview);
-					categoryNameTextView
-							.setText(categories.get(position).getName() + " (" + fraction + "/" + totalBudget + ")");
-					
-				}
-				else {
-					TextView categoryNameTextView = (TextView) rowView
-							.findViewById(R.id.category_name_textview);
-					categoryNameTextView
-							.setText(categories.get(position).getName());
-				}
 
-				
-
-				CategoryService catService = new CategoryService(getActivity()
-						.getApplicationContext());
-				Category parentCategory;
-				try {
-					parentCategory = catService.GetCategory(categories.get(
-							position).getIdParent());
-					TextView categoryParentTextView = (TextView) rowView
-							.findViewById(R.id.parent_category_textview);
-					if (parentCategory != null) {
-						categoryParentTextView
-								.setText(parentCategory.getName());
 					} else {
-						categoryParentTextView.setText("");
+						budgetTextView.setText("Presupuesto: "
+								+ formatter.format(0));
+
 					}
-				} catch (SQLException e) {
-					Log.d(CategoryManagementActivity.class.getName(),
-							e.getMessage());
+
+					ImageButton editButton = (ImageButton) convertView
+							.findViewById(R.id.edit_imagebutton);
+					ImageButton deleteButton = (ImageButton) convertView
+							.findViewById(R.id.delete_imagebutton);
+				//}
+				return convertView;
+			}
+
+			@Override
+			public int getChildrenCount(int groupPosition) {
+				return this.childCategories.get(
+						this.parentCategories.get(groupPosition).getId())
+						.size();
+			}
+
+			@Override
+			public Object getGroup(int groupPosition) {
+				return this.parentCategories.get(groupPosition);
+			}
+
+			@Override
+			public int getGroupCount() {
+				return this.parentCategories.size();
+			}
+
+			@Override
+			public long getGroupId(int groupPosition) {
+				return groupPosition;
+			}
+
+			@Override
+			public View getGroupView(int groupPosition, boolean isExpanded,
+					View convertView, ViewGroup parent) {
+				if (convertView == null) {
+					LayoutInflater inflater = (LayoutInflater) this.context
+							.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					convertView = inflater.inflate(
+							R.layout.list_group_category_manager, null);
+
+					TextView parentName = (TextView) convertView
+							.findViewById(R.id.parent_category_name_textview);
+					parentName.setText(parentCategories.get(groupPosition)
+							.getName());
 				}
+				return convertView;
+			}
 
-				ImageButton editButton = (ImageButton) rowView
-						.findViewById(R.id.edit_imagebutton);
-				ImageButton deleteButton = (ImageButton) rowView
-						.findViewById(R.id.delete_imagebutton);
+			@Override
+			public boolean hasStableIds() {
+				return false;
+			}
 
-				if (!categories.get(position).getIdOwner()
-						.equals(Category.SYSTEM_OWNER_ID)) {
-
-					int page = ((CategoryManagementActivity) getActivity()).mViewPager
-							.getCurrentItem();
-
-					final Category currCategory = categories.get(position);
-
-					final int groupId = (page == 0 ? Category.GROUP_EXPENSE
-							: (page == 1 ? Category.GROUP_INCOME
-									: Category.GROUP_SAVING));
-
-					editButton.setOnClickListener(new View.OnClickListener() {
-
-						@Override
-						public void onClick(View v) {
-
-							AlertDialog.Builder builder = new AlertDialog.Builder(
-									v.getContext());
-
-							LayoutInflater inflater = getActivity()
-									.getLayoutInflater();
-							View layout = inflater.inflate(
-									R.layout.alert_edit_category, null);
-							builder.setTitle(R.string.edit_category_title);
-							builder.setView(layout);
-							final EditText categoryName = (EditText) layout
-									.findViewById(R.id.category_name_textedit);
-							categoryName.setText(currCategory.getName());
-							final Spinner parentCategory = (Spinner) layout
-									.findViewById(R.id.parent_spinner);
-
-							ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(
-									v.getContext(),
-									R.layout.simple_spinner_item);
-							adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-
-							CategoryService catService = new CategoryService(
-									getActivity().getApplicationContext());
-							List<Category> parentCategories = new ArrayList<Category>();
-							try {
-								parentCategories = catService
-										.GetParentCategoriesPerGroup(groupId);
-							} catch (SQLException e1) {
-								e1.printStackTrace();
-							}
-
-							Category noCat = new Category();
-							noCat.setName("Ninguna");
-							noCat.setId("0");
-							adapter.add(noCat);
-
-							adapter.addAll(parentCategories);
-							parentCategory.setAdapter(adapter);
-
-							Log.d("Searching category",
-									currCategory.getIdParent());
-							for (int i = 0; i < parentCategories.size(); i++) {
-								Log.d("Looking at", parentCategories.get(i)
-										.getId());
-								if (parentCategories.get(i).getId()
-										.equals(currCategory.getIdParent())) {
-									parentCategory.setSelection(i + 1);
-									break;
-								}
-
-							}
-
-							builder.setPositiveButton(R.string.confirm,
-									new DialogInterface.OnClickListener() {
-
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											CategoryService catService = new CategoryService(
-													getActivity()
-															.getApplicationContext());
-											List<Category> childrenCats = new ArrayList<Category>();
-											try {
-												childrenCats = catService
-														.GetChilds(currCategory
-																.getId());
-											} catch (SQLException e) {
-												e.printStackTrace();
-											}
-											if (childrenCats.size() == 0) {
-												CallResult editResult = null;
-												if (((Category) parentCategory
-														.getSelectedItem())
-														.getId().equals("0")) {
-													editResult = catService.AddCustomCategory(
-															currCategory
-																	.getId(),
-															categoryName
-																	.getText()
-																	.toString(),
-															groupId);
-												} else {
-													editResult = catService.AddCustomCategory(
-															currCategory
-																	.getId(),
-															categoryName
-																	.getText()
-																	.toString(),
-															groupId,
-															((Category) parentCategory
-																	.getSelectedItem())
-																	.getId());
-												}
-												if (editResult
-														.isSuccessfullOperation()) {
-													/*Toast.makeText(
-															getActivity()
-																	.getApplicationContext(),
-															"Edited: "
-																	+ categoryName
-																			.getText()
-																			.toString(),
-															Toast.LENGTH_SHORT)
-															.show();*/
-													((CategoryManagementActivity) getActivity()).mViewPager
-															.getAdapter()
-															.notifyDataSetChanged();
-												} else {
-													Toast.makeText(
-															getActivity()
-																	.getApplicationContext(),
-															"Error: "
-																	+ editResult
-																			.getMessage(),
-															Toast.LENGTH_SHORT)
-															.show();
-												}
-											} else {
-												Toast.makeText(
-														getActivity()
-																.getApplicationContext(),
-														R.string.children_parent_category_error,
-														Toast.LENGTH_SHORT)
-														.show();
-											}
-
-										}
-									});
-							builder.setNegativeButton(R.string.cancel,
-									new DialogInterface.OnClickListener() {
-
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											dialog.cancel();
-										}
-									});
-							AlertDialog dialog = builder.create();
-							dialog.show();
-
-							/*Toast.makeText(
-									getActivity().getApplicationContext(),
-									"Edit", Toast.LENGTH_SHORT).show();*/
-						}
-					});
-
-					deleteButton.setOnClickListener(new View.OnClickListener() {
-
-						@Override
-						public void onClick(View v) {
-
-							AlertDialog.Builder builder = new AlertDialog.Builder(
-									v.getContext());
-							builder.setTitle(R.string.delete_category_title)
-									.setMessage(
-											R.string.delete_category_message);
-							builder.setPositiveButton(R.string.yes,
-									new DialogInterface.OnClickListener() {
-
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											Toast.makeText(
-													getActivity()
-															.getApplicationContext(),
-													"Deleted not implemented yet.",
-													Toast.LENGTH_SHORT).show();
-										}
-									});
-							builder.setNegativeButton(R.string.cancel,
-									new DialogInterface.OnClickListener() {
-
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											dialog.cancel();
-										}
-									});
-							AlertDialog dialog = builder.create();
-							dialog.show();
-						}
-					});
-				} else {
-					editButton.setVisibility(View.INVISIBLE);
-					deleteButton.setVisibility(View.INVISIBLE);
-				}
-
-				return rowView;
+			@Override
+			public boolean isChildSelectable(int groupPosition,
+					int childPosition) {
+				return true;
 			}
 		}
 	}
