@@ -70,34 +70,38 @@ public class TransactionService extends BaseService {
 		return result;
 	}
 
-	public List<Transaction> getCurrentMonthTransactions() throws SQLException {
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-
-		begin.set(Calendar.DAY_OF_MONTH, 1);
-		end.set(Calendar.MONTH, end.get(Calendar.MONDAY) + 1);
-		end.set(Calendar.DAY_OF_MONTH, 1);
-
-		Dao<Transaction, String> transactionDao = this.getHelper()
-				.getTransactions();
-
-		QueryBuilder<Transaction, String> query = transactionDao.queryBuilder();
-
-		query.where().between("date", begin.getTime(), end.getTime());
-		PreparedQuery<Transaction> preparedQuery = query.prepare();
-		Log.d("ORMLITE", preparedQuery.toString());
-		List<Transaction> transactionInMonth = transactionDao
-				.query(preparedQuery);
-
-		return transactionInMonth;
-	}
-
+	/**
+	 * Get the transaction for the passed category until now.
+	 * @param idCategory
+	 * @return
+	 */
 	public List<Transaction> getCurrentMonthTransactionsFor(String idCategory) {
 		try {
 			Dao<Transaction, String> transactionDAO = this.getHelper()
 					.getTransactions();
-			List<Transaction> transactions = transactionDAO.queryForEq(
-					"idCategory", idCategory);
+			
+			Calendar begin = Calendar.getInstance();
+			Calendar end = Calendar.getInstance();
+			
+			begin.set(Calendar.DAY_OF_MONTH, 1);
+			begin.set(Calendar.HOUR_OF_DAY, 0);
+			begin.set(Calendar.MINUTE, 0);
+			begin.set(Calendar.SECOND, 0);
+			
+			
+			QueryBuilder<Transaction, String> query = transactionDAO
+					.queryBuilder();
+
+			Where<Transaction, String> where = query.where();
+
+			where.between("date", begin.getTime(), end.getTime());
+			where.and();
+			where.eq("idCategory", idCategory);
+			
+			
+			List<Transaction> transactions = transactionDAO.query(query
+					.prepare());
+			
 			return transactions;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -143,19 +147,30 @@ public class TransactionService extends BaseService {
 		return (float) topTransaction;
 	}
 
-	public float getExpensesDueDate() {
+	/**
+	 * Get the total of transactions due date (exclude income ones) not include the ones that happen today.
+	 * @return total of money register.
+	 */
+	public float getTotalTransactionsDueDate() {
 		float totalExpenses = 0f;
 		try {
 
 			List<String> unFixedExpensesCategories = new CategoryService(
-					this.context).getUnFixedExpensesCategoriesIds();
-
+					this.context).getUnFixedExpensesSavingCategoriesIds();
 			Calendar begin = Calendar.getInstance();
 			Calendar end = Calendar.getInstance();
-			end.add(Calendar.DAY_OF_MONTH, -1);
+			
 
 			begin.set(Calendar.DAY_OF_MONTH, 1);
-
+			begin.set(Calendar.HOUR_OF_DAY, 0);
+			begin.set(Calendar.MINUTE, 0);
+			begin.set(Calendar.SECOND, 0);
+			
+			end.add(Calendar.DAY_OF_MONTH, -1);
+			end.set(Calendar.HOUR_OF_DAY, 23);
+			end.set(Calendar.MINUTE, 59);
+			end.set(Calendar.SECOND, 59);
+			
 			Dao<Transaction, String> transactionDao;
 
 			transactionDao = this.getHelper().getTransactions();
@@ -166,6 +181,57 @@ public class TransactionService extends BaseService {
 			Where<Transaction, String> where = query.where();
 
 			where.between("date", begin.getTime(), end.getTime());
+			where.and();
+			where.ne("type", Transaction.TYPE_INCOME);
+			where.and();
+			where.in("idCategory", unFixedExpensesCategories);
+
+			Log.d("ORMLITE", query.prepareStatementString());
+
+			List<Transaction> transactions = transactionDao.query(query
+					.prepare());
+
+			for (Transaction transaction : transactions) {
+				totalExpenses += transaction.getAmount();
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return totalExpenses;
+	}
+
+
+	public float getTotalTransactionsToday() {
+		float totalExpenses = 0f;
+		try {
+
+			List<String> unFixedExpensesCategories = new CategoryService(
+					this.context).getUnFixedExpensesSavingCategoriesIds();
+			Calendar begin = Calendar.getInstance();
+			Calendar end  = Calendar.getInstance();
+
+			begin.set(Calendar.HOUR_OF_DAY, 0);
+			begin.set(Calendar.MINUTE, 0);
+			begin.set(Calendar.SECOND, 0);
+			
+			end.set(Calendar.HOUR_OF_DAY, 23);
+			end.set(Calendar.MINUTE, 59);
+			end.set(Calendar.SECOND, 59);
+			
+			Dao<Transaction, String> transactionDao;
+
+			transactionDao = this.getHelper().getTransactions();
+
+			QueryBuilder<Transaction, String> query = transactionDao
+					.queryBuilder();
+
+			Where<Transaction, String> where = query.where();
+
+			where.between("date", begin.getTime(), end.getTime());
+			where.and();
+			where.ne("type", Transaction.TYPE_INCOME);
 			where.and();
 			where.in("idCategory", unFixedExpensesCategories);
 

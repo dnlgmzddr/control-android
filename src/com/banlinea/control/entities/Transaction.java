@@ -14,6 +14,11 @@ public class Transaction implements Serializable{
 	 */
 	private static final long serialVersionUID = 4603073635487240094L;
 	
+	public static final int TYPE_EXPENSE = Category.GROUP_EXPENSE;
+	public static final int TYPE_INCOME = Category.GROUP_INCOME;
+	public static final int TYPE_SAVING = Category.GROUP_SAVING;
+	
+	
 	@DatabaseField(id = true)
 	private String id;
 

@@ -193,7 +193,7 @@ public class CategoryService extends BaseService {
 		return incomeCategoriesIds;
 	}
 	
-	public List<String> getUnFixedExpensesCategoriesIds() throws SQLException {
+	public List<String> getUnFixedExpensesSavingCategoriesIds() throws SQLException {
 		Dao<Category, String> catDao = this.getHelper().getCategories();
 		QueryBuilder<Category, String> categoryQBuilder = catDao
 				.queryBuilder();
@@ -202,6 +202,8 @@ public class CategoryService extends BaseService {
 		Where<Category,String> where = categoryQBuilder.where();
 		
 		where.eq("group",Category.GROUP_EXPENSE);
+		where.or();
+		where.eq("group",Category.GROUP_SAVING);
 		where.and();
 		where.eq("isFixed", false);
 
