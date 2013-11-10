@@ -63,7 +63,7 @@ public class RegisterActivity extends Activity {
 						CallResult result = authService.Register(userProfile);
 						if(result.isSuccessfullOperation()) {
 							Intent intent = new Intent(RegisterActivity.this, BalanceActivity.class);
-							intent.putExtra("firstTime", true);
+							intent.putExtra("com.banlinea.control.firstTime", true);
 							startActivity(intent);
 							finish();
 						}

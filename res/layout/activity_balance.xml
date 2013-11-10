@@ -14,7 +14,6 @@
         tools:context=".BalanceActivity" >
 
         <TextView
-            android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
@@ -24,6 +23,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <LinearLayout
+            android:id="@+id/daily_balance_wrapper"
             android:layout_width="210dp"
             android:layout_height="210dp"
             android:layout_margin="5dp"

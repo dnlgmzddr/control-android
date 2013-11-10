@@ -1,7 +1,10 @@
 package com.banlinea.control;
 
 import java.lang.reflect.Field;
+import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.banlinea.control.bussiness.AuthenticationService;
@@ -23,63 +27,85 @@ import com.banlinea.control.bussiness.BudgetService;
 
 public class BalanceActivity extends Activity {
 
+	LinearLayout dailyBalanceWrapper;
 	TextView dailyBalance;
+
 	ResultReceiver registerTransactionResultReceiver;
+	ResultReceiver InitialSetupResultReceiver;
 
 	BudgetService budgetService;
-	
-	
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		budgetService = new BudgetService(this);
+
+		final NumberFormat formatter = NumberFormat.getCurrencyInstance();
+		formatter.setRoundingMode(RoundingMode.FLOOR);
 		
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.cancel(ReminderReceiver.REMINDER_NOTIFICATION);
-		
+
 		setContentView(R.layout.activity_balance);
 		getOverflowMenu();
 
-		
-		
-		
-		// Result receiver to refresh balance when registering a new transaction.
-		this.registerTransactionResultReceiver = new ResultReceiver(new Handler()) {
+		// Result receiver to refresh balance when registering a new
+		// transaction.
+		this.registerTransactionResultReceiver = new ResultReceiver(
+				new Handler()) {
 
 			@Override
 			protected void onReceiveResult(int resultCode, Bundle resultData) {
-				Log.d("NEW TRANSACTION REGISTERED", resultData.getBoolean("result")? "Successful": "Error");
+				Log.d("NEW TRANSACTION REGISTERED", resultData
+						.getBoolean("result") ? "Successful" : "Error");
 				if (resultData.getBoolean("result")) {
-					dailyBalance.setText(""+budgetService.getDailyBudget());
-					
+					dailyBalance.setText("" + formatter.format(budgetService.getDailyBudget()));
+
 				}
 			}
 		};
-		
+
+		// Result receiver to refresh balance when finished initial setup.
+		this.InitialSetupResultReceiver = new ResultReceiver(
+				new Handler()) {
+
+			@Override
+			protected void onReceiveResult(int resultCode, Bundle resultData) {
+				Log.d("INITIAL SETUP FINISHED", resultData
+						.getBoolean("result") ? "Successful" : "Error");
+				if (resultData.getBoolean("result")) {
+					dailyBalance.setText("" + formatter.format(budgetService.getDailyBudget()));
+				}
+			}
+		};
+
+		dailyBalanceWrapper = (LinearLayout) findViewById(R.id.daily_balance_wrapper);
+
 		dailyBalance = (TextView) findViewById(R.id.dailySafeToSpend);
 		
-		dailyBalance.setText(""+budgetService.getDailyBudget());
-		
-		dailyBalance.setOnClickListener(new View.OnClickListener() {
-			
+		dailyBalance.setText("" + formatter.format(budgetService.getDailyBudget()));
+
+		dailyBalanceWrapper.setOnClickListener(new View.OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 
-				
 				Intent intent = new Intent(BalanceActivity.this,
 						RegisterTransactionActivity.class);
-				intent.putExtra("receiverTag", registerTransactionResultReceiver);
+				intent.putExtra("receiverTag",
+						registerTransactionResultReceiver);
 				startActivity(intent);
 			}
 		});
 		
-		if (getIntent().getBooleanExtra("firsTime", false)) {
-			Intent intent = new Intent(BalanceActivity.this, ReminderSetupActivity.class);
-			intent.putExtra("suggestSetup", true);
+		Log.d("FIRST TIME", Boolean.toString(BalanceActivity.this.getIntent().getBooleanExtra("com.banlinea.control.firsTime", false)));
+		if (BalanceActivity.this.getIntent().getBooleanExtra("com.banlinea.control.firstTime", false)) {
+			Intent intent = new Intent(BalanceActivity.this,
+					ReminderSetupActivity.class);
+			intent.putExtra("com.banlinea.control.suggestSetup", true);
 			startActivity(intent);
 		}
-		
+
 	}
 
 	private void getOverflowMenu() {
@@ -109,30 +135,44 @@ public class BalanceActivity extends Activity {
 
 		switch (item.getItemId()) {
 		case R.id.menu_category_manager:
-			/*Toast.makeText(getApplicationContext(), "category manager",
-					Toast.LENGTH_SHORT).show();*/
-			Intent categoryManagerIntent = new Intent(getApplicationContext(), CategoryManagementActivity.class);
+			/*
+			 * Toast.makeText(getApplicationContext(), "category manager",
+			 * Toast.LENGTH_SHORT).show();
+			 */
+			Intent categoryManagerIntent = new Intent(getApplicationContext(),
+					CategoryManagementActivity.class);
 			startActivity(categoryManagerIntent);
 			break;
-			
+
 		case R.id.menu_product_manager:
-			/*Toast.makeText(getApplicationContext(), "product manager",
-					Toast.LENGTH_SHORT).show();*/
-			Intent productManagerIntent = new Intent(getApplicationContext(), ProductManagementActivity.class);
+			/*
+			 * Toast.makeText(getApplicationContext(), "product manager",
+			 * Toast.LENGTH_SHORT).show();
+			 */
+			Intent productManagerIntent = new Intent(getApplicationContext(),
+					ProductManagementActivity.class);
 			startActivity(productManagerIntent);
 			break;
 
 		case R.id.menu_set_reminders:
-			/*Toast.makeText(getApplicationContext(), "set reminders",
-					Toast.LENGTH_SHORT).show();*/
-			Intent setRemindersIntent = new Intent(getApplicationContext(), ReminderSetupActivity.class);
+			/*
+			 * Toast.makeText(getApplicationContext(), "set reminders",
+			 * Toast.LENGTH_SHORT).show();
+			 */
+			Intent setRemindersIntent = new Intent(getApplicationContext(),
+					ReminderSetupActivity.class);
 			startActivity(setRemindersIntent);
 			break;
 
 		case R.id.menu_action_initial_setup:
-			/*Toast.makeText(getApplicationContext(), "action initial setup",
-					Toast.LENGTH_SHORT).show();*/
-			Intent initialSetupIntent = new Intent(getApplicationContext(), InitialSetupActivity.class);
+			/*
+			 * Toast.makeText(getApplicationContext(), "action initial setup",
+			 * Toast.LENGTH_SHORT).show();
+			 */
+			Intent initialSetupIntent = new Intent(getApplicationContext(),
+					InitialSetupActivity.class);
+			initialSetupIntent.putExtra("receiverTag",
+					InitialSetupResultReceiver);
 			startActivity(initialSetupIntent);
 			break;
 
@@ -144,42 +184,49 @@ public class BalanceActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		//super.onBackPressed();
-		AlertDialog.Builder builder = new AlertDialog.Builder(BalanceActivity.this);
+		// super.onBackPressed();
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				BalanceActivity.this);
 		builder.setTitle(R.string.exit_app).setMessage(R.string.exit_message);
-		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Intent closeApp = new Intent("com.banlinea.control.closeapp");
-				sendBroadcast(closeApp);
-				finish();
-			}
-		});
-		builder.setNeutralButton(R.string.logout, new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				/*Toast.makeText(getApplicationContext(), "logout", Toast.LENGTH_SHORT).show();*/
-				try {
-					new AuthenticationService(BalanceActivity.this).Logout();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				finish();
-			}
-		});
-		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				
-			}
-		});
+		builder.setPositiveButton(R.string.yes,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent closeApp = new Intent(
+								"com.banlinea.control.closeapp");
+						sendBroadcast(closeApp);
+						finish();
+					}
+				});
+		builder.setNeutralButton(R.string.logout,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						/*
+						 * Toast.makeText(getApplicationContext(), "logout",
+						 * Toast.LENGTH_SHORT).show();
+						 */
+						try {
+							new AuthenticationService(BalanceActivity.this)
+									.Logout();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						finish();
+					}
+				});
+		builder.setNegativeButton(R.string.cancel,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
 		AlertDialog dialog = builder.create();
 		dialog.show();
 	}
-	
-	
-	
+
 }
