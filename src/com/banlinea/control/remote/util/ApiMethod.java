@@ -41,6 +41,8 @@ public enum ApiMethod {
 	
 	PRODUCTS_GET_FILTERED(HttpMethods.GET,"api/FinancialProduct/GetFiltered"),
 	
+	PRODUCTS_GET_USER_PROMOTIONS(HttpMethods.GET,"api/FinancialProduct/GetUserWeeklyPromotions"),
+	
 	/**
 	 * Get the financial entities that have products for the specified category.
 	 */

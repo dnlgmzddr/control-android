@@ -15,13 +15,16 @@ public class Promotion {
 	@DatabaseField
 	private String excerpt;
 	@DatabaseField(dataType = DataType.DATE_LONG)
-	private java.util.Date ultilDate;
-	
+	private java.util.Date toDate;
+
+	@DatabaseField(dataType = DataType.DATE_LONG)
+	private java.util.Date fromDate;
+
 	@DatabaseField
 	private String link;
-	
+
 	private String csvFinancialProducts;
-	
+
 	private List<UserFinancialProduct> relatedProducts;
 
 	public String getId() {
@@ -48,14 +51,7 @@ public class Promotion {
 		this.excerpt = excerpt;
 	}
 
-	public java.util.Date getUltilDate() {
-		return ultilDate;
-	}
-
-	public void setUltilDate(java.util.Date ultilDate) {
-		this.ultilDate = ultilDate;
-	}
-
+	
 	public String getCsvFinancialProducts() {
 		return csvFinancialProducts;
 	}
@@ -71,8 +67,21 @@ public class Promotion {
 	public void setRelatedProducts(List<UserFinancialProduct> relatedProducts) {
 		this.relatedProducts = relatedProducts;
 	}
-	
-	
-	
-	
+
+	public java.util.Date getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(java.util.Date toDate) {
+		this.toDate = toDate;
+	}
+
+	public java.util.Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(java.util.Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
 }

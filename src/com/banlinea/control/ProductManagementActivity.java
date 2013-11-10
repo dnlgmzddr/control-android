@@ -151,6 +151,8 @@ public class ProductManagementActivity extends FragmentActivity {
 			banks = new ArrayList<FinancialEntityDTO>();
 		}
 		final List<FinancialEntityDTO> banksFinal = banks;
+		final List<FinancialProduct> productsFinal = new ArrayList<FinancialProduct>();
+
 		banksSpinner
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -158,13 +160,15 @@ public class ProductManagementActivity extends FragmentActivity {
 					public void onItemSelected(AdapterView<?> adapter,
 							View view, int position, long id) {
 						String bankId = banksFinal.get(position).getId();
-						List<FinancialProduct> products;
+
 						try {
-							products = new FinancialProductService(
+							productsFinal.clear();
+
+							productsFinal.addAll(new FinancialProductService(
 									ProductManagementActivity.this)
-									.getFilteredProducts(groupId, bankId);
+									.getFilteredProducts(groupId, bankId));
 						} catch (Exception e) {
-							products = new ArrayList<FinancialProduct>();
+							productsFinal.clear();
 						}
 
 						ArrayAdapter<FinancialProduct> productsSpinnerAdapter = new ArrayAdapter<FinancialProduct>(
@@ -172,11 +176,13 @@ public class ProductManagementActivity extends FragmentActivity {
 								R.layout.simple_spinner_item);
 						productsSpinnerAdapter
 								.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-						productsSpinnerAdapter.addAll(products);
+						productsSpinnerAdapter.addAll(productsFinal);
+
 						productsSpinner.setAdapter(productsSpinnerAdapter);
-						if (products.size() != 0) {
+						if (productsFinal.size() != 0) {
 							productsSpinner.setSelection(0);
 						}
+
 					}
 
 					@Override
@@ -200,12 +206,20 @@ public class ProductManagementActivity extends FragmentActivity {
 						// "Registrado", Toast.LENGTH_SHORT).show();
 						CallResult result;
 						try {
+
+							String alias = productAlias.getText().toString();
+
+							FinancialProduct product = ((FinancialProduct) productsSpinner
+									.getSelectedItem());
+							
+							if(alias.length() == 0){
+								alias = product.getName();
+							}
+							
 							result = new FinancialProductService(
-									ProductManagementActivity.this).AddProduct(
-									productAlias.getText().toString(),
-									((FinancialProduct) productsSpinner
-											.getSelectedItem()).getId(),
-									groupId);
+									ProductManagementActivity.this).addProduct(
+									alias, product.getId(), groupId);
+							
 							if (result.isSuccessfullOperation()) {
 								Toast.makeText(ProductManagementActivity.this,
 										R.string.product_created,
@@ -407,7 +421,7 @@ public class ProductManagementActivity extends FragmentActivity {
 											try {
 												CallResult res = new FinancialProductService(
 														getActivity())
-														.AddProduct(
+														.addProduct(
 																productName
 																		.getText()
 																		.toString(),
@@ -419,7 +433,9 @@ public class ProductManagementActivity extends FragmentActivity {
 															"Producto editado exitosamente.",
 															Toast.LENGTH_SHORT)
 															.show();
-													((ProductManagementActivity)getActivity()).mViewPager.getAdapter().notifyDataSetChanged();
+													((ProductManagementActivity) getActivity()).mViewPager
+															.getAdapter()
+															.notifyDataSetChanged();
 												} else {
 													Toast.makeText(
 															getActivity(),
@@ -440,12 +456,13 @@ public class ProductManagementActivity extends FragmentActivity {
 
 									}
 								});
-						
+
 						builder.setNegativeButton(R.string.cancel,
 								new DialogInterface.OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog, int which) {
+									public void onClick(DialogInterface dialog,
+											int which) {
 										dialog.cancel();
 									}
 								});
@@ -453,8 +470,6 @@ public class ProductManagementActivity extends FragmentActivity {
 						dialog.show();
 					}
 				});
-				
-				
 
 				deleteButton.setOnClickListener(new View.OnClickListener() {
 

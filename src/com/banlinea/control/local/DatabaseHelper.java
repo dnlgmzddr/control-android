@@ -9,6 +9,7 @@ import android.util.Log;
 import com.banlinea.control.R;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.FinancialProduct;
+import com.banlinea.control.entities.Promotion;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserBudget;
 import com.banlinea.control.entities.UserFinancialProduct;
@@ -28,6 +29,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<UserBudget, String> budgets;
 	private Dao<Transaction, String> transactions;
 	private Dao<UserFinancialProduct, String> userFinantialProducts;
+	private Dao<Promotion, String> promotions;
 	
 	private Dao<FinancialProduct, String> finantialProducts;
 	
@@ -46,6 +48,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, Transaction.class);
 			TableUtils.createTable(connectionSource, UserFinancialProduct.class);
 			TableUtils.createTable(connectionSource, FinancialProduct.class);
+			TableUtils.createTable(connectionSource, Promotion.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
 		}
@@ -61,6 +64,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Transaction.class, true);
 			TableUtils.dropTable(connectionSource, UserFinancialProduct.class, true);
 			TableUtils.dropTable(connectionSource, FinancialProduct.class, true);
+			TableUtils.dropTable(connectionSource, Promotion.class, true);
 			onCreate(sqliteDatabase, connectionSource);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(),
@@ -108,6 +112,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			finantialProducts = getDao(FinancialProduct.class);
 		}
 		return finantialProducts;
+	}
+	
+	public Dao<Promotion, String> getPromotions() throws SQLException {
+		if (promotions == null) {
+			promotions = getDao(FinancialProduct.class);
+		}
+		return promotions;
 	}
 
 }
