@@ -15,7 +15,6 @@ import com.banlinea.control.entities.result.TransactionResult;
 import com.banlinea.control.remote.RemoteTransactionService;
 import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 

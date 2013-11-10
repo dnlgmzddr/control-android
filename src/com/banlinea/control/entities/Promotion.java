@@ -17,6 +17,9 @@ public class Promotion {
 	@DatabaseField(dataType = DataType.DATE_LONG)
 	private java.util.Date ultilDate;
 	
+	@DatabaseField
+	private String link;
+	
 	private String csvFinancialProducts;
 	
 	private List<UserFinancialProduct> relatedProducts;
