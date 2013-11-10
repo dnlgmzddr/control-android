@@ -7,6 +7,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -49,11 +50,14 @@ public class InitialSetupActivity extends FragmentActivity {
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	private ViewPager mViewPager;
+	
+	private ResultReceiver receiverTag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_initial_setup);
+		this.receiverTag = getIntent().getParcelableExtra("receiverTag");
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -80,6 +84,10 @@ public class InitialSetupActivity extends FragmentActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.initial_setup, menu);
 		return true;
+	}
+	
+	public ResultReceiver getReceiver() {
+		return this.receiverTag;
 	}
 
 	/**
@@ -427,6 +435,10 @@ public class InitialSetupActivity extends FragmentActivity {
 										.getContext()).AddBudget(ubOther);
 								if (budgetResult3.isSuccessfullOperation()) {
 
+									Bundle bundle = new Bundle();
+									bundle.putBoolean("result", true);
+									
+									((InitialSetupActivity)getActivity()).getReceiver().send(0, bundle);
 									getActivity().finish();
 
 								} else {

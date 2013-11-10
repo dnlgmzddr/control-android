@@ -47,7 +47,7 @@ public class ReminderSetupActivity extends Activity {
 				}
 				
 				
-				if (ReminderSetupActivity.this.getIntent().getBooleanExtra("suggestSetup", false)) {
+				if (ReminderSetupActivity.this.getIntent().getBooleanExtra("com.banlinea.control.suggestSetup", false)) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(ReminderSetupActivity.this);
 					builder.setTitle(R.string.initial_setup_prompt_title).setMessage(R.string.initial_setup_prompt);
 					builder.setPositiveButton(R.string.continue_text, new DialogInterface.OnClickListener() {

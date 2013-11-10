@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -203,7 +204,8 @@ public class ProductManagementActivity extends FragmentActivity {
 									ProductManagementActivity.this).AddProduct(
 									productAlias.getText().toString(),
 									((FinancialProduct) productsSpinner
-											.getSelectedItem()).getId(), groupId);
+											.getSelectedItem()).getId(),
+									groupId);
 							if (result.isSuccessfullOperation()) {
 								Toast.makeText(ProductManagementActivity.this,
 										R.string.product_created,
@@ -221,7 +223,7 @@ public class ProductManagementActivity extends FragmentActivity {
 									"Error: " + e.getMessage(),
 									Toast.LENGTH_SHORT).show();
 						}
-						
+
 					}
 				});
 
@@ -313,7 +315,8 @@ public class ProductManagementActivity extends FragmentActivity {
 
 			FinancialProductService financialService = new FinancialProductService(
 					getActivity());
-			List<UserFinancialProduct> allProducts = financialService.getUserProducts();
+			List<UserFinancialProduct> allProducts = financialService
+					.getUserProducts();
 			for (UserFinancialProduct userFinancialProduct : allProducts) {
 				if (userFinancialProduct.getCategory() == groupId) {
 					products.add(userFinancialProduct);
@@ -361,16 +364,115 @@ public class ProductManagementActivity extends FragmentActivity {
 						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View rowView = inflater.inflate(R.layout.row_product_manager,
 						parent, false);
+
+				TextView productNameTextView = (TextView) rowView
+						.findViewById(R.id.product_name_textview);
+				TextView bankNameTextView = (TextView) rowView
+						.findViewById(R.id.product_bank_textview);
+				ImageButton editButton = (ImageButton) rowView
+						.findViewById(R.id.edit_imagebutton);
+				ImageButton deleteButton = (ImageButton) rowView
+						.findViewById(R.id.delete_imagebutton);
+
+				final int positionFinal = position;
+				editButton.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getActivity());
+
+						LayoutInflater inflater = getActivity()
+								.getLayoutInflater();
+						View layout = inflater.inflate(
+								R.layout.alert_edit1_product, null);
+						builder.setTitle(R.string.edit_product_title);
+
+						builder.setView(layout);
+						final EditText productName = (EditText) layout
+								.findViewById(R.id.product_alias_textedit);
+						final UserFinancialProduct prod = products
+								.get(positionFinal);
+						productName.setText(prod.getName());
+
+						builder.setPositiveButton(R.string.confirm,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										if (!productName.getText().toString()
+												.equals(prod)) {
+											try {
+												CallResult res = new FinancialProductService(
+														getActivity())
+														.AddProduct(
+																productName
+																		.getText()
+																		.toString(),
+																prod.getIdProduct(),
+																prod.getCategory());
+												if (res.isSuccessfullOperation()) {
+													Toast.makeText(
+															getActivity(),
+															"Producto editado exitosamente.",
+															Toast.LENGTH_SHORT)
+															.show();
+													((ProductManagementActivity)getActivity()).mViewPager.getAdapter().notifyDataSetChanged();
+												} else {
+													Toast.makeText(
+															getActivity(),
+															res.getMessage(),
+															Toast.LENGTH_SHORT)
+															.show();
+												}
+											} catch (Exception e) {
+												Toast.makeText(
+														getActivity(),
+														"Error editando producto.",
+														Toast.LENGTH_SHORT)
+														.show();
+												Log.e("PRODUCT EDIT",
+														e.getMessage());
+											}
+										}
+
+									}
+								});
+						
+						builder.setNegativeButton(R.string.cancel,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										dialog.cancel();
+									}
+								});
+						AlertDialog dialog = builder.create();
+						dialog.show();
+					}
+				});
 				
-				TextView productNameTextView = (TextView) rowView.findViewById(R.id.product_name_textview);
-				TextView bankNameTextView = (TextView) rowView.findViewById(R.id.product_bank_textview);
-				ImageButton editButton = (ImageButton) rowView.findViewById(R.id.edit_imagebutton);
-				ImageButton deleteButton = (ImageButton) rowView.findViewById(R.id.delete_imagebutton);
 				
+
+				deleteButton.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Toast.makeText(getActivity(),
+								"Delete Product not implemented yet",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+
 				productNameTextView.setText(products.get(position).getName());
-				String productName = products.get(position).getProduct().getName();
-				String financialEntityName = products.get(position).getProduct().getFinancialEntityName();
-				bankNameTextView.setText(productName + " (" + financialEntityName + ")");
+				String productName = products.get(position).getProduct()
+						.getName();
+				String financialEntityName = products.get(position)
+						.getProduct().getFinancialEntityName();
+				bankNameTextView.setText(productName + " ("
+						+ financialEntityName + ")");
 				return rowView;
 			}
 		}
