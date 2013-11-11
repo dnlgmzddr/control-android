@@ -327,7 +327,7 @@ public class TransactionService extends BaseService {
 		}
 		
 		
-		return new ArrayList<FullTransaction>();
+		return fullTransactions;
 	}
 	
 	
