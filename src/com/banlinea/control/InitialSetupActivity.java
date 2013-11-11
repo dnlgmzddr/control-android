@@ -31,7 +31,6 @@ import com.banlinea.control.remote.util.CallResult;
 
 /**
  * @author Daniel
- * 
  */
 
 public class InitialSetupActivity extends FragmentActivity {
@@ -82,7 +81,7 @@ public class InitialSetupActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.initial_setup, menu);
+		//getMenuInflater().inflate(R.menu.initial_setup, menu);
 		return true;
 	}
 	

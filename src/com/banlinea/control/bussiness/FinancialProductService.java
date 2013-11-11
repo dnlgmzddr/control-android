@@ -218,6 +218,7 @@ public class FinancialProductService extends BaseService {
 					for (String id : productsIds) {
 						includedProducts.add(searchWrapper.get(id));
 					}
+					promotion.setRelatedProducts(includedProducts);
 				}
 
 			}

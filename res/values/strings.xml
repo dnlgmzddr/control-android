@@ -16,7 +16,7 @@
     <string name="email">Correo Electrónico</string>
     <string name="password_verification">Verificar Contraseña</string>
     <string name="register_instructions">Complete los siguientes datos y luego seleccione \&quot;Registrar\&quot; para crear su nueva cuenta.</string>
-    <string name="title_activity_reminder_setup">Ajustar Recordatorios</string>
+    <string name="title_activity_reminder_setup">Configuración de Recordatorios</string>
     <string name="turn_on_reminders">Habilitar recoratorios diarios</string>
     <string name="reminders_enabled">Recordatorios habilitados</string>
     <string name="continue_text">Continuar</string>
@@ -110,5 +110,7 @@
     <string name="promos_button">Tus Promociones</string>
     <string name="category_manager_is_fixed_budget">Es un presupuesto fijo?</string>
     <string name="title_activity_promos">Promociones</string>
+    <string name="valid">Válidez:</string>
+    <string name="description">Descripción</string>
 
 </resources>
