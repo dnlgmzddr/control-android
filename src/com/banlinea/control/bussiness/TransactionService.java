@@ -1,12 +1,14 @@
 package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
 
+import com.banlinea.control.dto.out.FullTransaction;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserFinancialProduct;
@@ -274,4 +276,8 @@ public class TransactionService extends BaseService {
 		return totalExpenses;
 	}
 
+	public List<FullTransaction> getTransactions(SafeSpendPeriod period){
+		return new ArrayList<FullTransaction>();
+	}
+	
 }
