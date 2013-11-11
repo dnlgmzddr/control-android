@@ -185,7 +185,7 @@ public class CategoryService extends BaseService {
 		Dao<Category, String> dao;
 		try {
 			dao = helper.getCategories();
-			return dao.countOf() == 0;
+			return dao.countOf() != 0;
 		} catch (SQLException e) {
 			return false;
 		}
