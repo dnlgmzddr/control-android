@@ -108,6 +108,7 @@
     <string name="product_created">Producto Registrado</string>
     <string name="safe_to_spend">Tu presupuesto para hoy</string>
     <string name="promos_button">Tus Promociones</string>
+    <string name="category_manager_is_fixed_budget">Es un presupuesto fijo?</string>
     <string name="title_activity_promos">Promociones</string>
     <string name="valid">Válidez:</string>
     <string name="description">Descripción</string>

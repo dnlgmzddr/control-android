@@ -13,5 +13,9 @@
 
         <requestFocus />
     </EditText>
-    
+     <CheckBox
+        android:id="@+id/isFixed_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/category_manager_is_fixed_budget" />
 </LinearLayout>
