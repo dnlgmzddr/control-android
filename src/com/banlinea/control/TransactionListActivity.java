@@ -4,14 +4,10 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.List;
 
-import com.banlinea.control.bussiness.TransactionService;
-import com.banlinea.control.dto.out.FullTransaction;
-import com.banlinea.control.entities.definitions.SafeSpendPeriod;
-
-import android.os.Bundle;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.support.v4.app.NavUtils;
+
+import com.banlinea.control.bussiness.TransactionService;
+import com.banlinea.control.dto.out.FullTransaction;
+import com.banlinea.control.entities.definitions.SafeSpendPeriod;
 
 public class TransactionListActivity extends ListActivity {
 

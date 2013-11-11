@@ -180,5 +180,15 @@ public class CategoryService extends BaseService {
 		return new ArrayList<Category>();
 	}
 	
-
+	public boolean IsAlreadyImported() {
+		DatabaseHelper helper = this.getHelper();
+		Dao<Category, String> dao;
+		try {
+			dao = helper.getCategories();
+			return dao.countOf() == 0;
+		} catch (SQLException e) {
+			return false;
+		}
+		
+	}
 }

@@ -29,45 +29,72 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/daily_balance_wrapper"
-                android:layout_width="210dp"
-                android:layout_height="210dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/circle_blue"
-                android:gravity="center"
-                android:orientation="vertical" >
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal|bottom" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="-80dp"
-                    android:text="+"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="80sp" />
-
-                <TextView
-                    android:id="@+id/dailySafeToSpend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:text="$100.000"
-                    android:textColor="#fff"
-                    android:textSize="30sp" />
-
-                <TextView
-                    android:id="@+id/dailySafeToSpend"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginBottom="-20dp"
-                    android:layout_marginTop="10dp"
+                <LinearLayout
+                    android:id="@+id/daily_balance_wrapper"
+                    android:layout_width="210dp"
+                    android:layout_height="210dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="-15dp"
+                    android:background="@drawable/circle_blue"
                     android:gravity="center"
-                    android:text="@string/safe_to_spend"
-                    android:textColor="#fff"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="-80dp"
+                        android:text="+"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="80sp" />
+
+                    <TextView
+                        android:id="@+id/dailySafeToSpend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:text="$100.000"
+                        android:textColor="#fff"
+                        android:textSize="30sp" />
+
+                    <TextView
+                        android:id="@+id/dailySafeToSpend"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_marginBottom="-20dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="@string/safe_to_spend"
+                        android:textColor="#fff"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/daily_transaction_wrapper"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="-20dp"
+                    android:gravity="center"
+                    android:background="@drawable/circle_blue" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="..."
+                        android:layout_marginTop="-12dp"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="40sp" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

@@ -18,6 +18,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
 	public static final int REMINDER_NOTIFICATION = 1;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onReceive(Context context, Intent paramIntent) {
 
@@ -65,8 +66,6 @@ public class ReminderReceiver extends BroadcastReceiver {
 			// Fire the notification
 			notificationManager.notify(REMINDER_NOTIFICATION, notification);
 
-			
-			
 			// Set next reminder
 			// Get new calendar object and set the date to now
 			Calendar calendar = Calendar.getInstance();
@@ -84,21 +83,21 @@ public class ReminderReceiver extends BroadcastReceiver {
 			int id = (int) System.currentTimeMillis();
 
 			// Prepare the intent which should be launched at the date
-			Intent intent1 = new Intent(context,
-					ReminderReceiver.class);
+			Intent intent1 = new Intent(context, ReminderReceiver.class);
 
 			// Prepare the pending intent
-			PendingIntent pendingIntent1 = PendingIntent.getBroadcast(
-					context, id, intent1,
-					PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pendingIntent1 = PendingIntent.getBroadcast(context,
+					id, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			// Register the alert in the system. You have the option to define
 			// if
 			// the device has to wake up on the alert or not
 			alarmManager.set(AlarmManager.RTC_WAKEUP,
 					calendar.getTimeInMillis(), pendingIntent1);
-			
-			Toast.makeText(context, "New Reminder set to" + calendar.toString(), Toast.LENGTH_LONG).show();
+
+			Toast.makeText(context,
+					"New Reminder set to" + calendar.toString(),
+					Toast.LENGTH_LONG).show();
 		}
 	}
 }

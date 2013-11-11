@@ -1,6 +1,8 @@
 package com.banlinea.control;
 
 import java.sql.SQLException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,19 +13,22 @@ import com.banlinea.control.bussiness.CategoryService;
 
 public class SplashScreenActivity extends Activity {
 	
-	
+	private static final long SPLASH_SCREEN_DELAY = 1500;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash_screen);
 		final SplashScreenActivity activity = this;
-		Thread threadLoad =  new Thread(){
+		TimerTask timerLoad =  new TimerTask() {
+			
 			@Override
-			public void run(){
+			public void run() {
 				try{
-					new CategoryService(activity).ImportBaseCategories();
-					
+					CategoryService ser = new CategoryService(activity);
+					if (!ser.IsAlreadyImported()) {
+						ser.ImportBaseCategories();
+					}
 					Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
 					startActivity(intent);
 					finish();
@@ -34,7 +39,8 @@ public class SplashScreenActivity extends Activity {
 			}
 		};
 		
-		threadLoad.start();
+		Timer timer = new Timer();
+        timer.schedule(timerLoad, SPLASH_SCREEN_DELAY);
 		
 	}
 
