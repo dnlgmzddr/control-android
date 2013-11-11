@@ -107,5 +107,6 @@
     <string name="create_product_title">Registrar Producto</string>
     <string name="product_created">Producto Registrado</string>
     <string name="safe_to_spend">Tu presupuesto para hoy</string>
+    <string name="category_manager_is_fixed_budget">Es un presupuesto fijo?</string>
 
 </resources>
