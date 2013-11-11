@@ -1,68 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <TextView
-        android:id="@+id/category_name_textview"
-        android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white" >
+	
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/category_name"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/black" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" >
+        
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+            
+            <TextView
+		        android:id="@+id/category_name_textview"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/category_name"
+		        android:textAppearance="?android:attr/textAppearanceLarge"
+		        android:textColor="@color/black" />
+	
+		    <TextView
+		        android:id="@+id/budget_textview"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:lines="2"
+		        android:text="@string/parent_category"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        android:textColor="@color/gray" />
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/budget_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/category_name_textview"
-        android:layout_below="@+id/category_name_textview"
-        android:text="@string/parent_category"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/gray" />
+        <ImageButton
+            android:id="@+id/edit_imagebutton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:contentDescription="@string/delete"
+            android:src="@drawable/ic_action_edit" />
 
-    <ImageButton
-        android:id="@+id/edit_imagebutton"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignTop="@+id/delete_imagebutton"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/delete_imagebutton"
-        android:contentDescription="@string/delete"
-        android:src="@drawable/ic_action_edit" />
-
-    <ImageButton
-        android:id="@+id/delete_imagebutton"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/category_name_textview"
-        android:layout_marginRight="15dp"
-        android:contentDescription="@string/edit"
-        android:src="@drawable/ic_action_discard" />
+        <ImageButton
+            android:id="@+id/delete_imagebutton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:contentDescription="@string/edit"
+            android:src="@drawable/ic_action_discard" />
+        
+	</LinearLayout>
+    
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="5dp" >
+        android:layout_height="5dp"
+        android:layout_marginBottom="2dp" >
 
         <TextView
             android:id="@+id/filledBar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="40"
+            android:layout_weight="0.75"
             android:background="@color/gold" />
 
         <TextView
             android:id="@+id/emptyBar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="60" />
+            android:layout_weight="0.25" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

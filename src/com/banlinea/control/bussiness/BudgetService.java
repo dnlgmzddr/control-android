@@ -1,7 +1,6 @@
 package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -64,71 +63,81 @@ public class BudgetService extends BaseService {
 
 	public UserBudget getUserBudget(String idCategory) {
 		Dao<UserBudget, String> budgetDAO;
+		UserBudget userBudget = null;
 		try {
 			budgetDAO = this.getHelper().getBudgets();
-			return budgetDAO.queryForId(idCategory);
-		} catch (SQLException e) {
-			return null;
-		}
-	}
+			CategoryService catService = new CategoryService(this.context);
+			Category cat = catService.GetCategory(idCategory);
+			userBudget = new UserBudget();
+			userBudget.setIdUser(new AuthenticationService(this.context)
+					.GetUser().getId());
+			userBudget.setIdCategory(idCategory);
 
-	public List<UserBudget> getUserBudgets(int groupId) {
-		List<UserBudget> result = new ArrayList<UserBudget>();
-		try {
-			Dao<UserBudget, String> budgetDAO = this.getHelper().getBudgets();
+			if (cat.getIdParent().equals(Category.SYSTEM_EMPTY_ID)) {
 
-			List<Category> categories = new ArrayList<Category>();
-			List<Category> parentCategories = new CategoryService(this.context)
-					.GetParentCategoriesPerGroup(groupId);
-			categories.addAll(parentCategories);
-			for (Category parentCategory : parentCategories) {
-				categories.addAll(new CategoryService(this.context)
-						.GetChilds(parentCategory.getId()));
-			}
-
-			for (Category category : categories) {
-				UserBudget budget = budgetDAO.queryForId(category.getId());
-				if (budget != null) {
-					List<Transaction> transactions = new TransactionService(
-							this.context)
-							.getCurrentMonthTransactionsFor(category.getId());
-
-					float executedBudget = 0;
-
-					for (Transaction transaction : transactions) {
-						executedBudget += (float) transaction.getAmount();
+				List<Category> childrens = catService.GetChilds(idCategory);
+				for (Category child : childrens) {
+					UserBudget childBudget = this.getUserBudget(child.getId());
+					if (childBudget == null) {
+						continue;
 					}
 
-					budget.setCurrentExecutedBudget(executedBudget);
-					result.add(budget);
+					userBudget.setBudget(userBudget.getBudget()
+							+ childBudget.getBudget());
+
+					userBudget.setCurrentExecutedBudget(userBudget
+							.getCurrentExecutedBudget()
+							+ childBudget.getCurrentExecutedBudget());
 				}
+
+			} else {
+				userBudget = budgetDAO.queryForId(idCategory);
+				if (userBudget == null) {
+					userBudget = new UserBudget();
+					userBudget
+							.setIdUser(new AuthenticationService(this.context)
+									.GetUser().getId());
+					userBudget.setIdCategory(idCategory);
+					userBudget.setBudget(0);
+				}
+				TransactionService transactionService = new TransactionService(
+						this.context);
+				List<Transaction> transactions = transactionService
+						.getCurrentMonthTransactionsFor(idCategory);
+				float executed = 0f;
+				for (Transaction transaction : transactions) {
+					executed += transaction.getAmount();
+				}
+				userBudget.setCurrentExecutedBudget(executed);
+
 			}
 
-			return result;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+
 		}
+		return userBudget;
 	}
 
 	public float getDailyBudget() {
 
 		float dailyBudget = 0f;
 		try {
-			
+
 			List<String> incomeCategoriesIds = new CategoryService(this.context)
-			.getFixedExpensesCategoriesIds();
-			
+					.getFixedExpensesCategoriesIds();
+
 			float monthlyIncome = calculateMonthlyIncome();
 			Log.d("BUDGET", "monthlyIncome:" + monthlyIncome);
-			
+
 			float fixedExpenses = getFixedCategoriesBudget(incomeCategoriesIds);
 			Log.d("BUDGET", "fixedExpenses:" + fixedExpenses);
-			
-			float expensesDueDate = transactionService.getTotalTransactionsDueDate();
+
+			float expensesDueDate = transactionService
+					.getTotalTransactionsDueDate();
 			Log.d("BUDGET", "expensesDueDate:" + expensesDueDate);
-			
-			float todayExpenses = transactionService.getTotalTransactionsToday();
+
+			float todayExpenses = transactionService
+					.getTotalTransactionsToday();
 			Log.d("BUDGET", "todayDueDate:" + todayExpenses);
 
 			dailyBudget = monthlyIncome - (fixedExpenses - expensesDueDate);
@@ -143,21 +152,18 @@ public class BudgetService extends BaseService {
 			dailyBudget = dailyBudget / days;
 			dailyBudget -= todayExpenses;
 			Log.d("BUDGET", "dailyBudget:" + dailyBudget);
-			
+
 		} catch (Exception e) {
 			Log.d("ERROR", e.getMessage());
 		}
 		return dailyBudget;
 	}
 
-
 	private float getFixedCategoriesBudget(List<String> incomeCategoriesIds) {
 		float fixedExpenses = 0f;
 		try {
 
 			Dao<UserBudget, String> budgetDao = this.getHelper().getBudgets();
-
-			
 
 			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
 					.queryBuilder();

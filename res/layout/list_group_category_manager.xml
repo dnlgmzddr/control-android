@@ -2,16 +2,61 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-	
-    <TextView
-        android:id="@+id/parent_category_name_textview"
-        android:layout_width="wrap_content"
+    android:clickable="false"
+    android:focusable="false"
+    android:orientation="vertical"
+    android:background="@color/superlightgray" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/category_name"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/black" />
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" >
+
+        <TextView
+            android:id="@+id/parent_category_name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="@string/category_name"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/parent_budget_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:lines="2"
+            android:text="@string/parent_category"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginBottom="2dp" >
+
+        <TextView
+            android:id="@+id/parent_filledBar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.75"
+            android:background="@color/gold"
+            android:clickable="false"
+            android:focusable="false" />
+
+        <TextView
+            android:id="@+id/parent_emptyBar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:clickable="false"
+            android:focusable="false" />
+    </LinearLayout>
 
 </LinearLayout>
