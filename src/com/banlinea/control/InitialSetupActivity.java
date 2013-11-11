@@ -54,10 +54,10 @@ public class InitialSetupActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		this.receiverTag = getIntent().getParcelableExtra("com.banlinea.control.receiverTag");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_initial_setup);
-		this.receiverTag = getIntent().getParcelableExtra("receiverTag");
-
+		
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(

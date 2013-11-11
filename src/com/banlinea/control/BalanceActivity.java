@@ -149,12 +149,14 @@ public class BalanceActivity extends Activity {
 		});
 
 		Log.d("FIRST TIME", Boolean.toString(BalanceActivity.this.getIntent()
-				.getBooleanExtra("com.banlinea.control.firsTime", false)));
+				.getBooleanExtra("com.banlinea.control.firstTime", false)));
 		if (BalanceActivity.this.getIntent().getBooleanExtra(
 				"com.banlinea.control.firstTime", false)) {
 			Intent intent = new Intent(BalanceActivity.this,
 					ReminderSetupActivity.class);
 			intent.putExtra("com.banlinea.control.suggestSetup", true);
+			intent.putExtra("com.banlinea.control.receiverTag",
+					InitialSetupResultReceiver);
 			startActivity(intent);
 		}
 
@@ -223,7 +225,7 @@ public class BalanceActivity extends Activity {
 			 */
 			Intent initialSetupIntent = new Intent(getApplicationContext(),
 					InitialSetupActivity.class);
-			initialSetupIntent.putExtra("receiverTag",
+			initialSetupIntent.putExtra("com.banlinea.control.receiverTag",
 					InitialSetupResultReceiver);
 			startActivity(initialSetupIntent);
 			break;

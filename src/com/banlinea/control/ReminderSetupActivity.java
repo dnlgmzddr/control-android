@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,8 @@ public class ReminderSetupActivity extends Activity {
 	
 	private ToggleButton setRemindersToggle;
 	private Button continueButton;
+	
+	private ResultReceiver receiverTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,9 @@ public class ReminderSetupActivity extends Activity {
 				
 				
 				if (ReminderSetupActivity.this.getIntent().getBooleanExtra("com.banlinea.control.suggestSetup", false)) {
+					
+					receiverTag = ReminderSetupActivity.this.getIntent().getParcelableExtra("com.banlinea.control.receiverTag");
+					
 					AlertDialog.Builder builder = new AlertDialog.Builder(ReminderSetupActivity.this);
 					builder.setTitle(R.string.initial_setup_prompt_title).setMessage(R.string.initial_setup_prompt);
 					builder.setPositiveButton(R.string.continue_text, new DialogInterface.OnClickListener() {
@@ -56,6 +62,7 @@ public class ReminderSetupActivity extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							Intent intent = new Intent(ReminderSetupActivity.this, InitialSetupActivity.class);
+							intent.putExtra("com.banlinea.control.receiverTag", receiverTag);
 							startActivity(intent);
 							ReminderSetupActivity.this.finish();
 						}
