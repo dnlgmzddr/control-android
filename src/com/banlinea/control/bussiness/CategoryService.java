@@ -168,6 +168,17 @@ public class CategoryService extends BaseService {
 		}
 		return incomeCategoriesIds;
 	}
+
+	public List<Category> getAllCategories() {
+		try {
+			Dao<Category, String> catDao = this.getHelper().getCategories();
+			return catDao.queryForAll();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ArrayList<Category>();
+	}
 	
 
 }

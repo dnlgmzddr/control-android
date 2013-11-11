@@ -3,6 +3,7 @@ package com.banlinea.control.bussiness;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -155,11 +156,11 @@ public class TransactionService extends BaseService {
 	 * @param period
 	 * @return total of money register.
 	 */
-	public float getTotalTransactionsDueDate(SafeSpendPeriod period, List<String> unFixedCategories) {
+	public float getTotalTransactionsDueDate(SafeSpendPeriod period,
+			List<String> unFixedCategories) {
 		float totalExpenses = 0f;
 		try {
 
-			
 			Calendar begin = Calendar.getInstance();
 			Calendar end = Calendar.getInstance();
 
@@ -276,8 +277,111 @@ public class TransactionService extends BaseService {
 		return totalExpenses;
 	}
 
-	public List<FullTransaction> getTransactions(SafeSpendPeriod period){
-		return new ArrayList<FullTransaction>();
+	public List<FullTransaction> getTransactions(SafeSpendPeriod period) {
+
+		List<FullTransaction> fullTransactions = new ArrayList<FullTransaction>();
+
+		List<Transaction> transactions = this.getTransactionInPeriod(period);
+		if (transactions.size() == 0) {
+			return fullTransactions;
+		}
+		// user data
+		List<UserFinancialProduct> userProducts = new FinancialProductService(
+				this.context).getUserProducts();
+		List<Category> categories = new CategoryService(this.context)
+				.getAllCategories();
+
+		// make base data indexable.
+		HashMap<String, UserFinancialProduct> indexableUserProducts = new HashMap<String, UserFinancialProduct>();
+		HashMap<String, Category> indexableCategories = new HashMap<String, Category>();
+		for (Category category : categories) {
+			indexableCategories.put(category.getId(), category);
+		}
+		for (UserFinancialProduct product : userProducts) {
+			indexableUserProducts.put(product.getIdProduct(), product);
+		}
+
+		for (Transaction transaction : transactions) {
+
+			FullTransaction fullTransaction = new FullTransaction();
+
+			fullTransaction.setAmount(transaction.getAmount());
+			fullTransaction.setComment(transaction.getComment());
+			fullTransaction.setDate(transaction.getDate());
+
+			fullTransaction.setId(transaction.getId());
+			fullTransaction.setIdCategory(transaction.getIdCategory());
+			fullTransaction.setIdProduct(transaction.getIdProduct());
+
+			fullTransaction.setIdUser(transaction.getIdUser());
+			fullTransaction.setPeriodType(transaction.getPeriodType());
+			fullTransaction.setType(transaction.getType());
+
+			Category baseCategory = indexableCategories.get(transaction
+					.getIdCategory());
+			fullTransaction.setCategoryName(baseCategory.getName());
+			fullTransaction.setParentCategoryName(indexableCategories.get(
+					baseCategory.getIdParent()).getName());
+
+			fullTransaction.setProductName(indexableUserProducts.get(
+					transaction.getIdProduct()).getName());
+			fullTransactions.add(fullTransaction);
+
+		}
+
+		return fullTransactions;
 	}
-	
+
+	private List<Transaction> getTransactionInPeriod(SafeSpendPeriod period) {
+		List<Transaction> retTransactions = new ArrayList<Transaction>();
+		try {
+
+			Calendar begin = Calendar.getInstance();
+			Calendar end = Calendar.getInstance();
+
+			switch (period) {
+			case DAY:
+
+			case WEEK:
+				begin.add(Calendar.DAY_OF_WEEK, begin.getFirstDayOfWeek()
+						- begin.get(Calendar.DAY_OF_WEEK));
+				end = (Calendar) begin.clone();
+				end.add(Calendar.DAY_OF_YEAR, 6);
+				break;
+			case MONTH:
+				begin.set(Calendar.DAY_OF_MONTH, 1);
+			default:
+				break;
+			}
+
+			begin.set(Calendar.HOUR_OF_DAY, 0);
+			begin.set(Calendar.MINUTE, 0);
+			begin.set(Calendar.SECOND, 0);
+
+			end.set(Calendar.HOUR_OF_DAY, 23);
+			end.set(Calendar.MINUTE, 59);
+			end.set(Calendar.SECOND, 59);
+
+			Dao<Transaction, String> transactionDao;
+
+			transactionDao = this.getHelper().getTransactions();
+
+			QueryBuilder<Transaction, String> query = transactionDao
+					.queryBuilder();
+
+			Where<Transaction, String> where = query.where();
+
+			where.between("date", begin.getTime(), end.getTime());
+
+			query.orderBy("date", false);
+
+			Log.d("ORMLITE", query.prepareStatementString());
+
+			retTransactions = transactionDao.query(query.prepare());
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return retTransactions;
+	}
 }
