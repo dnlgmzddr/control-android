@@ -16,7 +16,6 @@ import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 
 public class CategoryService extends BaseService {
 
@@ -170,54 +169,5 @@ public class CategoryService extends BaseService {
 		return incomeCategoriesIds;
 	}
 	
-	public List<String> getFixedExpensesCategoriesIds() throws SQLException {
-		Dao<Category, String> catDao = this.getHelper().getCategories();
-		QueryBuilder<Category, String> categoryQBuilder = catDao
-				.queryBuilder();
-
-
-		Where<Category, String> where = categoryQBuilder.where();
-		where.eq("group",Category.GROUP_EXPENSE);
-		where.and();
-		where.eq("isFixed", true);
-		
-		PreparedQuery<Category> categoryQuery = categoryQBuilder.prepare();
-		
-		
-		List<Category> fixedExpensesCategoriesIds = catDao.query(categoryQuery);
-		
-		List<String> incomeCategoriesIds = new ArrayList<String>();
-		for (Category income : fixedExpensesCategoriesIds) {
-			incomeCategoriesIds.add(income.getId());
-		}
-		return incomeCategoriesIds;
-	}
-	
-	public List<String> getUnFixedExpensesSavingCategoriesIds() throws SQLException {
-		Dao<Category, String> catDao = this.getHelper().getCategories();
-		QueryBuilder<Category, String> categoryQBuilder = catDao
-				.queryBuilder();
-
-
-		Where<Category,String> where = categoryQBuilder.where();
-		
-		where.eq("group",Category.GROUP_EXPENSE);
-		where.or();
-		where.eq("group",Category.GROUP_SAVING);
-		where.and();
-		where.eq("isFixed", false);
-
-		
-		PreparedQuery<Category> categoryQuery = categoryQBuilder.prepare();
-		
-		
-		List<Category> fixedExpensesCategoriesIds = catDao.query(categoryQuery);
-		
-		List<String> incomeCategoriesIds = new ArrayList<String>();
-		for (Category income : fixedExpensesCategoriesIds) {
-			incomeCategoriesIds.add(income.getId());
-		}
-		return incomeCategoriesIds;
-	}
 
 }

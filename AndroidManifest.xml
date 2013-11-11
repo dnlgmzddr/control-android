@@ -78,6 +78,16 @@
         <activity
             android:name="com.banlinea.control.ProductManagementActivity"
             android:label="@string/title_activity_product_management"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.banlinea.control.BalanceActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.banlinea.control.BalanceActivity" />
+        </activity>
+        <activity
+            android:name="com.banlinea.control.PromosActivity"
+            android:label="@string/title_activity_promos"
+            android:screenOrientation="portrait"
             android:parentActivityName="com.banlinea.control.BalanceActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -83,7 +83,7 @@
     <string name="connection_error_message">Error de conexión con el servidor.\nIntenta de nuevo más tarde.</string>
     <string name="password_error_message">Las contraseñas no coinciden. Por favor revisalas.</string>
     <string name="number_format_error_message">Formato de número errado.</string>
-    <string name="title_activity_category_management">CategoryManagementActivity</string>
+    <string name="title_activity_category_management">Gestión de Categorías</string>
     <string name="expenses_title">Gastos</string>
     <string name="incomes_title">Ingresos</string>
     <string name="savings_title">Ahorros</string>
@@ -97,7 +97,7 @@
     <string name="exit_message">¿Deseas salir de la aplicación?</string>
     <string name="reminder_set_message">Recordatorios activados diariamente a las 8 PM</string>
     <string name="manage_products">Productos Financieros</string>
-    <string name="title_activity_product_management">Gestión de Productos Financieros</string>
+    <string name="title_activity_product_management">Gestión de Productos</string>
     <string name="add_product">Registrar Producto</string>
     <string name="title_bank_account">Cuentas de Ahorro</string>
     <string name="title_credit_card">Tarjetas de Crédito</string>
@@ -107,6 +107,8 @@
     <string name="create_product_title">Registrar Producto</string>
     <string name="product_created">Producto Registrado</string>
     <string name="safe_to_spend">Tu presupuesto para hoy</string>
+    <string name="promos_button">Tus Promociones</string>
     <string name="category_manager_is_fixed_budget">Es un presupuesto fijo?</string>
+    <string name="title_activity_promos">Promociones</string>
 
 </resources>

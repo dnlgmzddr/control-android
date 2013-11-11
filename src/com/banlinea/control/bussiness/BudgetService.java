@@ -1,6 +1,7 @@
 package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -130,24 +131,23 @@ public class BudgetService extends BaseService {
 		float periodBudget = 0f;
 		try {
 
+			List<String> unfixedCategories = getUnFixedBudgetCategoriesIds();
+			
 			Log.d("BUDGET", "----- BEGIN " + period + " ----------");
-
-			List<String> incomeCategoriesIds = new CategoryService(this.context)
-					.getFixedExpensesCategoriesIds();
 
 			float monthlyIncome = calculateMonthlyIncome();
 			Log.d("BUDGET", "monthlyIncome:" + monthlyIncome);
 
-			float fixedExpenses = getFixedCategoriesBudget(incomeCategoriesIds);
+			float fixedExpenses = getFixedBudgets();
 			Log.d("BUDGET", "fixedExpenses:" + fixedExpenses);
 
 			// Specific data per period.
 			float expensesDueDate = transactionService
-					.getTotalTransactionsDueDate(period);
+					.getTotalTransactionsDueDate(period, unfixedCategories);
 			Log.d("BUDGET", "expensesDueDate:" + expensesDueDate);
 
 			float periodExpenses = transactionService
-					.getTotalTransactionsInPeriod(period);
+					.getTotalTransactionsInPeriod(period, unfixedCategories);
 			Log.d("BUDGET", "periodExpenses:" + periodExpenses);
 
 			periodBudget = monthlyIncome - (fixedExpenses - expensesDueDate);
@@ -157,19 +157,19 @@ public class BudgetService extends BaseService {
 
 			switch (period) {
 			case DAY:
-				dayPeriodCalc: {
-					int monthDays = Calendar.getInstance().getActualMaximum(
-							Calendar.DAY_OF_MONTH);
-					int currentDay = Calendar.getInstance().get(
-							Calendar.DAY_OF_MONTH);
-					periodUnit = monthDays - currentDay;
-				}
+
+				int monthDays = Calendar.getInstance().getActualMaximum(
+						Calendar.DAY_OF_MONTH);
+				int currentDay = Calendar.getInstance().get(
+						Calendar.DAY_OF_MONTH);
+				periodUnit = monthDays - currentDay;
+
 				break;
 			case WEEK:
-				weekPeriodCalc: {
-					Calendar cal = Calendar.getInstance();
-					periodUnit = cal.getActualMaximum(Calendar.WEEK_OF_MONTH);
-				}
+
+				Calendar cal = Calendar.getInstance();
+				periodUnit = cal.getActualMaximum(Calendar.WEEK_OF_MONTH);
+
 				break;
 			default:
 				break;
@@ -188,7 +188,7 @@ public class BudgetService extends BaseService {
 		return periodBudget;
 	}
 
-	private float getFixedCategoriesBudget(List<String> incomeCategoriesIds) {
+	private float getFixedBudgets() {
 		float fixedExpenses = 0f;
 		try {
 
@@ -197,7 +197,7 @@ public class BudgetService extends BaseService {
 			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
 					.queryBuilder();
 
-			budgetQBuilder.where().in("idCategory", incomeCategoriesIds);
+			budgetQBuilder.where().in("isFixed", true);
 
 			PreparedQuery<UserBudget> budgetQuery = budgetQBuilder.prepare();
 
@@ -244,6 +244,30 @@ public class BudgetService extends BaseService {
 		}
 
 		return monthlyIncome;
+	}
+
+	public List<String> getUnFixedBudgetCategoriesIds() {
+		List<String> categories = new ArrayList<String>();
+		try {
+			Dao<UserBudget, String> budgetDao = this.getHelper().getBudgets();
+
+			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
+					.queryBuilder();
+
+			budgetQBuilder.where().in("isFixed", false);
+			PreparedQuery<UserBudget> budgetQuery = budgetQBuilder.prepare();
+
+			List<UserBudget> budgets = budgetDao.query(budgetQuery);
+
+			for (UserBudget budget : budgets) {
+				categories.add(budget.getIdCategory());
+			}
+			
+		} catch (SQLException e) {
+
+		}
+
+		return categories;
 	}
 
 }

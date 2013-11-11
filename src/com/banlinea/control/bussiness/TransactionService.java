@@ -153,12 +153,11 @@ public class TransactionService extends BaseService {
 	 * @param period
 	 * @return total of money register.
 	 */
-	public float getTotalTransactionsDueDate(SafeSpendPeriod period) {
+	public float getTotalTransactionsDueDate(SafeSpendPeriod period, List<String> unFixedCategories) {
 		float totalExpenses = 0f;
 		try {
 
-			List<String> unFixedExpensesCategories = new CategoryService(
-					this.context).getUnFixedExpensesSavingCategoriesIds();
+			
 			Calendar begin = Calendar.getInstance();
 			Calendar end = Calendar.getInstance();
 
@@ -168,23 +167,21 @@ public class TransactionService extends BaseService {
 			begin.set(Calendar.SECOND, 0);
 
 			switch (period) {
-				case DAY:
-					end.add(Calendar.DAY_OF_MONTH, -1);
-					end.set(Calendar.HOUR_OF_DAY, 23);
-					end.set(Calendar.MINUTE, 59);
-					end.set(Calendar.SECOND, 59);
-					break;
-				case WEEK:
-					end.add(Calendar.DAY_OF_WEEK, 
-							end.getFirstDayOfWeek() - end.get(Calendar.DAY_OF_WEEK));
-					break;
-				case MONTH:
-					return 0;
-				default:
-					break;
+			case DAY:
+				end.add(Calendar.DAY_OF_MONTH, -1);
+				end.set(Calendar.HOUR_OF_DAY, 23);
+				end.set(Calendar.MINUTE, 59);
+				end.set(Calendar.SECOND, 59);
+				break;
+			case WEEK:
+				end.add(Calendar.DAY_OF_WEEK,
+						end.getFirstDayOfWeek() - end.get(Calendar.DAY_OF_WEEK));
+				break;
+			case MONTH:
+				return 0;
+			default:
+				break;
 			}
-
-			
 
 			Dao<Transaction, String> transactionDao;
 
@@ -199,7 +196,7 @@ public class TransactionService extends BaseService {
 			where.and();
 			where.ne("type", Transaction.TYPE_INCOME);
 			where.and();
-			where.in("idCategory", unFixedExpensesCategories);
+			where.in("idCategory", unFixedCategories);
 
 			Log.d("ORMLITE", query.prepareStatementString());
 
@@ -211,37 +208,34 @@ public class TransactionService extends BaseService {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return totalExpenses;
 	}
 
-	public float getTotalTransactionsInPeriod(SafeSpendPeriod period) {
+	public float getTotalTransactionsInPeriod(SafeSpendPeriod period,
+			List<String> unFixedCategories) {
 		float totalExpenses = 0f;
 		try {
 
-			List<String> unFixedExpensesCategories = new CategoryService(
-					this.context).getUnFixedExpensesSavingCategoriesIds();
 			Calendar begin = Calendar.getInstance();
 			Calendar end = Calendar.getInstance();
 
-			
 			switch (period) {
 			case DAY:
-				
+
 			case WEEK:
-				begin.add(Calendar.DAY_OF_WEEK, 
-						begin.getFirstDayOfWeek() - begin.get(Calendar.DAY_OF_WEEK));
-				end  = (Calendar) begin.clone();
+				begin.add(Calendar.DAY_OF_WEEK, begin.getFirstDayOfWeek()
+						- begin.get(Calendar.DAY_OF_WEEK));
+				end = (Calendar) begin.clone();
 				end.add(Calendar.DAY_OF_YEAR, 6);
 				break;
 			case MONTH:
 				begin.set(Calendar.DAY_OF_MONTH, 1);
 			default:
 				break;
-		}
-			
+			}
+
 			begin.set(Calendar.HOUR_OF_DAY, 0);
 			begin.set(Calendar.MINUTE, 0);
 			begin.set(Calendar.SECOND, 0);
@@ -263,7 +257,7 @@ public class TransactionService extends BaseService {
 			where.and();
 			where.ne("type", Transaction.TYPE_INCOME);
 			where.and();
-			where.in("idCategory", unFixedExpensesCategories);
+			where.in("idCategory", unFixedCategories);
 
 			Log.d("ORMLITE", query.prepareStatementString());
 
@@ -275,7 +269,6 @@ public class TransactionService extends BaseService {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return totalExpenses;
