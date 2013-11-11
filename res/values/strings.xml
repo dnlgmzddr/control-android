@@ -112,5 +112,6 @@
     <string name="title_activity_promos">Promociones</string>
     <string name="valid">Válidez:</string>
     <string name="description">Descripción</string>
+    <string name="title_activity_transaction_list">Historial de Transacciones</string>
 
 </resources>

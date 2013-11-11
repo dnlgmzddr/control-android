@@ -28,6 +28,8 @@ import com.banlinea.control.entities.definitions.SafeSpendPeriod;
 public class BalanceActivity extends Activity {
 
 	LinearLayout dailyBalanceWrapper;
+	LinearLayout weeklyBalanceWrapper;
+	LinearLayout monthlyBalanceWrapper;
 	TextView dailyBalance;
 	TextView weeklyBalance;
 	TextView monthlyBalance;
@@ -81,7 +83,9 @@ public class BalanceActivity extends Activity {
 		};
 
 		dailyBalanceWrapper = (LinearLayout) findViewById(R.id.daily_balance_wrapper);
-
+		weeklyBalanceWrapper = (LinearLayout) findViewById(R.id.weekly_balance_wrapper);
+		monthlyBalanceWrapper = (LinearLayout) findViewById(R.id.monthly_balance_wrapper);
+		
 		dailyBalance = (TextView) findViewById(R.id.dailySafeToSpend);
 		weeklyBalance = (TextView) findViewById(R.id.weeklySafeToSend);
 		monthlyBalance = (TextView) findViewById(R.id.monthlySafeToSend);
@@ -99,6 +103,26 @@ public class BalanceActivity extends Activity {
 						RegisterTransactionActivity.class);
 				intent.putExtra("receiverTag",
 						registerTransactionResultReceiver);
+				startActivity(intent);
+			}
+		});
+		
+		weeklyBalanceWrapper.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(BalanceActivity.this, TransactionListActivity.class);
+				intent.putExtra("com.banlinea.control.balance.period", SafeSpendPeriod.WEEK);
+				startActivity(intent);
+			}
+		});
+		
+		monthlyBalanceWrapper.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(BalanceActivity.this, TransactionListActivity.class);
+				intent.putExtra("com.banlinea.control.balance.period", SafeSpendPeriod.MONTH);
 				startActivity(intent);
 			}
 		});
