@@ -12,6 +12,7 @@ import android.util.Log;
 import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserBudget;
+import com.banlinea.control.entities.definitions.SafeSpendPeriod;
 import com.banlinea.control.remote.RemoteBudgetService;
 import com.banlinea.control.remote.util.CallResult;
 import com.j256.ormlite.dao.Dao;
@@ -19,6 +20,12 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 public class BudgetService extends BaseService {
+
+	public static final int PERIOD_DAY = 0;
+
+	public static final int PERIOD_WEEK = 1;
+
+	public static final int PERIOD_MONTH = 2;
 
 	private RemoteBudgetService remoteBudgetService;
 
@@ -111,53 +118,74 @@ public class BudgetService extends BaseService {
 		}
 	}
 
-	public float getDailyBudget() {
+	public float getDailyBudget(SafeSpendPeriod period) {
 
-		float dailyBudget = 0f;
+		float periodBudget = 0f;
 		try {
-			
+
+			Log.d("BUDGET", "----- BEGIN " + period + " ----------");
+
 			List<String> incomeCategoriesIds = new CategoryService(this.context)
-			.getFixedExpensesCategoriesIds();
-			
+					.getFixedExpensesCategoriesIds();
+
 			float monthlyIncome = calculateMonthlyIncome();
 			Log.d("BUDGET", "monthlyIncome:" + monthlyIncome);
-			
+
 			float fixedExpenses = getFixedCategoriesBudget(incomeCategoriesIds);
 			Log.d("BUDGET", "fixedExpenses:" + fixedExpenses);
-			
-			float expensesDueDate = transactionService.getTotalTransactionsDueDate();
+
+			// Specific data per period.
+			float expensesDueDate = transactionService
+					.getTotalTransactionsDueDate(period);
 			Log.d("BUDGET", "expensesDueDate:" + expensesDueDate);
-			
-			float todayExpenses = transactionService.getTotalTransactionsToday();
-			Log.d("BUDGET", "todayDueDate:" + todayExpenses);
 
-			dailyBudget = monthlyIncome - (fixedExpenses - expensesDueDate);
-			Log.d("BUDGET", "freeBudget:" + dailyBudget);
+			float periodExpenses = transactionService
+					.getTotalTransactionsInPeriod(period);
+			Log.d("BUDGET", "periodExpenses:" + periodExpenses);
 
-			int monthDays = Calendar.getInstance().getActualMaximum(
-					Calendar.DAY_OF_MONTH);
-			int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-			int days = monthDays - currentDay;
-			Log.d("BUDGET", "days:" + days);
+			periodBudget = monthlyIncome - (fixedExpenses - expensesDueDate);
+			Log.d("BUDGET", "freeBudget:" + periodBudget);
 
-			dailyBudget = dailyBudget / days;
-			dailyBudget -= todayExpenses;
-			Log.d("BUDGET", "dailyBudget:" + dailyBudget);
-			
+			int periodUnit = 1;
+
+			switch (period) {
+			case DAY:
+				dayPeriodCalc: {
+					int monthDays = Calendar.getInstance().getActualMaximum(
+							Calendar.DAY_OF_MONTH);
+					int currentDay = Calendar.getInstance().get(
+							Calendar.DAY_OF_MONTH);
+					periodUnit = monthDays - currentDay;
+				}
+				break;
+			case WEEK:
+				weekPeriodCalc: {
+					Calendar cal = Calendar.getInstance();
+					periodUnit = cal.getActualMaximum(Calendar.WEEK_OF_MONTH);
+				}
+				break;
+			default:
+				break;
+			}
+
+			Log.d("BUDGET", "periodUnit:" + periodUnit);
+
+			periodBudget = periodBudget / periodUnit;
+			periodBudget -= periodExpenses;
+			Log.d("BUDGET", "periodBudget:" + periodBudget);
+			Log.d("BUDGET", "----- END " + period + " ----------");
+
 		} catch (Exception e) {
 			Log.d("ERROR", e.getMessage());
 		}
-		return dailyBudget;
+		return periodBudget;
 	}
-
 
 	private float getFixedCategoriesBudget(List<String> incomeCategoriesIds) {
 		float fixedExpenses = 0f;
 		try {
 
 			Dao<UserBudget, String> budgetDao = this.getHelper().getBudgets();
-
-			
 
 			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
 					.queryBuilder();

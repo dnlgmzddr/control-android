@@ -1,9 +1,7 @@
 package com.banlinea.control;
 
 import java.lang.reflect.Field;
-import java.math.RoundingMode;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import android.app.Activity;
@@ -24,24 +22,29 @@ import android.widget.TextView;
 
 import com.banlinea.control.bussiness.AuthenticationService;
 import com.banlinea.control.bussiness.BudgetService;
+import com.banlinea.control.entities.definitions.SafeSpendPeriod;
 
 public class BalanceActivity extends Activity {
 
 	LinearLayout dailyBalanceWrapper;
 	TextView dailyBalance;
-
+	TextView weeklyBalance;
+	TextView monthlyBalance;
+	
 	ResultReceiver registerTransactionResultReceiver;
 	ResultReceiver InitialSetupResultReceiver;
 
 	BudgetService budgetService;
 
+	private final NumberFormat formatter = NumberFormat.getCurrencyInstance();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		budgetService = new BudgetService(this);
 
-		final NumberFormat formatter = NumberFormat.getCurrencyInstance();
-		formatter.setRoundingMode(RoundingMode.FLOOR);
+		
+		
 		
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.cancel(ReminderReceiver.REMINDER_NOTIFICATION);
@@ -59,8 +62,7 @@ public class BalanceActivity extends Activity {
 				Log.d("NEW TRANSACTION REGISTERED", resultData
 						.getBoolean("result") ? "Successful" : "Error");
 				if (resultData.getBoolean("result")) {
-					dailyBalance.setText("" + formatter.format(budgetService.getDailyBudget()));
-
+						updateBudgetsLabels();
 				}
 			}
 		};
@@ -74,7 +76,7 @@ public class BalanceActivity extends Activity {
 				Log.d("INITIAL SETUP FINISHED", resultData
 						.getBoolean("result") ? "Successful" : "Error");
 				if (resultData.getBoolean("result")) {
-					dailyBalance.setText("" + formatter.format(budgetService.getDailyBudget()));
+					updateBudgetsLabels();
 				}
 			}
 		};
@@ -82,8 +84,10 @@ public class BalanceActivity extends Activity {
 		dailyBalanceWrapper = (LinearLayout) findViewById(R.id.daily_balance_wrapper);
 
 		dailyBalance = (TextView) findViewById(R.id.dailySafeToSpend);
+		weeklyBalance = (TextView) findViewById(R.id.weeklySafeToSend);
+		monthlyBalance = (TextView) findViewById(R.id.monthlySafeToSend);
 		
-		dailyBalance.setText("" + formatter.format(budgetService.getDailyBudget()));
+		updateBudgetsLabels();
 
 		dailyBalanceWrapper.setOnClickListener(new View.OnClickListener() {
 
@@ -227,6 +231,12 @@ public class BalanceActivity extends Activity {
 				});
 		AlertDialog dialog = builder.create();
 		dialog.show();
+	}
+	
+	private void updateBudgetsLabels(){
+		dailyBalance.setText("" + formatter.format(budgetService.getDailyBudget(SafeSpendPeriod.DAY)));
+		weeklyBalance.setText("" + formatter.format(budgetService.getDailyBudget(SafeSpendPeriod.WEEK)));
+		monthlyBalance.setText("" + formatter.format(budgetService.getDailyBudget(SafeSpendPeriod.MONTH)));
 	}
 
 }

@@ -11,6 +11,7 @@ import com.banlinea.control.entities.Category;
 import com.banlinea.control.entities.Transaction;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
+import com.banlinea.control.entities.definitions.SafeSpendPeriod;
 import com.banlinea.control.entities.result.TransactionResult;
 import com.banlinea.control.remote.RemoteTransactionService;
 import com.banlinea.control.remote.util.CallResult;
@@ -71,6 +72,7 @@ public class TransactionService extends BaseService {
 
 	/**
 	 * Get the transaction for the passed category until now.
+	 * 
 	 * @param idCategory
 	 * @return
 	 */
@@ -78,16 +80,15 @@ public class TransactionService extends BaseService {
 		try {
 			Dao<Transaction, String> transactionDAO = this.getHelper()
 					.getTransactions();
-			
+
 			Calendar begin = Calendar.getInstance();
 			Calendar end = Calendar.getInstance();
-			
+
 			begin.set(Calendar.DAY_OF_MONTH, 1);
 			begin.set(Calendar.HOUR_OF_DAY, 0);
 			begin.set(Calendar.MINUTE, 0);
 			begin.set(Calendar.SECOND, 0);
-			
-			
+
 			QueryBuilder<Transaction, String> query = transactionDAO
 					.queryBuilder();
 
@@ -96,11 +97,10 @@ public class TransactionService extends BaseService {
 			where.between("date", begin.getTime(), end.getTime());
 			where.and();
 			where.eq("idCategory", idCategory);
-			
-			
+
 			List<Transaction> transactions = transactionDAO.query(query
 					.prepare());
-			
+
 			return transactions;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -147,10 +147,13 @@ public class TransactionService extends BaseService {
 	}
 
 	/**
-	 * Get the total of transactions due date (exclude income ones) not include the ones that happen today.
+	 * Get the total of transactions due date (exclude income ones) not include
+	 * the ones that happen today.
+	 * 
+	 * @param period
 	 * @return total of money register.
 	 */
-	public float getTotalTransactionsDueDate() {
+	public float getTotalTransactionsDueDate(SafeSpendPeriod period) {
 		float totalExpenses = 0f;
 		try {
 
@@ -158,18 +161,31 @@ public class TransactionService extends BaseService {
 					this.context).getUnFixedExpensesSavingCategoriesIds();
 			Calendar begin = Calendar.getInstance();
 			Calendar end = Calendar.getInstance();
-			
 
 			begin.set(Calendar.DAY_OF_MONTH, 1);
 			begin.set(Calendar.HOUR_OF_DAY, 0);
 			begin.set(Calendar.MINUTE, 0);
 			begin.set(Calendar.SECOND, 0);
+
+			switch (period) {
+				case DAY:
+					end.add(Calendar.DAY_OF_MONTH, -1);
+					end.set(Calendar.HOUR_OF_DAY, 23);
+					end.set(Calendar.MINUTE, 59);
+					end.set(Calendar.SECOND, 59);
+					break;
+				case WEEK:
+					end.add(Calendar.DAY_OF_WEEK, 
+							end.getFirstDayOfWeek() - end.get(Calendar.DAY_OF_WEEK));
+					break;
+				case MONTH:
+					return 0;
+				default:
+					break;
+			}
+
 			
-			end.add(Calendar.DAY_OF_MONTH, -1);
-			end.set(Calendar.HOUR_OF_DAY, 23);
-			end.set(Calendar.MINUTE, 59);
-			end.set(Calendar.SECOND, 59);
-			
+
 			Dao<Transaction, String> transactionDao;
 
 			transactionDao = this.getHelper().getTransactions();
@@ -201,24 +217,39 @@ public class TransactionService extends BaseService {
 		return totalExpenses;
 	}
 
-
-	public float getTotalTransactionsToday() {
+	public float getTotalTransactionsInPeriod(SafeSpendPeriod period) {
 		float totalExpenses = 0f;
 		try {
 
 			List<String> unFixedExpensesCategories = new CategoryService(
 					this.context).getUnFixedExpensesSavingCategoriesIds();
 			Calendar begin = Calendar.getInstance();
-			Calendar end  = Calendar.getInstance();
+			Calendar end = Calendar.getInstance();
 
+			
+			switch (period) {
+			case DAY:
+				
+			case WEEK:
+				begin.add(Calendar.DAY_OF_WEEK, 
+						begin.getFirstDayOfWeek() - begin.get(Calendar.DAY_OF_WEEK));
+				end  = (Calendar) begin.clone();
+				end.add(Calendar.DAY_OF_YEAR, 6);
+				break;
+			case MONTH:
+				begin.set(Calendar.DAY_OF_MONTH, 1);
+			default:
+				break;
+		}
+			
 			begin.set(Calendar.HOUR_OF_DAY, 0);
 			begin.set(Calendar.MINUTE, 0);
 			begin.set(Calendar.SECOND, 0);
-			
+
 			end.set(Calendar.HOUR_OF_DAY, 23);
 			end.set(Calendar.MINUTE, 59);
 			end.set(Calendar.SECOND, 59);
-			
+
 			Dao<Transaction, String> transactionDao;
 
 			transactionDao = this.getHelper().getTransactions();
