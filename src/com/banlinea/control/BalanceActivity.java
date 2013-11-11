@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,22 +31,20 @@ public class BalanceActivity extends Activity {
 	TextView dailyBalance;
 	TextView weeklyBalance;
 	TextView monthlyBalance;
-	
+	Button promosButton;
+
 	ResultReceiver registerTransactionResultReceiver;
 	ResultReceiver InitialSetupResultReceiver;
 
 	BudgetService budgetService;
 
 	private final NumberFormat formatter = NumberFormat.getCurrencyInstance();
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		budgetService = new BudgetService(this);
 
-		
-		
-		
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.cancel(ReminderReceiver.REMINDER_NOTIFICATION);
 
@@ -62,19 +61,19 @@ public class BalanceActivity extends Activity {
 				Log.d("NEW TRANSACTION REGISTERED", resultData
 						.getBoolean("result") ? "Successful" : "Error");
 				if (resultData.getBoolean("result")) {
-						updateBudgetsLabels();
+					updateBudgetsLabels();
 				}
 			}
 		};
 
 		// Result receiver to refresh balance when finished initial setup.
-		this.InitialSetupResultReceiver = new ResultReceiver(
-				new Handler()) {
+		this.InitialSetupResultReceiver = new ResultReceiver(new Handler()) {
 
 			@Override
 			protected void onReceiveResult(int resultCode, Bundle resultData) {
-				Log.d("INITIAL SETUP FINISHED", resultData
-						.getBoolean("result") ? "Successful" : "Error");
+				Log.d("INITIAL SETUP FINISHED",
+						resultData.getBoolean("result") ? "Successful"
+								: "Error");
 				if (resultData.getBoolean("result")) {
 					updateBudgetsLabels();
 				}
@@ -87,6 +86,8 @@ public class BalanceActivity extends Activity {
 		weeklyBalance = (TextView) findViewById(R.id.weeklySafeToSend);
 		monthlyBalance = (TextView) findViewById(R.id.monthlySafeToSend);
 		
+		promosButton = (Button) findViewById(R.id.promos_button);
+
 		updateBudgetsLabels();
 
 		dailyBalanceWrapper.setOnClickListener(new View.OnClickListener() {
@@ -102,8 +103,19 @@ public class BalanceActivity extends Activity {
 			}
 		});
 		
-		Log.d("FIRST TIME", Boolean.toString(BalanceActivity.this.getIntent().getBooleanExtra("com.banlinea.control.firsTime", false)));
-		if (BalanceActivity.this.getIntent().getBooleanExtra("com.banlinea.control.firstTime", false)) {
+		promosButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(BalanceActivity.this, PromosActivity.class);
+				startActivity(intent);
+			}
+		});
+
+		Log.d("FIRST TIME", Boolean.toString(BalanceActivity.this.getIntent()
+				.getBooleanExtra("com.banlinea.control.firsTime", false)));
+		if (BalanceActivity.this.getIntent().getBooleanExtra(
+				"com.banlinea.control.firstTime", false)) {
 			Intent intent = new Intent(BalanceActivity.this,
 					ReminderSetupActivity.class);
 			intent.putExtra("com.banlinea.control.suggestSetup", true);
@@ -232,11 +244,17 @@ public class BalanceActivity extends Activity {
 		AlertDialog dialog = builder.create();
 		dialog.show();
 	}
-	
-	private void updateBudgetsLabels(){
-		dailyBalance.setText("" + formatter.format(budgetService.getDailyBudget(SafeSpendPeriod.DAY)));
-		weeklyBalance.setText("" + formatter.format(budgetService.getDailyBudget(SafeSpendPeriod.WEEK)));
-		monthlyBalance.setText("" + formatter.format(budgetService.getDailyBudget(SafeSpendPeriod.MONTH)));
+
+	private void updateBudgetsLabels() {
+		dailyBalance.setText(""
+				+ formatter.format(budgetService
+						.getDailyBudget(SafeSpendPeriod.DAY)));
+		weeklyBalance.setText(""
+				+ formatter.format(budgetService
+						.getDailyBudget(SafeSpendPeriod.WEEK)));
+		monthlyBalance.setText(""
+				+ formatter.format(budgetService
+						.getDailyBudget(SafeSpendPeriod.MONTH)));
 	}
 
 }

@@ -23,6 +23,7 @@ public class Promotion {
 	@DatabaseField
 	private String link;
 
+	@DatabaseField
 	private String csvFinancialProducts;
 
 	private List<UserFinancialProduct> relatedProducts;
@@ -82,6 +83,14 @@ public class Promotion {
 
 	public void setFromDate(java.util.Date fromDate) {
 		this.fromDate = fromDate;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 }
