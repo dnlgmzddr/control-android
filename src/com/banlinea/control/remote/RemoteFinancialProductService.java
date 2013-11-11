@@ -1,13 +1,17 @@
 package com.banlinea.control.remote;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import com.banlinea.control.dto.out.FinancialEntitiesRequest;
 import com.banlinea.control.dto.out.ProductFilterRequest;
+import com.banlinea.control.dto.out.SimpleUserRequest;
+import com.banlinea.control.entities.Promotion;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.result.AddUserFinancialProductResult;
 import com.banlinea.control.entities.result.FinancialEntitiesResult;
 import com.banlinea.control.entities.result.FinancialProductResult;
+import com.banlinea.control.entities.result.UserPromotionResult;
 import com.banlinea.control.remote.util.ApiMethod;
 import com.banlinea.control.remote.util.ControlApiHandler;
 
@@ -77,5 +81,26 @@ public class RemoteFinancialProductService {
 		}
 
 		return result;
+	}
+	
+	
+	public List<Promotion> getUserPromotion(String idUser){
+		
+		UserPromotionResult result = null;
+
+		try {
+			SimpleUserRequest request = new SimpleUserRequest();
+			request.setIdUser(idUser);
+			result = new ControlApiHandler<UserPromotionResult, SimpleUserRequest>(
+					request, ApiMethod.PRODUCTS_GET_USER_PROMOTIONS, UserPromotionResult.class)
+					.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result.getBody();
 	}
 }

@@ -1,6 +1,8 @@
 package com.banlinea.control.bussiness;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -9,6 +11,7 @@ import com.banlinea.control.dto.in.FinancialEntityDTO;
 import com.banlinea.control.dto.out.FinancialEntitiesRequest;
 import com.banlinea.control.dto.out.ProductFilterRequest;
 import com.banlinea.control.entities.FinancialProduct;
+import com.banlinea.control.entities.Promotion;
 import com.banlinea.control.entities.UserFinancialProduct;
 import com.banlinea.control.entities.UserProfile;
 import com.banlinea.control.entities.result.AddUserFinancialProductResult;
@@ -97,7 +100,8 @@ public class FinancialProductService extends BaseService {
 				QueryBuilder<UserFinancialProduct, String> queryBuilder = productDao
 						.queryBuilder();
 
-				queryBuilder.where().eq("category", FinancialProduct.CATEGORY_CASH);
+				queryBuilder.where().eq("category",
+						FinancialProduct.CATEGORY_CASH);
 				PreparedQuery<UserFinancialProduct> preparedQuery = queryBuilder
 						.prepare();
 
@@ -133,6 +137,14 @@ public class FinancialProductService extends BaseService {
 		return entities;
 	}
 
+	/**
+	 * Get the the products filtered by group and entity
+	 * 
+	 * @param category
+	 * @param entityId
+	 * @return
+	 * @throws Exception
+	 */
 	public List<FinancialProduct> getFilteredProducts(int category,
 			String entityId) throws Exception {
 
@@ -157,28 +169,61 @@ public class FinancialProductService extends BaseService {
 	 * @param productId
 	 * @param productCategory
 	 * @return
-	 * @throws Exception 
-	 */	
-	public CallResult AddProduct(String name, String productId, int productCategory) throws Exception{
-		
+	 * @throws Exception
+	 */
+	public CallResult addProduct(String name, String productId,
+			int productCategory) throws Exception {
+
 		UserProfile user = new AuthenticationService(this.context).GetUser();
-		
+
 		UserFinancialProduct userProduct = new UserFinancialProduct();
-		
+
 		userProduct.setIdProduct(productId);
 		userProduct.setName(name);
 		userProduct.setCategory(productCategory);
 		userProduct.setIdUser(user.getId());
-		
-		AddUserFinancialProductResult result = this.financialProductService.AddProductToUser(userProduct);
-		if(!result.isSuccessfullOperation()){
+
+		AddUserFinancialProductResult result = this.financialProductService
+				.AddProductToUser(userProduct);
+		if (!result.isSuccessfullOperation()) {
 			throw new Exception(result.getMessage());
 		}
-		
+
 		this.getHelper().getUserFinantialProducts().createOrUpdate(userProduct);
-		this.getHelper().getFinantialProducts().createOrUpdate(result.getBody());
-		
+		this.getHelper().getFinantialProducts()
+				.createOrUpdate(result.getBody());
+
 		return result;
+	}
+
+	public List<Promotion> getUserPromotions() {
+		UserProfile currentUser = new AuthenticationService(this.context)
+				.GetUser();
+		List<Promotion> promotions = this.financialProductService
+				.getUserPromotion(currentUser.getId());
+		if (promotions.size() > 0) {
+			
+			List<UserFinancialProduct> userProducts = this.getUserProducts();
+			HashMap<String, UserFinancialProduct> searchWrapper = new HashMap<String, UserFinancialProduct>();
+			
+			for (UserFinancialProduct userProduct : userProducts) {
+				searchWrapper.put(userProduct.getIdProduct(), userProduct);
+			}
+			
+			for (Promotion promotion : promotions) {
+				String[] productsIds = promotion.getCsvFinancialProducts()
+						.split(";");
+				if(productsIds.length>0){
+					List<UserFinancialProduct> includedProducts = new ArrayList<UserFinancialProduct>();
+					for (String id : productsIds) {
+						includedProducts.add(searchWrapper.get(id));
+					}
+				}
+
+			}
+		}
+
+		return promotions;
 	}
 
 }

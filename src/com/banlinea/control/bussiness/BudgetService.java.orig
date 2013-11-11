@@ -130,8 +130,11 @@ public class BudgetService extends BaseService {
 		float periodBudget = 0f;
 		try {
 
+<<<<<<< HEAD
+=======
 			Log.d("BUDGET", "----- BEGIN " + period + " ----------");
 
+>>>>>>> 49fbfcb7fa0bd2a83bf9910b0d1c355ad4f9e13c
 			List<String> incomeCategoriesIds = new CategoryService(this.context)
 					.getFixedExpensesCategoriesIds();
 
@@ -141,6 +144,28 @@ public class BudgetService extends BaseService {
 			float fixedExpenses = getFixedCategoriesBudget(incomeCategoriesIds);
 			Log.d("BUDGET", "fixedExpenses:" + fixedExpenses);
 
+<<<<<<< HEAD
+			float expensesDueDate = transactionService
+					.getTotalTransactionsDueDate();
+			Log.d("BUDGET", "expensesDueDate:" + expensesDueDate);
+
+			float todayExpenses = transactionService
+					.getTotalTransactionsToday();
+			Log.d("BUDGET", "todayDueDate:" + todayExpenses);
+
+			dailyBudget = monthlyIncome - (fixedExpenses - expensesDueDate);
+			Log.d("BUDGET", "freeBudget:" + dailyBudget);
+
+			int monthDays = Calendar.getInstance().getActualMaximum(
+					Calendar.DAY_OF_MONTH);
+			int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+			int days = monthDays - currentDay;
+			Log.d("BUDGET", "days:" + days);
+
+			dailyBudget = dailyBudget / days;
+			dailyBudget -= todayExpenses;
+			Log.d("BUDGET", "dailyBudget:" + dailyBudget);
+=======
 			// Specific data per period.
 			float expensesDueDate = transactionService
 					.getTotalTransactionsDueDate(period);
@@ -181,6 +206,7 @@ public class BudgetService extends BaseService {
 			periodBudget -= periodExpenses;
 			Log.d("BUDGET", "periodBudget:" + periodBudget);
 			Log.d("BUDGET", "----- END " + period + " ----------");
+>>>>>>> 49fbfcb7fa0bd2a83bf9910b0d1c355ad4f9e13c
 
 		} catch (Exception e) {
 			Log.d("ERROR", e.getMessage());
