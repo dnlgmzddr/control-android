@@ -101,7 +101,7 @@ public class PromosActivity extends Activity {
 			
 			if (convertView == null) {
 				LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				inflater.inflate(R.layout.item_promo, null);
+				convertView = inflater.inflate(R.layout.item_promo, null);
 			}
 			
 			TextView titleTextView = (TextView) convertView.findViewById(R.id.promo_name_textView);
