@@ -156,11 +156,11 @@ public class TransactionService extends BaseService {
 	 * @param period
 	 * @return total of money register.
 	 */
-	public float getTotalTransactionsDueDate(SafeSpendPeriod period, List<String> unFixedCategories) {
+	public float getTotalTransactionsDueDate(SafeSpendPeriod period,
+			List<String> unFixedCategories) {
 		float totalExpenses = 0f;
 		try {
 
-			
 			Calendar begin = Calendar.getInstance();
 			Calendar end = Calendar.getInstance();
 
@@ -277,20 +277,20 @@ public class TransactionService extends BaseService {
 		return totalExpenses;
 	}
 
-	
-	
-	public List<FullTransaction> getTransactions(SafeSpendPeriod period){
-		
+	public List<FullTransaction> getTransactions(SafeSpendPeriod period) {
+
 		List<FullTransaction> fullTransactions = new ArrayList<FullTransaction>();
-		
+
 		List<Transaction> transactions = this.getTransactionInPeriod(period);
-		if(transactions.size() == 0){
+		if (transactions.size() == 0) {
 			return fullTransactions;
 		}
 		// user data
-		List<UserFinancialProduct> userProducts = new FinancialProductService(this.context).getUserProducts();
-		List<Category> categories = new CategoryService(this.context).getAllCategories();
-		
+		List<UserFinancialProduct> userProducts = new FinancialProductService(
+				this.context).getUserProducts();
+		List<Category> categories = new CategoryService(this.context)
+				.getAllCategories();
+
 		// make base data indexable.
 		HashMap<String, UserFinancialProduct> indexableUserProducts = new HashMap<String, UserFinancialProduct>();
 		HashMap<String, Category> indexableCategories = new HashMap<String, Category>();
@@ -300,38 +300,39 @@ public class TransactionService extends BaseService {
 		for (UserFinancialProduct product : userProducts) {
 			indexableUserProducts.put(product.getIdProduct(), product);
 		}
-		
+
 		for (Transaction transaction : transactions) {
-			
+
 			FullTransaction fullTransaction = new FullTransaction();
-			
+
 			fullTransaction.setAmount(transaction.getAmount());
 			fullTransaction.setComment(transaction.getComment());
 			fullTransaction.setDate(transaction.getDate());
-			
+
 			fullTransaction.setId(transaction.getId());
 			fullTransaction.setIdCategory(transaction.getIdCategory());
 			fullTransaction.setIdProduct(transaction.getIdProduct());
-			
+
 			fullTransaction.setIdUser(transaction.getIdUser());
 			fullTransaction.setPeriodType(transaction.getPeriodType());
 			fullTransaction.setType(transaction.getType());
-			
-			Category baseCategory = indexableCategories.get(transaction.getIdCategory());
+
+			Category baseCategory = indexableCategories.get(transaction
+					.getIdCategory());
 			fullTransaction.setCategoryName(baseCategory.getName());
-			fullTransaction.setParentCategoryName(indexableCategories.get(baseCategory.getIdParent()).getName());
-			
-			fullTransaction.setProductName(indexableUserProducts.get(transaction.getIdProduct()).getName());
+			fullTransaction.setParentCategoryName(indexableCategories.get(
+					baseCategory.getIdParent()).getName());
+
+			fullTransaction.setProductName(indexableUserProducts.get(
+					transaction.getIdProduct()).getName());
 			fullTransactions.add(fullTransaction);
-			
+
 		}
-		
-		
+
 		return fullTransactions;
 	}
-	
-	
-	private List<Transaction> getTransactionInPeriod(SafeSpendPeriod period){
+
+	private List<Transaction> getTransactionInPeriod(SafeSpendPeriod period) {
 		List<Transaction> retTransactions = new ArrayList<Transaction>();
 		try {
 
@@ -371,14 +372,12 @@ public class TransactionService extends BaseService {
 			Where<Transaction, String> where = query.where();
 
 			where.between("date", begin.getTime(), end.getTime());
-			
+
+			query.orderBy("date", false);
 
 			Log.d("ORMLITE", query.prepareStatementString());
 
-			retTransactions  = transactionDao.query(query
-					.prepare());
-
-			
+			retTransactions = transactionDao.query(query.prepare());
 
 		} catch (SQLException e) {
 			e.printStackTrace();
