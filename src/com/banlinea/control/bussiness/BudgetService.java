@@ -131,7 +131,7 @@ public class BudgetService extends BaseService {
 		float periodBudget = 0f;
 		try {
 
-			List<String> unfixedCategories = getUnFixedBudgetCategoriesIds();
+			List<String> fixedCategories = getFixedBudgetCategoriesIds();
 			
 			Log.d("BUDGET", "----- BEGIN " + period + " ----------");
 
@@ -143,11 +143,11 @@ public class BudgetService extends BaseService {
 
 			// Specific data per period.
 			float expensesDueDate = transactionService
-					.getTotalTransactionsDueDate(period, unfixedCategories);
+					.getTotalTransactionsDueDate(period, fixedCategories);
 			Log.d("BUDGET", "expensesDueDate:" + expensesDueDate);
 
 			float periodExpenses = transactionService
-					.getTotalTransactionsInPeriod(period, unfixedCategories);
+					.getTotalTransactionsInPeriod(period, fixedCategories);
 			Log.d("BUDGET", "periodExpenses:" + periodExpenses);
 
 			periodBudget = monthlyIncome - (fixedExpenses - expensesDueDate);
@@ -170,6 +170,8 @@ public class BudgetService extends BaseService {
 				Calendar cal = Calendar.getInstance();
 				periodUnit = cal.getActualMaximum(Calendar.WEEK_OF_MONTH);
 
+				break;
+			case MONTH:
 				break;
 			default:
 				break;
@@ -246,7 +248,7 @@ public class BudgetService extends BaseService {
 		return monthlyIncome;
 	}
 
-	public List<String> getUnFixedBudgetCategoriesIds() {
+	public List<String> getFixedBudgetCategoriesIds() {
 		List<String> categories = new ArrayList<String>();
 		try {
 			Dao<UserBudget, String> budgetDao = this.getHelper().getBudgets();
@@ -254,7 +256,7 @@ public class BudgetService extends BaseService {
 			QueryBuilder<UserBudget, String> budgetQBuilder = budgetDao
 					.queryBuilder();
 
-			budgetQBuilder.where().in("isFixed", false);
+			budgetQBuilder.where().in("isFixed", true);
 			PreparedQuery<UserBudget> budgetQuery = budgetQBuilder.prepare();
 
 			List<UserBudget> budgets = budgetDao.query(budgetQuery);

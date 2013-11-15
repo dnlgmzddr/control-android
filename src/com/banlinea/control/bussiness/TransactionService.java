@@ -199,7 +199,7 @@ public class TransactionService extends BaseService {
 			where.and();
 			where.ne("type", Transaction.TYPE_INCOME);
 			where.and();
-			where.in("idCategory", unFixedCategories);
+			where.notIn("idCategory", unFixedCategories);
 
 			Log.d("ORMLITE", query.prepareStatementString());
 
@@ -226,7 +226,7 @@ public class TransactionService extends BaseService {
 
 			switch (period) {
 			case DAY:
-
+				break;
 			case WEEK:
 				begin.add(Calendar.DAY_OF_WEEK, begin.getFirstDayOfWeek()
 						- begin.get(Calendar.DAY_OF_WEEK));
@@ -260,7 +260,7 @@ public class TransactionService extends BaseService {
 			where.and();
 			where.ne("type", Transaction.TYPE_INCOME);
 			where.and();
-			where.in("idCategory", unFixedCategories);
+			where.notIn("idCategory", unFixedCategories);
 
 			Log.d("ORMLITE", query.prepareStatementString());
 
@@ -341,7 +341,7 @@ public class TransactionService extends BaseService {
 
 			switch (period) {
 			case DAY:
-
+				break;
 			case WEEK:
 				begin.add(Calendar.DAY_OF_WEEK, begin.getFirstDayOfWeek()
 						- begin.get(Calendar.DAY_OF_WEEK));
